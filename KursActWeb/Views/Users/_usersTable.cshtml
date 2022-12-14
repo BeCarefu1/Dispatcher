@@ -1,0 +1,38 @@
+﻿@model IEnumerable<GIPManager.User>
+
+@if (Model.Any())
+{
+    <div class="panel">
+        <div class="new-table">
+            <div class="new-thead">
+                <div class="row">
+                    <div class="col">№</div>
+                    <div class="col">Имя</div>
+                    <div class="col">Роль</div>
+                    <div class="col">Логин</div>
+                    <div class="col">Email</div>
+                </div>
+            </div>
+            <div class="new-tbody">
+                @{
+                    int n = 0;
+                    foreach (var item in Model)
+                    {
+                        n++;
+                        <a href="#" class="row" onclick="ShowEditMenu(@item.Id)">
+                            <div class="col">@n</div>
+                            <div class="col">@item.Name</div>
+                            <div class="col">@item.Role.Name</div>
+                            <div class="col">@item.Login</div>
+                            <div class="col">@item.Email</div>
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h4>Отсутствуют пользователи</h4>
+}

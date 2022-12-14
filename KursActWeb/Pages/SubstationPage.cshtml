@@ -1,0 +1,316 @@
+﻿@page "{id}"
+@model ActGIPelectroWeb.Pages.SubstationModel
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool u(string role)
+    {
+        return User.IsInRole(role);
+    }
+}
+
+@* jqueryUI для автозаполнения серийников *@
+<link rel="stylesheet" href="~/lib/jquery-ui-1.12.1/jquery-ui.min.css">
+<script src="~/lib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+@* VueJS *@
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js" integrity="sha256-7/yoZS3548fXSRXqc/xYzjsmuW3sFKzuvOCHd06Pmps=" crossorigin="anonymous"></script>
+
+<h1 class="d-none d-print-inline">@Model.Name</h1>
+
+@* Шапка подстанции со статистикой *@
+<div class="d-print-none">
+    @await Html.PartialAsync("Substation/_substationHead")
+</div>
+
+@* Таблица точек учета для Ввода данных о потребителе *@
+@if (u("consumerDataProvider"))
+{
+    <div id="rpTableConsumerData" class="d-print-none">
+        @await Html.PartialAsync("_PointsConsumerNameImport", Model.Id)
+    </div>
+}
+else
+{
+    <div id="rpTable">
+        @await Html.PartialAsync("_PointsSortFilter", Model.Id)
+    </div>
+}
+
+@* Обновление таблиц *@
+<script>
+    //Запрос таблицы точек учета и подстановка ее в контейнер
+    function UpdateTableRegPoints() {
+        window.location.reload();
+    }
+
+    //Запрос таблицы точек учета с письмами и подстановка ее в контейнер
+    function UpdateTableRegPointsLetters() {
+        fetch('/RegPoint/HTML_PointsLettersTable/@Model.Id').then((r) => r.text())
+            .then((html) => $('#rpTable').html(html));
+    }
+</script>
+@* Письма приглашения *@
+<script>
+    var lastLetterInviteDate = '';
+    async function CreateLetter(idRegPoint) {
+        const { value: formValues } = await Swal.fire({
+            title: 'Выбери дату приглашения',
+            html:
+                '<input type="text" autocomplete="off" id="datepicker">',
+            onOpen: () => {
+                $("#datepicker").datepicker();
+                $("#datepicker").datepicker("option", "dateFormat", "dd-mm-yy");
+                $("#datepicker").val(lastLetterInviteDate);
+                $("#datepicker").blur();
+                Swal.getConfirmButton().focus();
+            },
+            focusConfirm: false,
+            preConfirm: () => {
+                return {
+                    inviteDate: document.getElementById('datepicker').value
+                }
+            }
+        })
+
+        if (formValues && formValues.inviteDate) {
+            //Запрос на создание письма
+            fetch('/Letter/Add/' + idRegPoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "id=" + encodeURIComponent(idRegPoint) + "&inviteDate=" + encodeURIComponent(formValues.inviteDate)
+            }).then((response) => {
+                if (response.ok) {
+                    ok('Письмо создано на ' + formValues.inviteDate);
+                    lastLetterInviteDate = formValues.inviteDate;
+                } else { err('Ошибка сервера' + response.statusText); }
+            })//Обновление таблицы
+                .then(() => { UpdateTableRegPointsLetters(); });
+        }
+    }
+    //Меню с действиями над письмом (Удалить/Скачать)
+    function LetterInfo(letterId, inviteDate) {
+        Swal.fire({
+            showConfirmButton: false,
+            title: 'Письмо №' + letterId + ' на ' + inviteDate,
+            html:
+                '<a class="btn btn-info" style="width:300px; margin: 3px;" href="/GetFile/GetExcel_Letter?id=' + letterId + '">Скачать письмо</a>' +
+                '<button id="deleteLetter" class="btn btn-danger" style="width:300px; margin: 3px;">Удалить</button>',
+            onBeforeOpen: () => {
+                const content = Swal.getContent()
+                const $ = content.querySelector.bind(content)
+                const deleteLetter = $('#deleteLetter');
+                deleteLetter.addEventListener('click', () => {
+                    DeleteLetter(letterId); //Удалить письмо
+                });
+            }
+        })
+    }
+    //Удалить письмо
+    function DeleteLetter(letterId) {
+        Swal.fire({
+            title: 'Удалить письмо №' + letterId + '?',
+            text: "Это необратимое действие!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Да, удалить его!',
+            cancelButtonText: 'Отмена'
+        }).then((result) => {
+            if (result.value) {
+                fetch('/Letter/Delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: "letterId=" + encodeURIComponent(letterId)
+                }).then((response) => {
+                    if (response.ok) {
+                        UpdateTableRegPointsLetters();
+                        ok('Письмо удалено');
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        })
+    }
+    //Нажатие на иконку Распечатано
+    function Switch_LetterPrinted(letterId) {
+        SwithRequestLetter('LetterPrinted', letterId, 'Письмо распечатано', 'green');
+    }
+
+    //Переключить цвет Серый/Зеленый
+    function switchColor(icon, colorNameIfTrue) {
+        if (GetFlagStatus(icon)) {
+            //Выключаем
+            icon.css('color', 'gray');
+        } else {
+            //Включаем
+            icon.css('color', colorNameIfTrue);
+        }
+    }
+    //Получить текущий статус флага (от цвета иконки)
+    function GetFlagStatus(icon) {
+        return !(icon.css('color').localeCompare('rgb(128, 128, 128)') === 0);
+    }
+    //Запрос на сервер для изменения флага
+    function SwithRequestLetter(flagName, letterId, alertFlagName, colorName) {
+        let icon = $('#' + flagName + '_' + letterId);
+        //Статус флага
+        let newStatus = !GetFlagStatus(icon);
+        //Запрос
+        fetch('/Letter/Update_' + flagName, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: "id=" + encodeURIComponent(letterId) + "&newstatus=" + encodeURIComponent(newStatus)
+        }).then((response) => {
+            if (response.ok) {
+                ok('Флаг "' + alertFlagName + '" изменен');
+                switchColor(icon, colorName);
+            } else { err('Ошибка сервера' + response.statusText); }
+        });
+    }
+</script>
+@* Действия над подстанцией *@
+<script>
+    //Удалить подстанцию
+    function Delete() {
+        let sName = prompt('Для удаления введите название подстанции');
+        if (sName.localeCompare('@Html.Raw(Model.Name)') == 0) {
+            fetch('/Substation/Delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "id=" + encodeURIComponent(@Model.Id)
+            })
+            .then(resp => resp.text())
+            .then(txt => alert(txt));
+        }
+        else
+            alert('Неверное имя подстанции. Отмена удаления.');
+    }
+
+     //Добавить комментарий
+    function AddComment() {
+        var xhr = new XMLHttpRequest();
+        var text = $('#commentText').val();
+        var body = "substationId=" + encodeURIComponent(@Model.Id) + "&text=" + encodeURIComponent(text);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                $('#comments').html(xhr.response);
+                $('#commentText').val('');
+            }
+        }
+        xhr.open("POST", '/Comments/AddSubstationComment', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(body);
+    }
+
+    //Удалить комментарий
+    function DeleteComment(id) {
+        var xhr = new XMLHttpRequest();
+        var text = $('#commentText').val();
+        var body = "substationId=" + encodeURIComponent(@Model.Id) + "&commentId=" + encodeURIComponent(id);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                $('#comments').html(xhr.response);
+                $('#commentText').val('');
+            }
+        }
+        xhr.open("POST", '/Comments/DeleteSubstationComment', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(body);
+    }
+
+    //Переименовать подстанцию
+    async function RenemaeSubstation() {
+        var sbType = '@Html.Raw(Model.Name.Substring(0,2))';
+        var sbNumber = '@Html.Raw(Model.Name.Substring(3, Model.Name.Length - 3))';
+
+        const { value: newSbName } = await Swal.fire({
+            title: 'Новый номер',
+            html:
+               // '<div class="row"><select id="sbType" style="width:15%;" class="form-control"><option value="ТП">ТП</option> <option value="РП">РП</option></select> <input type="text" style="width:75%;" class="form-control" id="sbNumber" /></div>' ,
+
+                "<div class='input-group mb-3'><select class='form-control'style='width:15 %;' id='sbType'>"
+                 + "<option id='tp' value='ТП'>ТП</option><option id='rp' value='РП'>РП</option></select>"
+                 + "<div class='input-group-prepend' id='substationSeparator'>"
+                 + "<div class=input-group-prepend'><input type='text' class='form-control'  id='sbNumber' name='SubstationNumber'/></div></div>",
+
+            onOpen: () => {
+                $('#sbType').val(sbType);
+                $('#sbNumber').val(sbNumber);
+                Swal.getConfirmButton().focus();
+            },
+            focusConfirm: false,
+            preConfirm: () => {
+                return $('#sbType').val() + ' ' + $('#sbNumber').val()
+            }
+        })
+
+        if (newSbName) {
+            //Запрос на переименование
+            fetch('/Substation/Rename', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "newName=" + encodeURIComponent(newSbName) + "&id=" + encodeURIComponent(@Model.Id) + "&contractId=" + encodeURIComponent(@Model.ContractId)
+            }).then(r => {
+                if (r.ok)
+                    return r.text()
+                else err("Ошибка сервера")
+            }).then((responseText) => {
+
+                if (responseText.startsWith('Ошибка'))
+                    err(responseText);
+                else {
+                    $('#sbName1').html(newSbName);
+                    $('#sbName2').html(newSbName);
+                    ok(responseText);
+                }
+            })
+        }
+    }
+
+    async function AddPhoneNumber() {
+         const { value: newPhoneNumber } = await Swal.fire({
+            title: 'Новый номер',
+            html:
+
+                "<input type='text' class='form-control'  id='Number' name='Number'/></div>",
+
+             onOpen: () => {
+                 $('#Number').val('@Html.Raw(Model.PhoneNumber)');
+                Swal.getConfirmButton().focus();
+            },
+            focusConfirm: false,
+            preConfirm: () => {
+                return $('#Number').val()
+            }
+        })
+
+        if (newPhoneNumber) {
+            //Запрос на переименование
+            fetch('/Substation/AddPhoneNumber', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "number=" + encodeURIComponent(newPhoneNumber) + "&id=" + encodeURIComponent(@Model.Id)
+            }).then(r => {
+                if (r.ok)
+                    return r.text()
+                else err("Ошибка сервера")
+            }).then((responseText) => {
+
+                if (responseText.startsWith('Ошибка'))
+                    err(responseText);
+                else {
+                      ok(responseText);
+                }
+            })
+        }
+    }
+</script>
+@* tooltips *@
+<script>
+    //Всплывающие подсказки
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+

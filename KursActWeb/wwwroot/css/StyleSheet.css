@@ -1,0 +1,231 @@
+﻿/*Печать*/
+@media print { /* Стили для печати */
+    #printMe .hidden {
+    display: none;
+}
+/* что не надо печатать */
+    #printMe {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #808080;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+        #printMe td {
+            text-align: center;
+            color: #000000;
+            border: 1px solid #808080;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        #printMe th {
+            border: 1px solid #808080;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+        }
+
+}
+
+.main-table {
+    width: 80%;
+    height: 85vh;
+    margin-top: 9vh;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 2px;
+}
+
+.div-table {
+    width: 100%;
+    height: 100%;
+}
+
+.main-footer {
+    margin-left: 15%;
+}
+
+.table2131 {
+    width: 100%;
+    /*800px*/
+    height: 85vh;
+}
+
+.zebra-table {
+    border: 1px solid #eee;
+    border-radius: 15px;
+    table-layout: fixed;
+    width: 100%;
+    margin-bottom: 20px;
+}
+    .zebra-table tr {
+        cursor: pointer;
+    }
+
+
+
+    .zebra-table th {
+        font-weight: bold;
+        padding: 5px;
+        background: #64748b;
+        color: #fff;
+        border: 1px solid #3d3d3d;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+        .zebra-table th a {
+            color: #ffffff;
+        }
+
+        .zebra-table th a:hover {
+            color: #64748b;
+        }
+
+    .zebra-table td {
+            font-weight: bold;
+            padding: 5px 10px;
+            border: 1px solid #eee;
+            text-align: center;
+            color: #64748b;
+            cursor: pointer;
+        }
+    
+
+    .zebra-table tbody tr:nth-child(odd) {
+        background: #fff;
+    }
+
+    .zebra-table tbody tr:nth-child(even) {
+        background: #F7F7F7;
+    }
+
+    /*.zebra-table tbody tr:hover {
+        background: #d9fffa;
+        border: none;
+    }*/
+
+    .zebra-table tbody tr:hover {
+        box-shadow: inset 0 0 0 2px #808080;
+        background-color: #d9fffa;
+        color: #64748b;
+        /*-webkit-transform: scale(1.2);
+        -ms-transform: scale(1.2);
+        transform: scale(1.2);*/
+    }
+
+.create-table {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #808080;
+}
+    .create-table th {
+        border: 1px solid #808080;
+        font-weight: bold;
+        color: #000000;
+        text-align: center;
+    }
+
+    .create-table td {
+        cursor: pointer;
+        text-align: center;
+        color: #64748b;
+        border: 1px solid #808080;
+        word-wrap: break-word;
+        hyphens: auto;
+        /*word-break: break-all;
+        padding-left: 5px;
+        padding-right: 5px;*/
+    }
+
+    .create-table td:hover i {
+        visibility:visible;
+        width: 10%;
+
+    }
+
+    .create-table i {
+        width:0%;
+        cursor: pointer;
+        visibility: hidden;
+    }
+
+
+.switch-form-table {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #808080;
+    counter-reset: rowNumber;
+}
+
+    .switch-form-table th {
+        border: 1px solid #808080;
+        font-weight: bold;
+        color: #000000;
+        text-align: center;
+    }
+
+    .switch-form-table td {
+        cursor: pointer;
+        text-align: center;
+        color: #000000;
+        border: 1px solid #808080;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    /*.switch-form-table tr td:first-child::before {
+        content: counter(rowNumber);
+        min-width: 1em;
+        margin-right: 0.5em;
+    }*/
+
+.modal-scroll-non::-webkit-scrollbar {
+    width: 0;
+}
+
+.countLines {
+    counter-reset: trCount;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+    .countLines tr td:first-child:before {
+        /*position: relative;*/
+        counter-increment: trCount;
+        content: counter(trCount);
+        color: #000000;
+    }
+
+.w3 {
+    width: 3%
+}
+
+.marquee-container {
+    display: flex;
+    align-items: center;
+    
+    overflow: hidden;
+}
+
+.marquee {
+    line-height: 1.3;
+    font-family: sans-serif;
+    font-weight: bold;
+    padding: 24px 0;
+    color: #ff0000;
+    white-space: nowrap;
+    animation: marquee 3.5s infinite linear; /* notice the infinite */
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0)
+    }
+
+    100% {
+        transform: translateX(-30%)
+    }
+}
+

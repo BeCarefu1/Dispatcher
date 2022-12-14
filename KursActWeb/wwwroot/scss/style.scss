@@ -1,0 +1,56 @@
+﻿* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Fira sans', sans-serif;
+}
+
+body {
+	background: var(--light);
+}
+
+
+button {
+	cursor: pointer;
+	appearance: none;
+	border: none;
+	outline: none;
+	background: none;
+}
+
+.app {
+	display: flex;
+	main
+
+{
+	flex: 1 1 0;
+	padding: 3rem;
+
+	@media (max-width: 1024px) {
+		padding-left: 8rem;
+	}
+}
+
+}
+
+.heading {
+	&-1
+
+{
+	font-size: 38px;
+	margin: 20px 0px;
+	font-weight: 300;
+}
+
+&-2 {
+	font-size: 24px;
+	margin: 20px 0px;
+	font-weight: 300;
+}
+
+&-3 {
+	font-size: 17px;
+	margin: 20px 0px;
+	font-weight: 300;
+}
+}

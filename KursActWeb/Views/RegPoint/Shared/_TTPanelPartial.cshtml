@@ -1,0 +1,69 @@
+﻿<div class="col-lg-6 d-flex">
+    <div class="panel align-self-stretch">
+        <div class="panel-heading d-flex">
+            <h3 class="panel-title">Трансформаторы тока</h3>
+            <div class="spinner-border spinner-border-sm ml-auto text-orange align-self-center panel-spinner" role="status">
+                <span class="sr-only">Сохранение...</span>
+            </div>
+        </div>
+
+        <div class="panel-content panel-no-gutter-top">
+            <div class="row d-flex no-gutter">
+                <div class="col-md-3 ml-5">
+                    <span class="float-label--no-parent">Сер. номер</span>
+                </div>
+                <div class="col-md-3 ml-2">
+                    <span class="float-label--no-parent">№ пломбы</span>
+                </div>
+                <div class="col-md-3 ml-2">
+                    <span class="float-label--no-parent"> КТТ</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">A</span>
+                </div>
+                <input type="text" class="form-control" id="TT_A_Serial" name="TT_A_Serial" value="@Model.InstallAct.TT_A_Serial" form="installActForm" onchange="Update_InstallAct(this)">
+                <input type="text" class="form-control" id="Seal_TT_A" name="Seal_TT_A" value="@Model.InstallAct.Seal_TT_A" form="installActForm" onchange="Update_InstallAct(this)">
+                <select id="TT_Koefficient" class="form-control" name="TT_Koefficient" id="TT_Koefficient" value="@Model.InstallAct.TT_Koefficient" form="installActForm" onchange="Update_InstallAct(this);Set_KoefficientInputs()">
+                    <option>50/5</option>
+                    <option>75/5</option>
+                    <option>100/5</option>
+                    <option>150/5</option>
+                    <option>200/5</option>
+                    <option>250/5</option>
+                    <option>300/5</option>
+                    <option>400/5</option>
+                    <option>500/5</option>
+                    <option>600/5</option>
+                    <option>750/5</option>
+                    <option>800/5</option>
+                    <option>1000/5</option>
+                    <option>1200/5</option>
+                    <option>1500/5</option>
+                    <option>2000/5</option>
+                    <option>2500/5</option>
+                    <option>3000/5</option>
+                    <option>4000/5</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">B</span>
+                </div>
+                <input type="text" class="form-control" id="TT_B_Serial" name="TT_B_Serial" value="@Model.InstallAct.TT_B_Serial" form="installActForm" onchange="Update_InstallAct(this)">
+                <input type="text" class="form-control" id="Seal_TT_B" name="Seal_TT_B" value="@Model.InstallAct.Seal_TT_B" form="installActForm" onchange="Update_InstallAct(this)">
+                <input type="text" class="form-control KoefficientInput" value="@Model.InstallAct.TT_Koefficient" readonly />
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">C</span>
+                </div>
+                <input type="text" class="form-control" id="TT_C_Serial" name="TT_C_Serial" value="@Model.InstallAct.TT_C_Serial" form="installActForm" onchange="Update_InstallAct(this)">
+                <input type="text" class="form-control" id="Seal_TT_C" name="Seal_TT_C" value="@Model.InstallAct.Seal_TT_C" form="installActForm" onchange="Update_InstallAct(this)">
+                <input type="text" class="form-control KoefficientInput" value="@Model.InstallAct.TT_Koefficient" readonly>
+            </div>
+        </div>
+    </div>
+</div>

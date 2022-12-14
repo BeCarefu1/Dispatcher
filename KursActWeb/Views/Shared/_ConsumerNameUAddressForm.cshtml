@@ -1,0 +1,66 @@
+﻿@using ActGIPelectroWeb.ViewModels;
+@model GIPManager.Consumer
+
+<style>
+    input { color:black; }
+</style>
+<form name="consumerForm">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="RegPointId" value="@Model.RegPointId" />
+    <h3>@RegPointRowViewModel.FormatAddress(Model.O_Local, Model.O_Local_Secondary, Model.O_Street, Model.O_House, Model.O_Build, Model.O_Flat) </h3>
+    <div>
+        <div class="d-flex p-1">
+            <label><i class="fas fa-user"></i> ФИО потребителя полное</label>
+        </div>
+        <input class="form-control border-secondary" type="text" autocomplete="off" name="Name" value="@Model.Name" />
+    </div>
+
+    <div class="d-flex p-1">
+        <label><i class="fas fa-file-contract"></i> № договора</label>
+    </div>
+    <input class="form-control col-4 border-secondary" type="text" id="ContractNumber" name="ContractNumber" value="@Model.ContractNumber" />
+
+    <div class="row">
+        <div class="col-4">
+            <div class="d-flex p-1">
+                <label><i class="fas fa-envelope"></i> Индекс</label>
+            </div>
+            <input class="form-control border-secondary" type="text" name="U_Index" value="@Model.U_Index" />
+        </div>
+        <div class="col-8">
+            <div class="d-flex p-1">
+                <label class="mr-auto"><i class="fas fa-map-marked-alt"></i> Населенный пункт</label>
+            </div>
+            <input class="form-control border-secondary text-dark" type="text" name="U_Local" value="@Model.U_Local" />
+        </div>
+    </div>
+        <div class="d-flex p-1">
+            <label><i class="fas fa-map-signs"></i> Улица</label>
+        </div>
+        <input class="form-control border-secondary" type="text" name="U_Street" value="@Model.U_Street" />
+        <div class="d-flex">
+            <div>
+                <div class="d-flex p-1">
+                    <label><i class="fas fa-home"></i> Номер дома</label>
+                </div>
+                <input class="form-control border-secondary col-11" type="text" name="U_House" value="@Model.U_House" />
+            </div>
+            <div>
+                <div class="d-flex p-1">
+                    <label><i class="fab fa-kaggle"></i> Корпус (Литер)</label>
+                </div>
+                <input class="form-control border-secondary col-11" type="text" name="U_Build" value="@Model.U_Build" />
+            </div>
+            <div>
+                <div class="d-flex p-1">
+                    <label><i class="fas fa-door-open"></i> № квартиры</label>
+                </div>
+                <input class="form-control border-secondary col-11" type="text" name="U_Flat" value="@Model.U_Flat" />
+            </div>
+        </div>
+</form>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>

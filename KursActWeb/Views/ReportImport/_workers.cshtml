@@ -1,0 +1,2 @@
+﻿<label for="WorkerId">Выберите монтажника</label>
+@Html.DropDownList("WorkerId", Model as SelectList, new { @class = "form-control", @onchange = "GetWorkerReports()" })

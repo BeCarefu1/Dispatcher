@@ -1,0 +1,29 @@
+﻿@model IEnumerable<ActGIPelectroWeb.ViewModels.RegPointRowViewModel>
+
+<table class="table table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">№</th>
+            <th scope="col">Адрес объекта</th>
+            <th scope="col">ФИО / Юр. адрес</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int n = 0;
+            foreach (var item in Model)
+            {
+                n++;
+                <tr id="row_@item.Id">
+                    <th scope="row">@n</th>
+                    <td>@item.Address</td>
+                    <td>
+                        <div class="d-flex">
+                            <button class="btn btn-info m-1" onclick="EditNameUAddress(@item.Id)">Ввод данных</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

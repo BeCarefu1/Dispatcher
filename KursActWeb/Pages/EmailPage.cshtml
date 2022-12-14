@@ -1,0 +1,254 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.EmailPageModel
+@{
+    ViewData["Title"] = "Управление рассылками";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="shadow p-3 mb-1 rounded" style="background-color:#1c2324"><h1 style="color:white; margin:0"><i class="fas fa-mail-bulk"></i> Настройка рассылок</h1></div>
+
+<div class="panel" id="distTable">
+    @await Html.PartialAsync("_EmailDistributionsTable", Model.Configs.DistributionList)
+</div>
+
+<script>
+    //Отправить письма по рассылке
+    function SendEmail(name) {
+        Swal.fire({
+            title: 'Активировать рассылку сейчас?',
+            text: "Письмо отправится на все указанные адреса",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            cancelButtonText: 'Отмена',
+            confirmButtonText: 'Да, отправить!'
+        }).then((result) => {
+            if (result.value) {
+                //Запрос
+                fetch('/EmailConfig/SendEmailDistribution', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: "name=" + encodeURIComponent(name)
+                }).then((response) => {
+                    if (response.status === 200) {
+                        UpdateEmailDistributionsTable();
+                        ok('Письма отправлены: ' + name);
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        });
+    }
+    //Запрос на получение списка пользователей по Id роли
+    function UpdateEmailDistributionsTable() {
+        fetch('/EmailConfig/GetEmailDistributionsTable').then(r => r.text())
+            .then(data => {
+                $('#distTable').html(data);
+            });
+    }
+    //Запрос на получение списка типов рассылок
+    function GetContentTypes() {
+        return fetch('/EmailConfig/GetContentTypes').then(r => r.json()).then(t => t);
+    }
+    //Запрос на получение списка режимов рассылок
+    function GetSendTimeMode() {
+        return fetch('/EmailConfig/GetSendTimeMode').then(r => r.json()).then(t => t);
+    }
+
+    async function ChangeContentType(name) {
+        const { value: dType } = await Swal.fire({
+            title: 'Выбор содержания письма',
+            input: 'select',
+            cancelButtonText: 'Отмена',
+            inputOptions: GetContentTypes(),
+            inputPlaceholder: 'Выбери содержание письма',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                return new Promise((resolve) => {
+                    if (value === '') {
+                        resolve('Нужно выбрать содержание письма')
+                    } else {
+                        resolve()
+                    }
+                })
+            }
+        })
+
+        if (dType) {
+            //Запрос
+            fetch('/EmailConfig/SetContentType', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "name=" + encodeURIComponent(name) + "&type=" + encodeURIComponent(dType)
+            }).then((response) => {
+                if (response.status === 200) {
+                    UpdateEmailDistributionsTable();
+                    ok('Содержание выбрано успешно');
+                } else { err('Ошибка сервера' + response.statusText); }
+            });
+
+        }
+    }
+    //Изменение режима рассылки (расписание)
+    async function ChangeSendTimeMode(name) {
+        const { value: dMode } = await Swal.fire({
+            title: 'Выбор режима рассылки',
+            input: 'select',
+            cancelButtonText: 'Отмена',
+            inputOptions: GetSendTimeMode(),
+            inputPlaceholder: 'Выбери режим рассылки',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                return new Promise((resolve) => {
+                    if (value === '') {
+                        resolve('Нужно выбрать режим рассылки')
+                    } else {
+                        resolve()
+                    }
+                })
+            }
+        })
+
+        if (dMode) {
+            //Запрос
+            fetch('/EmailConfig/SetSendTimeMode', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "name=" + encodeURIComponent(name) + "&mode=" + encodeURIComponent(dMode)
+            }).then((response) => {
+                if (response.status === 200) {
+                    UpdateEmailDistributionsTable();
+                    ok('Режим установлен успешно');
+                } else { err('Ошибка сервера' + response.statusText); }
+            });
+        }
+    }
+    //Создать рассылку
+    async function AddEmailDistribution() {
+        const { value: name } = await Swal.fire({
+            title: 'Введи название рассылки',
+            input: 'text',
+            cancelButtonText: 'Отмена',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                return !value && 'Нужно ввести имя!'
+            }
+        })
+        if (name) {
+            //Запрос
+            fetch('/EmailConfig/AddEmailDistribution', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "name=" + encodeURIComponent(name)
+            }).then((response) => {
+                if (response.status === 200) {
+                    UpdateEmailDistributionsTable();
+                    ok('Рассылка успешно создана: ' + name);
+                } else { err('Ошибка сервера' + response.statusText); }
+            });
+        }
+    }
+    //Удалить рассылку
+    function DeleteEmailDistribution(name) {
+        Swal.fire({
+            title: 'Вы точно ходитет удалить рассылку "' + name + '"?',
+            text: "Данные удалятся безвозвратно!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            cancelButtonText: 'Отмена',
+            confirmButtonText: 'Да, удалить рассылку!'
+        }).then((result) => {
+            if (result.value) {
+                //Запрос
+                fetch('/EmailConfig/DeleteEmailDistribution', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: "name=" + encodeURIComponent(name)
+                }).then((response) => {
+                    if (response.status === 200) {
+                        UpdateEmailDistributionsTable();
+                        ok('Рассылка удалена: ' + name);
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        });
+    }
+    //Создать рассылку
+    async function AddEmail(name) {
+        const { value: email } = await Swal.fire({
+            title: 'Добавление E-mail адреса',
+            input: 'email',
+            showCancelButton: true,
+            inputPlaceholder: 'Введи E-mail адрес'
+        })
+        if (email) {
+            //Запрос
+            fetch('/EmailConfig/AddEmail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "name=" + encodeURIComponent(name) + "&email=" + encodeURIComponent(email)
+            }).then((response) => {
+                if (response.status === 200) {
+                    UpdateEmailDistributionsTable();
+                    ok('Рассылка успешно создана: ' + name);
+                } else { err('Ошибка сервера' + response.statusText); }
+            });
+        }
+    }
+    //Удалить рассылку
+    function DeleteEmail(name, email) {
+        Swal.fire({
+            title: 'Удалить адрес "' + email + '" из рассылки "' + name + '"?',
+            text: "Данные удалятся безвозвратно!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            cancelButtonText: 'Отмена',
+            confirmButtonText: 'Удалить адрес!'
+        }).then((result) => {
+            if (result.value) {
+                //Запрос
+                fetch('/EmailConfig/DeleteEmail', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: "name=" + encodeURIComponent(name) + "&email=" + encodeURIComponent(email)
+                }).then((response) => {
+                    if (response.status === 200) {
+                        UpdateEmailDistributionsTable();
+                        ok('Адрес удален: ' + email);
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        });
+    }
+</script>
+<script>
+    function ok(text) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        Toast.fire({
+            type: 'success',
+            title: text
+        })
+    }
+    function err(text) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        Toast.fire({
+            type: 'error',
+            title: text
+        })
+    }
+</script>

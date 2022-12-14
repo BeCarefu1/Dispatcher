@@ -1,0 +1,66 @@
+﻿@page
+
+@model ActGIPelectroWeb.Pages.SearchModel
+@using GIPManager;
+@{
+    ViewData["Title"] = "Поиск";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Результаты поиска по запросу: @Model.Query</h1>
+
+@if (Model.FoundRegPoints.Count > 0)
+{<div class="panel">
+    <h3 class="ml-1">Найденные ТУ(@Model.FoundRegPoints.Count):</h3>
+    <ul>
+        @{
+            int count = 1;
+            foreach (RegPoint regPoint in Model.FoundRegPoints)
+            {
+        <li>
+            <a href="/RegionPage/@regPoint.Substation.NetRegionId">@regPoint.Substation.NetRegion.Name</a> /
+            <a href="/SubstationPage/@regPoint.Substation.Id">@regPoint.Substation.Name</a> /
+            <a href="/RegPoint/Edit?id=@regPoint.Id">
+                @regPoint.InstallAct.InstallPlaceType.Name @regPoint.InstallAct.InstallPlaceNumber [@regPoint.Device.DeviceType.Name @regPoint.Device.SerialNumber]
+                @if (!regPoint.InstallAct.InstallPlaceType.Name.ToLower().Contains("ру"))
+                {<p>
+                        @regPoint.Consumer.O_Local, ул.@regPoint.Consumer.O_Street, д.@regPoint.Consumer.O_House, корп.@regPoint.Consumer.O_Build, кв.@regPoint.Consumer.O_Flat
+                    </p>
+                }
+            </a>
+        </li>
+                count++;
+                if (count >= 10)
+                {
+                    break;
+                }
+            }
+        }
+    </ul>
+</div>
+}
+
+@if (Model.FoundSubstations.Count > 0)
+{<div class="panel">
+    <h3 class="ml-1">Найденные Подстанции(@Model.FoundSubstations.Count):</h3>
+    <ul>
+        @{
+            int count = 1;
+            foreach (Substation sb in Model.FoundSubstations)
+            {
+                <li><a href="/RegionPage/@sb.NetRegion.Id">@sb.NetRegion.Name</a>/
+                    <a href="/SubstationPage/@sb.Id">
+                     @sb.Name
+                    </a>
+                </li>
+                count++;
+                if (count >= 10)
+                {
+                    break;
+                }
+            }
+        }
+
+    </ul>
+</div>
+}

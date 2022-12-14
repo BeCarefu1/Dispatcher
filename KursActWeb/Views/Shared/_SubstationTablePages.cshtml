@@ -1,0 +1,111 @@
+﻿@model  int
+
+<div id="SubstationTablePage" class="panel">
+    <table class="table table-bordered table-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th>Название</th>
+                <th>Флаги</th>
+                <th>Точки учета</th>
+                <th>Изменения</th>
+                <th>Модем</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="sub in substations">
+                <th class="pl-4 p-2">
+                    <div class="d-flex">
+                        <a v-bind:href="'/SubstationPage/' + sub.Id">
+                            <div class="zoom">
+                                {{sub.Name}}
+                                @if ((User.IsInRole("administrator") || User.IsInRole("consumerDataProvider")))
+                                {
+                                    <span v-if="sub.CountForImportConsumer > 0" class="badge badge-pill badge-primary"> {{sub.CountForImportConsumer}} </span>
+                                }
+                            </div>
+                        </a>
+                    </div>
+                </th>
+                <td class="p-2">
+                    <span v-if="sub.IsInstallationDone" class="badge badge-pill badge-success ml-1" title="СМР выполнен">
+                        <i class="fas fa-tools"></i>
+                    </span>
+                    <span v-else class="badge badge-pill badge-light ml-1" title="СМР НЕ выполнен">
+                        <i class="fas fa-tools text-light"></i>
+                    </span>
+
+                    <span v-if="sub.IsPropSchemeDone" class="badge badge-pill badge-success ml-1" title="Поопорная схема готова">
+                        <i class="fas fa-pencil-ruler"></i>
+                    </span>
+                    <span v-else class="badge badge-pill badge-light ml-1" title="Поопорная схема НЕ готова">
+                        <i class="fas fa-pencil-ruler text-light"></i>
+                    </span>
+
+                    <span v-if="sub.IsBalanceDone" class="badge badge-pill badge-success ml-1" title="Баланс сведен">
+                        <i class="fas fa-balance-scale"></i>
+                    </span>
+                    <span v-else class="badge badge-pill badge-light ml-1" title="Баланс НЕ сведен">
+                        <i class="fas fa-balance-scale text-light"></i>
+                    </span>
+
+                    <span v-if="sub.IsKS2Done" class="badge badge-pill badge-success ml-1" title="КС-2 сделана">
+                        <i class="fas fa-file-alt"></i>
+                    </span>
+                    <span v-else class="badge badge-pill badge-light ml-1" title="КС-2 НЕ сделана">
+                        <i class="fas fa-file-alt text-light"></i>
+                    </span>
+                </td>
+                <td>
+                    <div class="d-flex flex-column">
+                        <div class="d-flex">
+                            {{ sub.CountRegPoints }}
+                            <span v-if="sub.CountUSPD > 0" class="fas fa-window-restore p-1" title="Установлено УСПД"></span>
+                        </div>
+                        <div class="progress" style="height: 7px; opacity:0.65;" v-bind:title="sub.CountRegPointsLinkOk + ' - Связь, '+sub.CountRegPointsAscueChecked+ ' - Добавлено, ' + sub.CountRegPointsAscueOk + ' - Принято'">
+                            <div class="progress-bar" v-bind:style="'background-color:#28a745; width:'+ sub.CountRegPointsAscueOk*100/sub.CountRegPoints +'%;'" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="progress" style="height: 2px; margin-top:1px;" v-bind:title="sub.CountRegPointsLinkOk + ' - Связь, '+sub.CountRegPointsAscueChecked+ ' - Добавлено, ' + sub.CountRegPointsAscueOk + ' - Принято'">
+                            <div class="progress-bar" v-bind:style="'background-color:#51a5ff; width:'+ sub.CountRegPointsAscueChecked*100/sub.CountRegPoints +'%;'"></div>
+                        </div>
+                        <div class="progress" style="height: 2px; margin-top:1px;" v-bind:title="sub.CountRegPointsLinkOk + ' - Связь, '+sub.CountRegPointsAscueChecked+ ' - Добавлено, ' + sub.CountRegPointsAscueOk + ' - Принято'">
+                            <div class="progress-bar" v-bind:style="'background-color:#ffc107; width:'+ sub.CountRegPointsLinkOk*100/sub.CountRegPoints +'%;'"></div>
+                        </div>
+                    </div>
+                    
+                </td>
+                <td class="p-2">
+                    <a v-bind:href="'/SubstationActions/'+sub.Id" target="_blank">
+                        {{ sub.LastChangesFormated }}
+                    </a>
+                </td>
+                <td class="p-2">{{ sub.PhoneNumber }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@* VueJS *@
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+<script>
+    let SubstationTablePage = new Vue({
+        el: '#SubstationTablePage',
+        data: {
+            substations: [],
+            countRows: 99999
+        },
+        methods: {
+            getSubstationsList: function (pageNum) {
+                fetch('/Region/SubstationsList', {
+                    method: 'POST',
+                    headers: { "Content-type": "application/x-www-form-urlencoded" },
+                    //Пока что тут всегда одна большая траница
+                    body: 'id=@Model&pageNum=' + 1 + '&countRows=' + this.countRows
+                })
+                    .then(resp => resp.json())
+                    .then(data => this.substations = data);
+            }
+        },
+    });
+    //Загрузим данные
+    SubstationTablePage.getSubstationsList(0);
+</script>

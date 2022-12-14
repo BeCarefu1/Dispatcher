@@ -1,0 +1,228 @@
+﻿@page "{id}"
+@model ActGIPelectroWeb.Pages.SubstationMaterialsModel
+@{
+    ViewData["Title"] = "SubstationMaterials";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card-body bg-light shadow rounded mb-3">
+    <!-- Navigate -->
+    <div class="d-flex">
+        <div>
+            <a href="/ContractPage/@Model.Contract.Id" class="btn text-dark zoom" data-toggle="tooltip" data-placement="top" title="Контракт">
+                <i class="fas fa-globe-europe"></i> @Model.Contract.Name
+            </a>
+            <i class="fas fa-angle-right mt-1"></i>
+            <a href="/RegionPage/@Model.NetRegion.Id" class="btn text-dark zoom" data-toggle="tooltip" data-placement="top" title="Район">
+                <i class="fas fa-map-marked-alt"></i> @Model.NetRegion.Name
+            </a>
+            <i class="fas fa-angle-right mt-1"></i>
+            <a href="/SubstationPage/@Model.Substation.Id" class="btn text-muted" data-toggle="tooltip" data-placement="top" title="Выбранный объект">
+                <i class="fas fa-sitemap"></i> <span id="sbName1">@Model.Substation.Name</span>
+            </a>
+            <i class="fas fa-angle-right mt-1"></i>
+            <a href="#" class="btn text-muted" data-toggle="tooltip" data-placement="top" title="Материалы по объекту">
+                <i class="fas fa-boxes"></i> <span id="sbName1">Материалы @Model.Substation.Name</span>
+            </a>
+        </div>
+        <div class="ml-auto">
+            <button type="button" class="btn btn-light" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-h"></i>
+            </button>
+            <div class="dropdown-menu shadow-lg">
+                <a href="/SubstationActions/@Model.Substation.Id" class="dropdown-item">История изменений</a>
+                <a href="/SubstationMaterials/@Model.Substation.Id" class="dropdown-item">Материалы</a>
+                <a class="dropdown-item" onclick="RenemaeSubstation()">Переименовать</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" style="color: red;" href="#">Удалить</a>
+            </div>
+        </div>
+    </div>
+    <!-- Title -->
+    <h4 class="card-title display-4 text-dark"><i class="fas fa-boxes"></i> <span id="sbName2">Материалы @Model.Substation.Name</span></h4>
+    <div class="card-text p-3">Точек всего: @Model.Substation.RegPoints.Count()</div>
+    <div class="card-text p-3">@Model.Substation.SubstationState.Name</div>
+</div>
+
+
+<div class="panel p-3 shadow-lg">
+    <h6 style="color:#ff0000">@ViewData["error"]</h6>
+    <h6>Приборы учета</h6>
+    <table class="table table-sm table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Количество</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DeviceTypes)
+            {
+                <tr>
+                    <td>@item.Key</td>
+                    <td>@item.Count()</td>
+                </tr>
+            }
+            @foreach (var item in Model.SubstationDevices)
+            {
+                <tr>
+                    <td>@item.Key</td>
+                    <td>@item.Count()</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<div class="panel p-3 shadow-lg">
+    <h6>КДЕ по отчетам монтажников</h6>
+    <table class="table table-sm table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Количество</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int kde3Count = 0;
+                int kde1Count = 0;
+            }
+            @foreach (var item in Model.KdeTypesMounters)
+            {
+                if(item.Key == "КДЕ-3-2")
+                {
+                    kde3Count += item.Count() / 2;
+                }
+                else
+                {
+                    if(item.Key.Contains("КДЕ-1"))
+                    {
+                        kde1Count += item.Count();
+                    }
+                    else
+                    {
+                        kde3Count += item.Count();
+                    }
+                }
+
+                if (item.Key == "КДЕ-3-2")
+                {
+                    <tr>
+                        <td>@item.Key</td>
+                        <td>@(item.Count() / 2)</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@item.Key</td>
+                        <td>@item.Count()</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td><strong>Итого КДЕ-1</strong></td>
+                <td><strong>@kde1Count</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Итого КДЕ-3</strong></td>
+                <td><strong>@kde3Count</strong></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="panel p-3 shadow-lg">
+    <h6 style="color:#ff0000">@ViewData["error"]</h6>
+    <h6>Комплекты</h6>
+    <table class="table table-sm table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Количество</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Sets)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Volume</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="panel p-3 shadow-lg">
+    <h6>Использованные материалы ВЛ</h6>
+    <table class="table table-sm table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Количество</th>
+                <th>Ед. изм.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Materials)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Volume.ToString("0.###")</td>
+                    <td>@item.Unit</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="panel p-3 shadow-lg">
+    <h6>Использованные материалы ТП</h6>
+    <table class="table table-sm table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Количество</th>
+                <th>Ед. изм.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SBMaterials)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Volume.ToString("0.###")</td>
+                    <td>@item.Unit</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="panel p-3 shadow-lg">
+    <h6>Трансформаторы тока</h6>
+    <table class="table table-sm table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Номинал</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.GetTT)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Unit</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>

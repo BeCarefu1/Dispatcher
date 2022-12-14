@@ -1,0 +1,28 @@
+﻿@model ActGIPelectroWeb.ViewModels.RegionCardViewModel;
+
+
+<div id="card_@Model.Id" class="card shadow m-3" style="width: 21rem; border-radius: 7px;">
+    <a href="/RegionPage/@Model.Id" class="shadow zoom view-cascade @Model.ColorClass">
+        <div class="text-center text-light pt-3" style="width: 21rem;"><h3>@Model.Name</h3></div>
+    </a>
+    @if ((User.IsInRole("administrator") || User.IsInRole("consumerDataProvider")) && Model.CountForImportConsumer > 0)
+    {
+        <div data-toggle="tooltip" data-placement="top" title="Нет данных о @Model.CountForImportConsumer потребителях" style="margin-top: -1.5rem; margin-left:40%; cursor:pointer">
+            <a href="/RegionPage/@Model.Id"><span class="badge badge-pill badge-primary zoom">@Model.CountForImportConsumer</span></a>
+        </div>}
+    <div class="card-body pt-4">
+        <div class="d-flex justify-content-around">
+            <div></div>
+            <div class=" align-self-end">
+                <div style="font-size:11px">ОБЪЕКТЫ</div>
+                <p class="count-rptp">@Model.CountSubstations</p>
+            </div>
+            <p class="count-rptp align-self-end">/</p>
+            <div class="align-self-end">
+                <div style="font-size:11px">ТОЧКИ</div>
+                <p class="count-point pb-2"> @Model.CountRegPoints</p>
+            </div>
+            <div></div>
+        </div>
+    </div>
+</div>

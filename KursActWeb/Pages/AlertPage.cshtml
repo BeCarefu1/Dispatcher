@@ -1,0 +1,141 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.AlertPageModel
+@{
+    ViewData["Title"] = "Уведомления";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between shadow p-3 mb-4 rounded" style="background-color:#6c757d">
+    <h1 style="color:white; margin:0">
+        <i class="fa fa-bell-o" aria-hidden="true"></i> Уведомление
+    </h1>
+    @if (User.IsInRole("administrator") || User.IsInRole("dispatcher") || User.IsInRole("chief_dispatcher") || User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+    {
+
+        <button class="btn btn-primary" onclick="$('#CreateNotifModal').modal('toggle');">Создать бегущую строку</button>
+
+    }
+</div>
+
+<div id="orderdiv">
+@if (Model.NotificationList.Count() != 0)
+{
+    <div class="panel">
+        <table class='zebra-table'>
+            <tr>
+                <th>ТИП</th>
+                <th>ДАТА</th>
+                <th>ВРЕМЯ</th>
+                <th>ОТ</th>
+            </tr>
+            @foreach (var item in Model.NotificationList)
+            {
+                <tr onclick="DeleteNotif('@item.id'); location.href = '@item.link'">
+                    <td>@item.type</td>
+                    <td>@item.date.ToShortDateString()</td>
+                    <td>@item.date.ToShortTimeString()</td>
+                    <td>@item.fromName</td>
+                </tr>
+            }
+
+        </table>
+    </div>
+}
+else
+{
+    <table class="zebra-table">
+        <tr>
+            <th>ТИП</th>
+            <th>ДАТА</th>
+            <th>ВРЕМЯ</th>
+            <th>ОТ</th>
+        </tr>
+    </table>
+    <div class="d-flex justify-content-center">
+        <i class="far fa-check-circle fa-10x m-4"></i>
+    </div>
+    <div class="d-flex justify-content-center">
+        <h3>Нет заявок</h3>
+    </div>
+}
+</div>
+
+<!-- Модальное окно для создание бегущей строки -->
+@if (User.IsInRole("administrator") || User.IsInRole("dispatcher") || User.IsInRole("chief_dispatcher") || User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+{
+    <div class="modal fade" id="CreateNotifModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div id="switchFormId" class="modal-content">
+                <div class='modal-header'>
+                    <h4 class='modal-title'><i class='fa fa-edit' aria-hidden='true'></i> Добавление комментария</h4>
+                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                </div>
+                <div class='modal-body'>
+                    <div class="align-self-end">
+                        <div style="font-size:15px">Начало</div>
+                        <input id="startId" class="form-control" type="datetime-local" style="width: 40%;" />
+                    </div>
+                    <div class="align-self-end">
+                        <div style="font-size:15px">Конец</div>
+                        <input id="endId" class="form-control" type="datetime-local" style="width: 40%; " />
+                    </div>
+                    <div class="align-self-end">
+                        <div style="font-size:15px">Комментарий</div>
+                        <input id="commentId" name="comment" type="text" class="form-control" placeholder="Комментарий ..." />
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="SendNotif()">Отправить</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .div-scroll {
+        overflow-y: auto;
+        -ms-overflow-style: none;
+    }
+
+        .div-scroll::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+</style>
+
+<script>
+
+    function SendNotif() {
+        let body = 'comment=' + encodeURIComponent(document.getElementById('commentId').value) + '&startDate=' + encodeURIComponent(document.getElementById('startId').value) + '&endDate=' + encodeURIComponent(document.getElementById('endId').value);
+        areyousure(body, '/Notification/CreateMarquee', 'Вы уверены?', '', 'CreateNotifModal');
+
+    }
+
+    function UpData() {
+        $("#orderdiv").load(location.href + " #orderdiv");
+        setTimeout(UpData, 3000);
+    }
+    UpData();
+
+
+
+    function DeleteNotif(id) {
+        var xhr = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        xhr.open("POST", '/Notification/CreateNotification?' + body);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(body);
+    }
+
+    function Link(id, link) {
+        var xhr = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        xhr.open("POST", '/Alert/DeleteAlert', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(body);
+        onclick(location.href = link);
+    }
+</script>

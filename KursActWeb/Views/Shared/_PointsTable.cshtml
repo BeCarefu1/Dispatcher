@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ActGIPelectroWeb.ViewModels.RegPointRowViewModel>
+
+@if (Model.Any())
+{
+    <div class="panel">
+        <div class="new-table">
+            <div class="new-thead">
+                <div class="row">
+                    <div class="col">№</div>
+                    <div class="col">Адрес</div>
+                    <div class="col">Место установки</div>
+                    <div class="col">Тип ПУ</div>
+                    <div class="col">Заводской №</div>
+                    <div class="col">Номер тел.</div>
+                    <div class="col">Полнота данных</div>
+                </div>
+            </div>
+            <div class="new-tbody">
+                @{
+                    int n = 0;
+                    foreach (var item in Model)
+                    {
+                        n++;
+                        <a href="/RegPoint/Edit?id=@item.Id" class="row">
+                            <div class="col">@n</div>
+                            <div class="col">@item.Address</div>
+                            <div class="col">@item.InstallPlace</div>
+                            <div class="col">@item.TypePU</div>
+                            <div class="col">@item.SerialNum</div>
+                            <div class="col">@item.PhoneNum</div>
+                            <div class="col">@item.DataFullestPercent</div>
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row justify-content-center d-flex mb-5">
+        <i class="fa fa-times EmptyIcon"></i>
+    </div>
+    <div class="row justify-content-center d-flex EmptyIcon--text">
+        <h2>Отсутствуют точки учёта</h2>
+    </div>
+    <div class="row justify-content-center d-flex EmptyIcon--text">
+        <h3>Добавьте их с помощью кнопки <i class="fa fa-plus EmptyIcon--button"></i> на панели</h3>
+    </div>
+}

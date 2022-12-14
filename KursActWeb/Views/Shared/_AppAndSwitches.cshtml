@@ -1,0 +1,862 @@
+﻿@model ActGIPelectroWeb.ViewModels.AppAndSwitchListViewModels
+
+<div class='modal-header'>
+    <h3 class='modal-title'><i class='fa fa-file-text' aria-hidden='true'></i> ПРОСМОТР ЗАЯВКИ</h3>
+
+    @if (Model.OrderList[0].StatusId == 1)
+    {
+        <div style="margin-left: 30px">
+            <h4 style="margin: 0px;">
+                <i class="fa fa-dot-circle-o" aria-hidden="true" style="color: #00ffff" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ПОДПИСАНТОВ"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ОТКРЫТА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ЗАКРЫТА"></i>
+            </h4>
+        </div>
+    }
+    @if (Model.OrderList[0].StatusId == 2)
+    {
+        <div style="margin-left: 30px">
+            <h4 style="margin: 0px;">
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color:#4cff00" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-dot-circle-o" aria-hidden="true" style="color: #00ffff" title="ЗАЯВКА У ПОДПИСАНТОВ"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ОТКРЫТА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ЗАКРЫТА"></i>
+            </h4>
+        </div>
+    }
+    @if (Model.OrderList[0].StatusId == 3)
+    {
+        <div style="margin-left: 30px">
+            <h4 style="margin: 0px;">
+                <i class="fa fa-times-circle-o" aria-hidden="true" style="color:#ff0000" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ПОДПИСАНТОВ"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ОТКРЫТА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ЗАКРЫТА"></i>
+            </h4>
+        </div>
+    }
+    @if (Model.OrderList[0].StatusId == 4)
+    {
+        <div style="margin-left: 30px">
+            <h4 style="margin: 0px;">
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ПОДПИСАНТОВ"></i> —
+                <i class="fa fa-dot-circle-o" aria-hidden="true" style="color: #00ffff" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ОТКРЫТА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ЗАКРЫТА"></i>
+            </h4>
+        </div>
+    }
+    @if (Model.OrderList[0].StatusId == 5)
+    {
+        <div style="margin-left: 30px">
+            <h4 style="margin: 0px;">
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-times-circle-o" aria-hidden="true" style="color:#ff0000" title="ЗАЯВКА У ПОДПИСАНТОВ"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ОТКРЫТА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true"></i>
+            </h4>
+        </div>
+    }
+    @if (Model.OrderList[0].StatusId == 6)
+    {
+        <div style="margin-left: 30px">
+            <h4 style="margin: 0px;">
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ПОДПИСАНТОВ"></i> —
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-dot-circle-o" aria-hidden="true" style="color: #00ffff" title="ЗАЯВКА ОТКРЫТА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ЗАКРЫТА"></i>
+            </h4>
+        </div>
+    }
+    @if (Model.OrderList[0].StatusId == 7)
+    {
+        <div style="margin-left: 30px">
+            <h4 style="margin: 0px;">
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ПОДПИСАНТОВ"></i> —
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА ОТКРЫТА"></i> —
+                <i class="fa fa-check-circle-o" aria-hidden="true" style="color: #4cff00" title="ЗАЯВКА ЗАКРЫТА"></i>
+            </h4>
+        </div>
+    }
+    @if (Model.OrderList[0].StatusId == 8)
+    {
+        <div style="margin-left: 30px">
+            <h4 style="margin: 0px;">
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ПОДПИСАНТОВ"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА У ДИСПЕТЧЕРА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ОТКРЫТА"></i> —
+                <i class="fa fa-circle-o" aria-hidden="true" title="ЗАЯВКА ЗАКРЫТА"></i>
+            </h4>
+        </div>
+    }
+
+    <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+</div>
+<div id='printAppId' class='modal-body' style="width: 100%;">
+    <div class="tabs">
+        <input type="radio" name="tab-btn" id="tab-btn-App" value="" checked>
+        <label for="tab-btn-App">ЗАЯВКА</label>
+        @foreach (var bp in Model.OrderList[0].Switches)
+        {
+            Model.N++;
+            <style>
+                /* отобразить контент, связанный с вабранной радиокнопкой (input type="radio") */
+                #tab-btn-@Html.Raw(bp.Id):checked ~ #content-@Html.Raw(bp.Id) {
+                    display: block;
+                }
+            </style>
+            <input type="radio" name="tab-btn" id="tab-btn-@Html.Raw(bp.Id)" value="">
+            <label for="tab-btn-@Html.Raw(bp.Id)">БП-@Html.Raw(Model.N) <a href="JavaScript:DelBP('@bp.Id')"><i class="fa fa fa-times"></i></a></label>
+        }
+        @if ((User.IsInRole("dispatcher") || User.IsInRole("administrator") || User.IsInRole("master")) && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4 || Model.OrderList[0].StatusId == 6) && Model.db.Users.FirstOrDefault(s => s.Login == User.Identity.Name).Id == Model.OrderList[0].UserId)
+        {
+            <input type="radio" name="tab-btn" id="tab-btn-Add" value="">
+            <label for="tab-btn-Add"><i class="fa fa-plus-circle"></i></label>
+        }
+        <div id="content-App" style="width: 100%;">
+            <table class="app-table">
+                <tr>
+                    <th>№ заявки</th>
+                    <th>Дата</th>
+                    <th>ОП</th>
+                    <th>Категория</th>
+                    <th>Ремонт</th>
+                    <th>А/Г</th>
+                    <th>Состояние заявки</th>
+                </tr>
+                <tr>
+                    <td id='t1' style="padding-left: 10px; padding-right: 10px;">
+                        @Model.OrderList[0].NambId
+                    </td>
+                    <td style="padding-left: 10px; padding-right: 10px;">
+                        @Model.OrderList[0].Date.ToString("dd.MM.yyyy")
+                    </td>
+                    <td style="padding-left: 10px; padding-right: 10px;">
+                        @Model.OrderList[0].NetRegion
+                    </td>
+                    <td id='t4' style="padding-left: 10px; padding-right: 10px;">
+                        @Model.OrderList[0].Category
+                    </td>
+                    <td id='t5' style="padding-left: 10px; padding-right: 10px;">
+                        @Model.OrderList[0].Repair
+                    </td>
+                    <td id='t6' style="padding-left: 10px; padding-right: 10px;">
+                        @Model.OrderList[0].Ag
+                    </td>
+                    <td style="padding-left: 10px; padding-right: 10px;">
+                        @Model.OrderList[0].State
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan='2'>Объект</th>
+                    <th colspan='4'>Оборудование</th>
+                </tr>
+                <tr>
+                    @if (User.IsInRole("dispatcher") && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4 || Model.OrderList[0].StatusId == 6))
+                    {
+                        <!-- Объекты -->
+                        <td colspan='2'>
+                            <input id="objectEditId" type="text" style="width:100%; height: 100%;" value="@Model.OrderList[0].ObjectName">
+                        </td>
+                        <!-- Оборудование -->
+                        <td colspan='5'>
+                            <input id="equipmenEdittId" type="text" style="width:100%; height: 100%;" value="@Model.OrderList[0].Equipment">
+                        </td>
+                    }
+                    else
+                    {
+                        <!-- Объекты -->
+                        <td colspan='2' style="padding-left: 10px; padding-right: 10px;">
+                            @Model.OrderList[0].ObjectName
+                        </td>
+                        <!-- Объекты -->
+                        <td colspan='5' style="padding-left: 10px; padding-right: 10px;">
+                            @Model.OrderList[0].Equipment
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <th colspan='4'>Содержание работ</th>
+                    <th rowspan='2' colspan='2'>Просимое время</th>
+                    <td id='t10' style="padding-left: 10px; padding-right: 10px;">
+                        <!-- Запрашиваемая дата -->
+                        @Model.OrderList[0].RequestedDate.ToString("dd.MM.yyyy")
+                    </td>
+                </tr>
+                <tr>
+                    @if (User.IsInRole("dispatcher") && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4 || Model.OrderList[0].StatusId == 6))
+                    {
+                        <!-- Описание работ -->
+                        <td rowspan='3' colspan='4' id='t11'>
+                            <textarea id="descriptionEditId" class="form-control" spellcheck="false" style="height:100%; width: 100%;">@Model.OrderList[0].Description</textarea>
+                        </td>
+                    }
+                    else
+                    {
+                        <!-- Описание работ -->
+                        <td rowspan='3' colspan='4' id='t11'>
+                            @if (Model.OrderList[0].Description != null)
+                            {
+                                <textarea id="descriptionEditId" class="form-control" readonly spellcheck="false" style="height:100%; width: 100%; background-color: #ffffff;">@Model.OrderList[0].Description</textarea>
+                            }
+                        </td>
+                    }
+                    <!-- Запрашиваемое время -->
+                    @if (User.IsInRole("dispatcher") && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4 || Model.OrderList[0].StatusId == 6))
+                    {
+                        <td><input id="timeEdit1" type="time" value="@Model.OrderList[0].RequestedStartTime.ToString("HH:mm")"> — <input id="timeEdit2" type="time" value="@Model.OrderList[0].RequestedEndTime.ToString("HH:mm")"></td>
+                    }
+                    else
+                    {
+                        <td>@(Model.OrderList[0].RequestedStartTime.ToString("HH:mm") + " — " + @Model.OrderList[0].RequestedEndTime.ToString("HH:mm"))</td>
+                    }
+                </tr>
+                <tr>
+                    <th colspan='2'>Подпись</th>
+                    <!-- Кто разрешил заявку -->
+                    <td>@Model.OrderList[0].NamePodpisant</td>
+                </tr>
+                <tr><th colspan='2'>Рассмотрена</th><td></td></tr>
+                <tr>
+                    <th colspan='4'>Меры безопасности</th>
+                    <td colspan='3'></td>
+                </tr>
+                <tr>
+                    <!-- Меры безопасности -->
+                    @if (User.IsInRole("dispatcher") && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4 || Model.OrderList[0].StatusId == 6))
+                    {
+                        <td id='t14' rowspan='3' colspan='4'>
+                            <textarea id="securityEditId" class="form-control" spellcheck="false" style="height:100%; width: 100%;">@Model.OrderList[0].Security</textarea>
+                        </td>
+                    }
+                    else
+                    {
+                        <td id='t14' rowspan='3' colspan='4'>
+                            @if (Model.OrderList[0].Security != null)
+                            {
+                                <textarea id="securityEditId" class="form-control" readonly spellcheck="false" style="height:100%; width: 100%; background-color: #ffffff;">@Model.OrderList[0].Security</textarea>
+                            }
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <th colspan='2'>Открыта</th>
+                    <td style="padding-left: 10px; padding-right: 10px">
+                        <!-- Время открытия -->
+                        @if (Model.OrderList[0].OpenTime.ToString("dd.MM.yyyy HH:mm") != "01.01.0001 00:00")
+                        {
+                            <p>@Model.OrderList[0].OpenTime.ToString("dd.MM.yyyy HH:mm")</p>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan='2'>Закрыта</th>
+                    <td style="padding-left: 10px; padding-right: 10px">
+                        <!-- Время закрытия -->
+                        @if (Model.OrderList[0].CloseTime.ToString("dd.MM.yyyy HH:mm") != "01.01.0001 00:00")
+                        {
+                            <p>@Model.OrderList[0].CloseTime.ToString("dd.MM.yyyy HH:mm")</p>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan='7'>Примечания</th>
+                </tr>
+                <tr>
+                    <!-- Примечание -->
+                    @if (User.IsInRole("dispatcher") && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4 || Model.OrderList[0].StatusId == 6))
+                    {
+                        <td colspan='7' style='text-align: left;' id="t18">
+                            <textarea id="notesEditId" class="form-control">@Model.OrderList[0].Notes</textarea>
+                        </td>
+                    }
+                    else
+                    {
+                        <td colspan='7' id="t18">
+                            @if (Model.OrderList[0].Notes != null)
+                            {
+                                <textarea id="notesEditId" class="form-control" readonly spellcheck="false" style="height:100%; width: 100%; background-color: #ffffff;">@Model.OrderList[0].Notes</textarea>
+                            }
+                        </td>
+                    }
+                </tr>
+            </table>
+            <div class="modal-footer">
+                @if (User.IsInRole("dispatcher"))
+                {
+                    if (@Model.OrderList[0].StatusId == 1)
+                    {
+                        <button class='btn btn-primary' onclick="SubscribeApp('@Model.OrderList[0].Id')"><i class="fa fa-pencil-square-o"></i> Подписать</button>
+                        <button class='btn btn-danger' onclick="RefuseApp('@Model.OrderList[0].Id')"><i class='fa fa-ban'></i> Отказать</button>
+                        <button id="savebuttonId" class="btn btn-primary" onclick="SaveNotes()"><i class="fa fa-save"> </i></button>
+                    }
+                    if (@Model.OrderList[0].StatusId == 2)
+                    {
+                        <button id="savebuttonId" class="btn btn-success" onclick="SaveNotes()"><i class="fa fa-save"> Сохранить</i></button>
+                        <button class='btn btn-danger' onclick="RefuseApp('@Model.OrderList[0].Id')"><i class='fa fa-ban'></i> Отказать</button>
+                    }
+                    if (@Model.OrderList[0].StatusId == 4)
+                    {
+                        if (Model.OrderList[0].RequestedDate.ToShortDateString() == DateTime.Now.ToShortDateString())
+                        {
+                            <button class='btn btn-primary' onclick="SubscribeApp('@Model.OrderList[0].Id')"><i class="fa fa-sign-in"></i> Открыть</button>
+                        }
+                        <button id="savebuttonId" class="btn btn-primary" onclick="SaveNotes()"><i class="fa fa-save"> Сохранить</i></button>
+                        <button class='btn btn-danger' onclick="RefuseApp('@Model.OrderList[0].Id')"><i class='fa fa-ban'></i> Отказать</button>
+                    }
+                    if (@Model.OrderList[0].StatusId == 6)
+                    {
+                        <button class='btn btn-danger' onclick="SubscribeApp('@Model.OrderList[0].Id')"><i class="fa fa-stop"> Завершить заявку</i> </button>
+                        <button id="savebuttonId" class="btn btn-success" onclick="SaveNotes()"><i class="fa fa-save"></i></button>
+                        
+                    }
+
+
+                }
+                @if (User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+                {
+                    if (@Model.OrderList[0].StatusId == 2)
+                    {
+                        <button class='btn btn-primary' onclick="SubscribeApp('@Model.OrderList[0].Id')"><i class="fa fa-pencil-square-o"></i> Подписать</button>
+                        <button class='btn btn-danger' onclick="RefuseApp('@Model.OrderList[0].Id')"><i class='fa fa-ban'></i> Отказать</button>
+                    }
+                    if (@Model.OrderList[0].StatusId == 4)
+                    {
+                        <button class='btn btn-danger' onclick="RefuseApp('@Model.OrderList[0].Id')"><i class='fa fa-ban'></i> Отказать</button>
+                    }
+
+                }
+                @if (User.IsInRole("master") && Model.db.Users.FirstOrDefault(s => s.Login == User.Identity.Name).Id == Model.OrderList[0].UserId)
+                {
+                    if (@Model.OrderList[0].StatusId == 1)
+                    {
+                        <button class='btn btn-danger' onclick="CancelApp('@Model.OrderList[0].Id')"><i class='fa fa-ban'></i> Отменить</button>
+                    }
+                }
+                @if (User.IsInRole("administrator"))
+                {
+                    <button class='btn btn-danger' onclick="DeleteApp('@Model.OrderList[0].Id')"><i class="fa fa-trash"></i> Удалить</button>
+                }
+                <button class="btn btn-info bg-blue" onclick="PrintApp('@Model.OrderList[0].Id')"><i class="fa fa-print"></i></button>
+            </div>
+        </div>
+        @foreach (var bp in Model.OrderList[0].Switches)
+        {
+
+            <div id="content-@Html.Raw(bp.Id)">
+                    <table style='width: 100%; color: #000000;'>
+                        <tr>
+                            <td align="center" colspan="2">Бланк Переключений @bp.NumbApp ___</td>
+                        </tr>
+                        <tr>
+                            <td style='width: 50%; color: #ffffff;'>
+                            </td>
+                            <td align='right'>
+                                <p>
+                                    Начало выполнения переключений
+                                </p>
+                                <br />
+                                @if ((User.IsInRole("administrator") || (User.IsInRole("dispatcher") || User.IsInRole("master")) && Model.db.Users.FirstOrDefault(s => s.Login == User.Identity.Name).Id == Model.OrderList[0].UserId) && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4))
+                                {
+                                    if (bp.StartDate.ToShortDateString() != "01.01.0001")
+                                    {
+                                        <input id="SwitchStartId-@bp.Id" type="datetime-local" value='@bp.StartDate.ToString("yyyy-MM-ddThh:mm")' onchange="SaveStartDateOnChange('@bp.Id')" />
+                                    }
+                                    else
+                                    {
+                                        <input id="SwitchStartId-@bp.Id" type="datetime-local" value='@DateTime.Now.ToString("yyyy-MM-ddThh:mm")' onchange="SaveStartDateOnChange('@bp.Id')" />
+
+                                    }
+                                }
+                                else
+                                {
+                                    if (bp.StartDate.ToShortDateString() == "01.01.0001")
+                                    {
+                                        <p>
+                                            ___ ч. ___ мин
+                                            <br />
+                                            Дата «___» ______ 20___
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            @bp.StartDate.ToString("HH") ч. @bp.StartDate.ToString("mm") мин
+                                            <br />
+                                            Дата @bp.StartDate.ToShortDateString();
+                                        </p>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan='2'>
+                                <p>
+                                    <u>@bp.NetRegion</u> ООО «ГИП -Электро»
+                                    <br />
+                                    Объект <u>@bp.ObjectName</u>
+                                    <br />
+                                    Исходная схема @if ((User.IsInRole("administrator") || (User.IsInRole("dispatcher") || User.IsInRole("master")) && Model.db.Users.FirstOrDefault(s => s.Login == User.Identity.Name).Id == Model.OrderList[0].UserId) && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4))
+                                    {
+                                        <input id="SourceSchemaId-@bp.Id" type="text" style="width:100%;" value="@bp.SourceSchema" onchange="SaveSourceSchemeDateOnChange('@bp.Id')"/> 
+                                    }
+                                    else
+                                    {
+                                        if (bp.SourceSchema == "")
+                                        {
+                                            @Html.Raw("____________________________________________________________")
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw(bp.SourceSchema)
+                                        }
+                                    }
+                                    <br /> Задание <u>@bp.Job</u>
+                                    <br />
+                                    Последовательность производства операций при переключении
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table id="contentTable-@bp.Id" class='switch-form-table'>
+                        <tr>
+                            <th width='5%'>П</th>
+                            <th width='5%'>О</th>
+                            <th width="90%">Содержание операции</th>
+                            @if (User.IsInRole("master") && (bp.IdStatusApp == 1 || bp.IdStatusApp == 2 || bp.IdStatusApp == 4 || bp.IdStatusApp == 6))
+                            {
+                                <th></th>
+                            }
+                        </tr>
+                        @foreach (var item in bp.Contents)
+                        {
+                            <tr style="counter-increment: rowNumber;">
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    @if ((User.IsInRole("administrator") || (User.IsInRole("dispatcher") || User.IsInRole("master")) && Model.db.Users.FirstOrDefault(s => s.Login == User.Identity.Name).Id == Model.OrderList[0].UserId) && (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4))
+                                    {
+                                        <input id="input-@item.Id" class="form-control" type="text" value="@item.Content" onchange="SaveContentOnChange('@item.Id')"/>
+                                    }
+                                    else
+                                    {
+                                        @item.Content
+                                    }
+                                </td>
+                                @if (User.IsInRole("master") && (bp.IdStatusApp == 1 || bp.IdStatusApp == 2 || bp.IdStatusApp == 4 || bp.IdStatusApp == 6))
+                                {
+                                    <td>
+                                        <button>
+                                            <i class="fa fa-trash" onclick="DelContent($(this).closest('tr').index(), '@item.Id', '@bp.Id')"></i>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </table>
+                    <table style='width:100%; color: #000000;'>
+                        <tr>
+                            <td width='50%'>
+                                <p>
+                                    Переключение производит:
+                                    <br />
+                                    ___________________________________________
+                                    <br />
+                                    (Подпись, Фамилия И.О, Должность)
+                                </p>
+                            </td>
+                            <td align='right'>
+                                <p>
+                                    Бланк проверил и переключения контролирует:
+                                    <br />
+                                    ___________________________________________
+
+                                    <br />
+                                    (Подпись, Фамилия И.О, Должность)
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>
+                                    Переключения разрешаю:
+                                    <br />
+                                    @if (bp.NameDisp != "")
+                                    {
+                                        <u>@bp.NameDisp @bp.RoleDisp</u>
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("_____________________________________________")
+                                    }
+                                    <br />
+                                    (Подпись, Фамилия И.О, Должность)
+                                </p>
+                            </td>
+                            <td align='right'>
+                                Конец
+                                <br />
+                                @if ((bp.IdStatusApp == 1 || bp.IdStatusApp == 2 || bp.IdStatusApp == 4 || bp.IdStatusApp == 6) && Model.db.Users.FirstOrDefault(s => s.Login == User.Identity.Name).Id == Model.OrderList[0].UserId)
+                                {
+                                    if (bp.EndDate.ToShortDateString() != "01.01.0001")
+                                    {
+                                        <input id="EndSwitchId-@bp.Id" type="datetime-local" value='@bp.EndDate.ToString("yyyy-MM-ddThh:mm")' onchange="SaveEndDateOnChange('@bp.Id')" />
+                                    }
+                                    else
+                                    {
+                                        <input id="EndSwitchId-@bp.Id" type="datetime-local" value='@DateTime.Now.ToString("yyyy-MM-ddThh:mm")' onchange="SaveEndDateOnChange('@bp.Id')" />
+                                    }
+                                }
+                                else
+                                {
+                                    if (bp.EndDate.ToShortDateString() == "01.01.0001")
+                                    {
+                                        <p>___ ч. ___ мин
+                                        <br />
+                                        Дата «___» ______ 20___ </p>
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            @bp.EndDate.ToString("HH") ч. @bp.EndDate.ToString("mm") мин
+                                            <br />
+                                            Дата @bp.EndDate.ToShortDateString();
+                                        </p>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    </table>
+
+                <div class="modal-footer">
+                    @if (User.IsInRole("master") && (bp.IdStatusApp == 1 || bp.IdStatusApp == 2 || bp.IdStatusApp == 4 || bp.IdStatusApp == 6) && Model.db.Users.FirstOrDefault(s => s.Login == User.Identity.Name).Id == Model.OrderList[0].UserId)
+                    {
+                        <div style="border: 1px solid #808080; border-radius: 5px; align-content: flex-end; margin-top: 5px; width: 100%;">
+                            <textarea name="comment" id="contentId-@bp.Id" class="form-control" placeholder="Содержание операции ..."></textarea>
+                            <br />
+                            <button class="btn btn-success" id="addContentId" style="margin: 5px; " onclick="AddContent('@bp.Id')"><i class="fa fa-plus"></i> Добавить</button>
+                            <button class="btn btn-success" onclick="ok('Успешно!');"><i class="fa fa-save"></i> Сохранить</button>
+                            <button class="btn btn-primary" onclick="PrintSwitch('@bp.Id', '@bp.IdApp')"><i class="fa fa-print"></i> </button>
+                        </div>
+
+                    }
+                    @if ((User.IsInRole("administrator") || User.IsInRole("dispatcher")) && (bp.IdStatusApp == 1 || bp.IdStatusApp == 2 || bp.IdStatusApp == 4 || bp.IdStatusApp == 6))
+                    {
+                        <div style="border: 1px solid #808080; border-radius: 5px; align-content: flex-end; margin-top: 5px; width: 100%;">
+                            <textarea name="comment" id="contentId" class="form-control" placeholder="Содержание операции ..."></textarea>
+                            <br />
+                            <button class="btn btn-primary" id="addContentId" style="margin: 5px; " onclick="AddContent('@bp.Id')"><i class="fa fa-plus"></i> Добавить</button>
+                            <button class="btn btn-success" onclick="ok('Успешно!');"><i class="fa fa-save"></i> Сохранить</button>
+                            <button class="btn btn-primary" onclick="PrintSwitch('@bp.Id', '@bp.IdApp')"><i class="fa fa-print"></i> Печать</button>
+                            @if (bp.NameDisp == null)
+                            {
+                                <button class="btn btn-success" onclick="SubscribeSwitchForm('@bp.Id')"><i class="fa fa-edit"></i> РАЗРЕШИТЬ</button>
+                            }
+                        </div>
+
+                    }
+                    else
+                    {
+                        if (bp.NameDisp != "")
+                        {
+                            <button class="btn btn-primary bg-orange" onclick="PrintSwitch('@bp.Id', '@bp.IdApp')"><i class="fa fa-print"></i></button>
+                        }
+                    }
+                    
+                </div>
+
+            </div>
+        }
+        @if (Model.OrderList[0].StatusId == 1 || Model.OrderList[0].StatusId == 2 || Model.OrderList[0].StatusId == 4)
+        {
+            <div id="content-Add" style="width: 100%; height: 100%;">
+                <div class="d-flex flex-wrap pt-3">
+                    <button class="button-add-bp" onclick="AddBP('@Model.OrderList[0].Id')">
+                        <h3><i class="fa fa-plus-circle"></i></h3>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .app-table {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #808080;
+    }
+
+        .app-table th {
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+            border: 1px solid #808080;
+        }
+
+        .app-table td {
+            cursor: pointer;
+            text-align: center;
+            color: #000000;
+            border: 1px solid #808080;
+        }
+
+    .button-add-bp {
+        width: 100px;
+        height: 100px;
+        border: 1px solid #808080;
+        border-radius: 5px;
+        background: #ffffff;
+        margin: 15px;
+    }
+
+        .button-add-bp:hover {
+            box-shadow: 15px;
+        }
+
+    .switch-form-table {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #808080;
+        counter-reset: rowNumber;
+        margin: auto;
+    }
+
+        .switch-form-table th {
+            border: 1px solid #808080;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+        }
+
+        .switch-form-table td {
+            cursor: pointer;
+            text-align: left;
+            color: #000000;
+            border: 1px solid #808080;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+    .tabs {
+        font-size: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+        .tabs > input[type="radio"] {
+            display: none;
+        }
+
+        .tabs > div {
+            /* скрыть контент по умолчанию */
+            display: none;
+            border: 1px solid #e0e0e0;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+
+    /* отобразить контент, связанный с вабранной радиокнопкой (input type="radio") */
+    #tab-btn-App:checked ~ #content-App,
+    #tab-btn-2:checked ~ #content-2,
+    #tab-btn-Add:checked ~ #content-Add {
+        display: block;
+    }
+
+    .tabs > label {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        user-select: none;
+        background-color: #f5f5f5;
+        border: 1px solid #e0e0e0;
+        padding: 2px 8px;
+        font-size: 16px;
+        line-height: 1.5;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+        cursor: pointer;
+        position: relative;
+        top: 1px;
+    }
+
+        .tabs > label:not(:first-of-type) {
+            border-left: none;
+        }
+
+    .tabs > input[type="radio"]:checked + label {
+        background-color: #fff;
+        border-bottom: 1px solid #fff;
+    }
+</style>
+
+
+<script>
+    // --- Изменение времени начало БП ---
+    function SaveStartDateOnChange(id) {
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id) + "&date=" + encodeURIComponent(document.getElementById("SwitchStartId-" + id ).value);
+        request.responseType = "json";
+        request.open("GET", "/Application/SaveStartDateOnChange" + "?" + body);
+        request.send(body);
+    }
+
+    // --- Изменение времени конец БП ---
+    function SaveEndDateOnChange(id) {
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id) + "&date=" + encodeURIComponent(document.getElementById("EndSwitchId-" + id).value);
+        request.responseType = "json";
+        request.open("GET", "/Application/SaveEndDateOnChange" + "?" + body);
+        request.send(body);
+    }
+
+    // --- Изменение Схемы ---
+    function SaveSourceSchemeDateOnChange(id) {
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id) + "&scheme=" + encodeURIComponent(document.getElementById("SourceSchemaId-" + id).value);
+        request.responseType = "json";
+        request.open("GET", "/Application/SaveSourceSchemeDateOnChange" + "?" + body);
+        request.send(body);
+    }
+
+    // --- Сохранение изменений контента
+    async function SaveContentOnChange(id) {
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id) + "&text=" + encodeURIComponent(document.getElementById("input-" + id).value);
+        request.responseType = "json";
+        request.open("GET", "/Application/SaveContentOnChange" + "?" + body);
+        await request.send(body);
+    }
+
+    // --- Сохраниние изменений ---
+    function SaveNotes() {
+        let body = 'id=' + encodeURIComponent('@Model.OrderList[0].Id')
+            + '&objects=' + encodeURIComponent(document.getElementById('objectEditId').value)
+            + '&equipment=' + encodeURIComponent(document.getElementById('equipmenEdittId').value)
+            + '&description=' + encodeURIComponent(document.getElementById('descriptionEditId').value)
+            + '&security=' + encodeURIComponent(document.getElementById('securityEditId').value)
+            + '&time1=' + encodeURIComponent(document.getElementById('timeEdit1').value)
+            + '&time2=' + encodeURIComponent(document.getElementById('timeEdit2').value)
+            + '&note=' + encodeURIComponent(document.getElementById('notesEditId').value);
+        areyousure(body, '/Application/EditApplication', 'Сохранить изменения?', '', '');
+    }
+
+    var content = "";
+
+    // --- Создать БП ---
+    function AddBP(id) {
+        fetch('/Application/CreateSwitchForm/' + id).then(r => r.text())
+            .then(data => {
+                //document.getElementById('bodyApp')
+
+                $('#bodyApp').html(data);
+            });
+    }
+
+    // --- Удалить БП ---
+    function DelBP(id) {
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success m-3',
+                cancelButton: 'btn btn-danger m-3'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Вы действительно хотите удалить БП?',
+            icon: 'warning',
+            confirmButtonText: 'Да!',
+            cancelButtonText: 'Нет!',
+            showCancelButton: true,
+            reverseButtons: true
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.confirm) {
+                fetch('/Application/DelSwitchForm/' + id).then(r => r.text())
+                    .then(data => {
+                        $('#bodyApp').html(data);
+                    });
+            }
+        })
+        
+    }
+
+    // --- Добавить
+    async function AddContent(id) {
+        content = document.getElementById('contentId-' + id).value;
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id) + "&content=" + encodeURIComponent(content);
+        request.responseType = "json";
+        request.open("GET", "/Application/AddContent" + "?" + body);
+        request.onload = function () {
+            document.getElementById('contentTable-' + id).innerHTML += '<tr style="counter-increment: none"><td></td><td></td><td><input id="input-' + this.response + '" class="form-control" type="text" value="' + content + '" onchange="SaveContentOnChange(' + this.response + ')" /></td><td><i class="fa fa-trash" onclick="DelContent($(this).closest("tr").index(), ' + this.response + ')"></i></td></tr>';
+            
+        }
+        await request.send(body);
+        document.getElementById('contentId-' + id).value = "";
+    }
+
+
+    function DelContent(id, idContent, idBP) {
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(idContent);
+        request.responseType = "json";
+        request.open("POST", "/Application/DelContent" + "?" + body);
+        request.onload = function () {
+            if (this.response == 'ok') {
+                document.getElementById('contentTable-' + idContent).deleteRow(id);
+                //$("#contentTable-" + idContent).load(location.href + " #contentTable-" + idContent);
+                //document.getElementById('contentTable').innerHTML += '<tr><td></td><td></td><td>' + content + '</td></tr>';
+            }
+            else {
+                err(this.response);
+            }
+        }
+        request.send(body);
+
+
+    }
+
+    function SubscribeSwitchForm(id) {
+        var body = "id=" + encodeURIComponent(id);
+        areyousure(body, '/Application/SubscribeSwitchForm', 'Вы уверены?', '');
+    }
+
+
+    function BackAppTable(id) {
+        fetch('/Application/GetAppTable/' + id).then(r => r.text())
+            .then(data => {
+                $('#bodyApp').html(data);
+            });
+    }
+
+</script>
+
+<script>
+
+    function PrintApp(id) {
+        fetch('/Application/GetAppPrintTable/' + id).then(r => r.text())
+            .then(data => {
+                $('#bodyApp').html(data);
+                BackAppTable(id);
+            });
+    }
+
+    function PrintSwitch(id, idApp) {
+        alert(idApp);
+        fetch('/Application/GetSwitchPrintTable/' + id).then(r => r.text())
+            .then(data => {
+                $('#bodyApp').html(data);
+                BackAppTable(idApp);
+            });
+    }
+</script>

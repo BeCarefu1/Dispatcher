@@ -1,0 +1,75 @@
+﻿@page "{id}"
+@model ActGIPelectroWeb.Pages.ContractModel
+@{
+    //ViewData["Title"] = Model.Name;
+    ViewData["Title"] = "Учет энергоресурсов";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .view-cascade {
+        margin-left: 1%;
+        margin-right: 1%;
+        margin-top: -1.25rem;
+        border-radius: 7px;
+        height: 70px;
+    }
+
+    .count-rptp {
+        font-size: 3.5rem;
+        font-weight: 300;
+        line-height: 1.2;
+        margin: 0;
+        color: black;
+    }
+
+    .count-point {
+        font-size: 1.8rem;
+        font-weight: 300;
+        line-height: 1.2;
+        margin: 0;
+        color: black;
+    }
+</style>
+<link rel="stylesheet" href="~/css/loader.css"/>
+
+<div class="loaderWrapper" style="display: none;">
+    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+</div>
+<div class="card-body bg-light shadow rounded mb-3">
+    <!-- Navigate -->
+    <!--<a href="#" class="btn text-muted" data-toggle="tooltip" data-placement="top" title="Выбранный контракт"> -->
+    <!--<i class="fas fa-globe-europe"></i> Model.Name Убрала символ собака перед Model.Name-->
+    <!--</a> -->
+    <!-- Title -->
+    <h4 class="card-title display-3 text-dark">@*<i class="fas fa-globe-europe"></i>*@ @Model.Name</h4>
+    <div class="card-text p-3">@Model.Description</div>
+    <!-- Progress -->
+    <div class="progress md-progress" style=" height: 20px;" id="progr">
+        <div class="progress-bar bg-success 6" role="progressbar" style="width: @Model.PercentAscueOk%;" data-toggle="tooltip" data-placement="top" title="Принято в ПО АСКУЭ: @Model.CountAscueOk">@Model.CountAscueOk</div>
+        <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.PercentAscueChecked%;" data-toggle="tooltip" data-placement="top" title="Проверено для ПО АСКУЭ: @Model.CountAscueChecked">@Model.CountAscueChecked</div>
+        <div class="progress-bar bg-warning" role="progressbar" style="width: @Model.PercentLinkOk%;" data-toggle="tooltip" data-placement="top" title="Связь проверена: @Model.CountLinkOk">@Model.CountLinkOk</div>
+        <div class="progress-bar bg-secondary" role="progressbar" style="width: @Model.PercentOther%;" data-toggle="tooltip" data-placement="top" title="Остальные: @Model.CountOther">@Model.CountOther</div>
+    </div>
+    <!--<div class="collapse-content">
+            <hr class="p-0">
+            <a class="btn " data-toggle="collapse" href="#collapseStats" aria-expanded="false" aria-controls="collapseStats">Сводная статистика</a>
+            <div class="collapse" id="collapseStats">
+                -
+            </div>
+        </div> -->
+</div>
+    <div class="d-flex flex-wrap pt-3">
+        @{
+            foreach (var item in Model.RegionsCardList)
+            {
+                @await Html.PartialAsync("_RegionCard", item)
+            }
+        }
+    </div>
+
+
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>

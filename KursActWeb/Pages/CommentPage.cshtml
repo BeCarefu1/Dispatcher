@@ -1,0 +1,362 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.CommentPageModel
+@{ViewData["Title"] = "1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using ActGIPelectroWeb.Models
+@using System.Web
+
+
+<body style="height:100%;">
+    <div style="width: 100%; height:100%">
+        <div class="d-flex justify-content-between shadow p-3 mb-4 rounded" style="background-color:#6c757d">
+            <h1 style="color:white; margin:0">
+                <i class="fas fa-list-alt"></i> Комментарий
+            </h1>
+
+            <button class="btn btn-primary" style="background-color:deepskyblue;" onclick="OpenLeftMenu()">Фильтр</button>
+
+
+        </div>
+        <table style="width:124%; height:650px; margin-left: -24%;">
+            <tr>
+                <td width="19%" style="vertical-align: top;">
+                    <div id="lmenu" class="left-filter" style="visibility: hidden;">
+                        <table style="width:100%">
+                            <tr>
+                                <td colspan="2"><h5 align="center">Дата</h5></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><h6 style="margin-left:5px">От:</h6></td><td align="center"><input type="date" class="form-control" id="sDate" style="width:80%" /></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><h6 style="margin-left:5px">До:</h6></td><td align="center"><input type="date" class="form-control" id="eDate" style="width:80%" /></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><hr /></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center"><button class="btn btn-primary" onclick="Filter()">Применить</button></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="center"><button class="btn btn-primary" onclick="DropFilter()">Сбросить</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+                <td width="140%">
+                    <div class="panel" style="margin-bottom:0px">
+                        <table class="new-table" style="width:100%">
+                            <tr class="new-thead row">
+                                <td id="s0" class="col" style="cursor: pointer;" onclick="sortTable(0)">Событие</td>
+                                <td id="s1" class="col" style="cursor: pointer;" onclick="sortTable(1)">Пользователь</td>
+                                <td id="s2" class="col" style="cursor: pointer;" onclick="sortTable(2)">Дата/Время</td>
+                                <td id="s3" class="col" style="cursor: pointer;" onclick="sortTable(3)">Комментарий</td>
+                                <td id="s4" class="col" style="cursor: pointer;" onclick="sortTable(4)">Статус комментария</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="commentdiv" class="panel div-scroll" style="height:650px; margin-bottom:-10px; overflow-y:scroll" onscroll="SavePositionScroll()">
+                        <table class="new-table" style="width:100%;" id="myTable">
+                            @foreach (var item in Model.CommentDispatcherList.OrderByDescending(s => s.Date))
+                            {
+                                <tr class="new-tbody row" style="border-bottom: 1px solid #808080">
+                                    <td class="col">@item.Event</td>
+                                    <td class="col">@Html.Raw(item.User)</td>
+                                    <td class="col">@item.Date</td>
+                                    <td class="col">@Html.Raw(item.Comment)</td>
+                                    <td class="col">@item.StatusComment</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <div class="div-create">
+                        <table style="height:100%; width:95%; margin-bottom:5px;" align="center">
+                            <tr>
+                                <td style="width:90%" align="center">
+                                    <textarea name="text" id="stext" class="form-control chattext" placeholder="Комментарий"></textarea>
+                                </td>
+                                <td style="width:10%" align="center">
+                                    <button class="btn btn-primary" style="margin-left: 15px;" onclick="CreateComment()">Отправить</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    @*<div class="div-send">
+            <table style="width: 98%; height: 100%; margin: 15px 15px 15px 15px; border: 2px solid #808080">
+                <tr>
+                    <td style="width:90%"><textarea id="scomment" class="comment" name="comment" cols="40" rows="9" placeholder="Комментарий"></textarea></td>
+                    <td style="width:10%"><button class="btn btn-primary" onclick="CreateComment()">Отправить</button></td>
+                </tr>
+            </table>
+        </div>*@
+                </td>
+                
+            </tr>
+        </table>
+    </div>
+
+    @*Создать комментарий
+    <div class="modal fade" id="CreateCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div style="width: 1600px;">
+                <div class="modal-content">
+                @{
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="idAccepted">Создать комментарий</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 class="col" align="center">Комментарий</h6>
+                        <textarea id="scomment" name="comment" cols="40" rows="9"></textarea>
+                        <div class="modal-footer">
+                        </div>
+                    </div> 
+                 }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    *@
+</body>
+
+<script>
+    //let position = '@Model.positionScroll';
+    //
+    //alert(position);
+
+    function SavePositionScroll() {
+        //position = $("#commentdiv").scrollTop();
+        valScroll = $("#commentdiv").scrollTop();
+        //alert(valScroll);
+        //var xhr = new XMLHttpRequest();
+        //var body = "valScroll=" + encodeURIComponent(valScroll);
+        //xhr.open("POST", '/CommentDispatcher/GetScrollPosition', true);
+        //xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        //xhr.send(body);
+    }
+
+    //function UpData() {
+    //    fetch('/CommentDispatcher/SetScrollPosition').then(r => r.json()).then(data => {
+    //        //let html = "";
+    //        //html += "<a href=" + data + " style='margin-left: 20px;' target='_blank'>" + "Скачать" + "</a>"
+    //        position = data;
+    //        //$('#id_downland').html(html);
+    //    });
+    //    //position = '@Model.positionScroll';
+    //    alert('ok');
+    //    //position = $("#commentdiv").scrollTop();
+    //    alert(position);
+    //    //$("#commentdiv").load(" #commentdiv");
+    //    setTimeout(UpData, 3000);
+    //}
+    //
+    //UpData();
+
+    //function UpData() {
+    //    var scrollTarget = $('#commentdiv');
+    //    var pos = scrollTarget.scrollTop();
+    //    alert(pos);
+    //
+    //    scrollTarget.load(function () {
+    //        alert(pos);
+    //        $("#commentdiv").load(location.href + " #commentdiv");
+    //        $('#commentdiv').scrollTop(pos);
+    //    }););
+    //
+    //
+    //    alert("1234");
+    //    //$("#commentdiv").load(location.href + " #commentdiv");
+    //    setTimeout(UpData, 3000);
+    //
+    //}
+    //UpData();
+
+    function sortTable(n) {
+        for (i = 0; i < 5; i++) {
+                if (i === n) {
+                    document.getElementById('s' + i).style.color = "#ff4500";
+                }
+                else {
+                    document.getElementById('s' + i).style.color = "#ffffff";
+                }
+            }
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("myTable");
+        switching = true;
+        dir = "asc";
+        while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 0; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir == "asc") {
+                        if (n === 0) {
+                            if (parseInt(x.innerHTML.toLowerCase()) > parseInt(y.innerHTML.toLowerCase())) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                    else if (dir == "desc") {
+                        if (n === 0) {
+                            if (parseInt(x.innerHTML.toLowerCase()) < parseInt(y.innerHTML.toLowerCase())) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                        else {
+                            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /* Если переключатель был отмечен, сделайте переключатель
+                    и отметьте, что переключатель был сделан: */
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    // Каждый раз, когда выполняется переключение, увеличьте это число на 1:
+                    switchcount++;
+                } else {
+                    /* Если переключение не было сделано и направление "asc",
+                    установите направление на "desc" и снова запустите цикл while. */
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        //true = false;
+
+    }
+</script>
+
+<script>
+    
+    var comment = "";
+    function CreateComment() {
+        comment = document.getElementById("stext").value;
+        if (comment === "") {
+            alert("Нет комментария");
+            return;
+        }
+        var xhr = new XMLHttpRequest();
+        var body = "comment=" + encodeURIComponent(comment);
+        xhr.open("POST", '/CommentDispatcher/CreateComment', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(body);
+        //$('#CreateCommentModal').modal('toggle');
+        $("#commentdiv").load(location.href + " #commentdiv");
+        //location.reload();
+        ok('Комментарий отправлен');
+        $("#commentdiv").load(location.href + " #commentdiv");
+        
+    }
+
+    function Filter() {
+        var xhr = new XMLHttpRequest();
+        var body = "sdate=" + encodeURIComponent(document.getElementById('sDate').value) + "&edate=" + encodeURIComponent(document.getElementById('eDate').value);
+        xhr.open("POST", '/CommentDispatcher/Filter', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(body);
+        $('#FilterModal').modal('toggle');
+        $("#commentdiv").load(location.href + " #commentdiv");
+    }
+
+    function DropFilter() {
+        var xhr = new XMLHttpRequest();
+        var body = "sdate=" + encodeURIComponent(new Date("01.01.0001 00:00:00")) + "&edate=" + encodeURIComponent(new Date("01.01.0001 00:00:00"));
+        xhr.open("POST", '/CommentDispatcher/Filter', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(body);
+        $('#FilterModal').modal('toggle');
+        $("#commentdiv").load(location.href + " #commentdiv");
+    }
+
+    var divVisible = false;
+
+    function OpenLeftMenu() {
+        if (divVisible === false) {
+            document.getElementById('lmenu').style.visibility = 'visible';
+            divVisible = true;
+            return;
+        }
+        if (divVisible === true) {
+            document.getElementById('lmenu').style.visibility = 'hidden';
+            divVisible = false;
+            return;
+        }
+        
+    }
+</script>
+
+<style>
+    .chattext {
+        width: 100%;
+        height: 90%;
+        border-radius: 20px;
+        margin-top: 15px;
+        border: 1px solid #A9A9A9;
+        margin-left: 2px;
+    }
+
+    .div-create {
+        width: 100%;
+        height: 200px;
+        background: #ffffff;
+    }
+    
+    
+    z.comment {
+        width: 100%;
+        height: 100px;
+        
+        border-radius: 5px;
+        
+    }
+
+    .div-scroll {
+        overflow-y: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .div-send {
+        width: 100%;
+        height: 150px;
+        background: #ffffff;
+        border-top: 2px solid #808080;
+
+    }
+
+        .div-scroll::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+    .div-filter {
+        width: 40%;
+        height: 150px;
+        border-radius: 15px;
+        background: #ffffff;
+    }
+
+    .left-filter {
+        width: 100%;
+        background: #ffffff;
+        border-radius: 10px;
+    }
+
+    /*ползунки*/
+    
+
+</style>

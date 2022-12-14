@@ -1,0 +1,582 @@
+﻿@using ActGIPelectroWeb.ViewModels
+@model ContractCardViewModel
+
+
+<!-- Стили главного экрана -->
+<style>
+    .bg-conteiner {
+        width: 100%;
+        height: 85vh;
+    }
+
+    .side-panel {
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 15px #A9A9A9;
+        padding-left: 10%;
+        padding-top: 10%;
+        overflow:auto;
+    }
+
+        .side-panel:hover {
+            box-shadow: 0 0 25px #A9A9A9;
+        }
+
+        .side-panel a:hover {
+            color: #ff6a00;
+        }
+
+    .standart-panel {
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        position: relative;
+        border: 2px solid #D4D4D4;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #A9A9A9;
+    }
+
+        .standart-panel:hover {
+            color: #ff6a00;
+            box-shadow: 0 0 25px #A9A9A9;
+        }
+
+    .app-table {
+        width: 100%;
+        height: 100%;
+        border: 1px solid #808080;
+    }
+
+        .app-table th {
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+            border: 1px solid #808080;
+        }
+
+        .app-table td {
+            cursor: pointer;
+            text-align: center;
+            color: #000000;
+            border: 1px solid #808080;
+        }
+
+    .meteo-panel {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        box-shadow: 0 0 15px #A9A9A9;
+    }
+
+        .meteo-panel:hover {
+            box-shadow: 0 0 25px #A9A9A9;
+        }
+
+    .calendar-panel {
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        position: relative;
+        border: 2px solid #D4D4D4;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #A9A9A9;
+    }
+
+        .calendar-panel:hover {
+            box-shadow: 0 0 25px #A9A9A9;
+        }
+
+
+</style>
+
+
+@*if ((Model.EndDate != Convert.ToDateTime("01.01.0001 00:00:00") || Model.ChangeList.Count() == 0) && (User.IsInRole("dispatcher")))*@
+@if ((Model.EndDate == Convert.ToDateTime("01.01.0001 00:00:00") && Model.LoginUser == null) && (User.IsInRole("dispatcher")))
+{
+<!-- Принятие смены диспетчером -->
+<script>
+    $(document).ready(function () {
+        $('#AcceptModal').modal('toggle');
+    });
+</script>
+}
+
+@if (Model.LoginUser != null && (Model.LoginUser != User.Identity.Name && Model.EndDate == Convert.ToDateTime("01.01.0001 00:00:00") && User.IsInRole("dispatcher")))
+{
+<!-- Выкидывает диспетчера обратно в аутентификацию, если смена не сдана другим диспетчером -->
+<script>
+    $(document).ready(function () {
+        alert('Смена не сдана диспетчером!');
+        location.href = "/Account/Logout";
+    });
+</script>
+}
+
+<main class="main js-main">
+<table class="bg-conteiner">
+  
+         
+            <!-- Виджет погоды -->
+                    
+       
+            <!-- Оперативный журнал -->
+           
+            <!-- График дежурств -->
+           
+            <!-- Документы -->
+          
+       
+    
+    <tr>
+        <td rowspan="3" colspan="3" style="padding: 5px;">
+            <div class="calendar-panel" style="padding: 2%;">
+                <!-- Шапка календаря -->
+                <table class="head-calendar" style="width: 100%; height: 5%;">
+                    <tr>
+                        <td style="width:5%;" align="left">
+                            <!-- Месяц назад -->
+                            <div id="id_left"><img src='~/images/vector-left.png' width="15" height="15" style="cursor:pointer" onclick="GetMonth('back')" /></div>
+                        </td>
+                        <td style="width:30%;">
+                        </td>
+                        <td style="width:30%;" align="center">
+                            <!-- Месяц и Год -->
+                                <p id="id_month" style="color: #334155; font-weight: bold;font-size:20px; text-transform: uppercase; margin:0px 500px 0px 0px;"></p>
+                        </td>
+                     @*   <td style="width:30%;" align="right">
+                            <!-- Создание событий -->
+                            @if (User.IsInRole("dispatcher") || User.IsInRole("administrator") || User.IsInRole("chief_dispatcher") || User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+                            {
+                                <div><a href="JavaScript:OpenCreateEventModal()" class="create-event"><i class="fa fa-plus"></i> СОЗДАТЬ СОБЫТИЕ</a></div>
+                            }
+                        </td>
+                            *@
+                        <td style="width: 5%; " align="right">
+                            <!-- Месяц вперед -->
+                            <div id="id_right"><img src="~/images/vector-right.png" width="15" height="15" style="cursor:pointer" onclick="GetMonth('next')" /></div>
+                        </td>
+                    </tr>
+                </table>
+                <!-- Стили календаря -->
+                <style>
+
+                        .bg-conteiner {
+                            position: relative;
+                            max-width: 1450px;
+                        }
+                    .create-event {
+                        cursor: pointer;
+                            color: #d18d3f;
+                            font-weight: bold;
+                    }
+
+                        .create-event:hover {
+                            color: #ff6a00;
+                        }
+                    .app-body {
+                            background-color: #d18d3f;
+                            text-align: center;
+                        border: 1px solid #808080;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        color: #ffffff;
+                        margin: 1px;
+                    }
+                        .app-body:hover {
+                            background-color: #ffffff;
+                            color: #ff6a00;
+                        }
+
+                    .event-body {
+                        background-color: #b200ff;
+                        text-align: center;
+                        border: 1px solid #808080;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        color: #ffffff;
+                        margin: 1px;
+                    }
+                        .event-body:hover {
+                            background-color: #ffffff;
+                            color: #ff6a00;
+                        }
+
+                    .phonegram-body {
+                            background-color: #d18d3f;
+                            text-align: center;
+                        border: 1px solid #808080;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        color: #ffffff;
+                        margin: 1px;
+                    }
+
+                        .phonegram-body:hover {
+                            background-color: #ffffff;
+                            color: #ff6a00;
+                        }
+                </style>
+                <!-- Календарь -->
+                <div id='calendar' style='width: 100%; height: 95%; border-radius:15px;'></div>
+            </div>
+        </td>
+        
+            <!-- База заявок -->
+           
+            <!-- Архив заявок -->
+           
+            <!-- Учёт энергоресурсов -->
+           
+
+@*Список событий или заявок*@
+<div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-list-ol" aria-hidden="true"></i> Список событий</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="idModel">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Содержание события и телефонограммы*@
+<div class="modal fade" id="infoEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-list-ol" aria-hidden="true"></i> ИНФОРМАЦИЯ </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="idInfo" style="max-width:100%;">
+
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+@if (User.IsInRole("dispatcher") || User.IsInRole("administrator") || User.IsInRole("chief_dispatcher") || User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+{
+    <!-- Стили загрузки -->
+<style>
+    .input-file {
+        background: #fff; /* Цвет фона */
+        padding: 50px; /* Поля вокруг текста */
+        box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */
+        height: 200px;
+        width: 100%;
+        font-size: 100px;
+            color: #d18d3f;
+        text-align: center;
+        cursor: pointer;
+    }
+
+        .input-file:hover {
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Параметры тени */
+        }
+
+    .tabs {
+        font-size: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .tabs > input[type="radio"] {
+        display: none;
+    }
+
+    .tabs > div {
+        /* скрыть контент по умолчанию */
+        display: none;
+        border: 1px solid #e0e0e0;
+        padding: 10px 15px;
+        font-size: 16px;
+    }
+
+    /* отобразить контент, связанный с вабранной радиокнопкой (input type="radio") */
+    #tab-btn-1:checked ~ #content-1,
+    #tab-btn-2:checked ~ #content-2 {
+        display: block;
+    }
+
+    .tabs > label {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        user-select: none;
+        background-color: #f5f5f5;
+        border: 1px solid #e0e0e0;
+        padding: 2px 8px;
+        font-size: 16px;
+        line-height: 1.5;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+        cursor: pointer;
+        position: relative;
+        top: 1px;
+    }
+
+        .tabs > label:not(:first-of-type) {
+            border-left: none;
+        }
+
+    .tabs > input[type="radio"]:checked + label {
+        background-color: #fff;
+        border-bottom: 1px solid #fff;
+    }
+</style>
+
+<!-- Модальное окно добавления "Схемы операций" -->
+
+
+@*
+ <div class="modal fade" id="AddOperationalSchemeModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-refresh" aria-hidden="true"></i> Обновить оперативную схему</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="activeArea">
+                    <label for="upload">
+                        ЗАГРУЗИТЬ ОПЕРАТИВНУЮ СХЕМУ
+                        <i class="fas fa-file-upload input-file"></i>
+                        <input id="upload" type="file" onchange="handleFiles(this.files)" class="input-file" style="display:none" accept="application/vnd.visio" />
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+*@
+
+<!-- Модальное окно "Создание события"  -->
+@* <div class="modal fade" id="CreateEventModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-cr" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-plus-square" aria-hidden="true"></i> Создание события или телефонограммы</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="tabs">
+                    <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
+                    <label for="tab-btn-1">СОБЫТИЯ</label>
+                    <input type="radio" name="tab-btn" id="tab-btn-2" value="">
+                    <label for="tab-btn-2">ТЕЛЕФОНОГРАММА</label>
+                    <div id="content-1">
+                        <input id="titleId" type="text" class="form-control" placeholder="Заголовок ...">
+                        <br />
+                        <label>Начало</label>
+                        <input id="startDateId" type="datetime-local" class="form-control" />
+                        <br />
+                        <label>Конец</label>
+                        <input id="endDateId" type="datetime-local" class="form-control" />
+                        <br />
+                        <textarea id="descriptionId" class="form-control" placeholder="Описание ..."></textarea>
+                        <br />
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" onclick="CreateEvent()">Создать</button>
+                        </div>
+                    </div>
+                    <div id="content-2">
+                        <label>Кому</label>
+                        <select id="UserDoId" class="js-states form-control" style="width: 100%;">
+                            @foreach (var role in Model.RoleList)
+                            {
+                                @if(role.UserList.Count() != 0)
+                                { 
+                                    <optgroup label="@role.Name">
+                                        @foreach (var user in role.UserList)
+                                        {
+                                            <option value="@user.Id">@user.Name</option>
+                                        }
+                                    </optgroup>
+                                }
+                            }
+                        </select>
+                        <script type="text/javascript">
+                            $('select').select2();
+                        </script>
+                        <style>
+                            .js-states {
+                                width: 200px;
+                            }
+                        </style>
+                        <br />
+                        <label>Дата</label>
+                        <input id="dateId" class="form-control" type="datetime-local"/>
+                        <br />
+                        <label>Тема</label>
+                        <input id="temaId" type="text" class="form-control" placeholder="Тема ..."/>
+                        <br />
+                        <label>Сообщение</label>
+                        <textarea id="textId" class="form-control" placeholder="Сообщение ..."></textarea>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" onclick="CreatePhonegram()">Создать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+*@
+<script>
+    // *** Создать телефонограмму ***
+    function CreatePhonegram() {
+        areyousure("userId=" + encodeURIComponent(document.getElementById("UserDoId").value) + "&date=" + encodeURIComponent(document.getElementById("dateId").value) + "&tema=" + encodeURIComponent(document.getElementById("temaId").value) + "&text=" + encodeURIComponent(document.getElementById("textId").value), "Calendar/CreatePhonegram", "Создать телефонограмму?", "", "CreateEventModel");
+    }
+
+    // *** Открытие модального окна добавления схемы ***
+    function OpenOperationalSchemeModal() {
+        $('#AddOperationalSchemeModel').modal('toggle');
+    }
+
+    // *** добавление схемы ***
+    function handleFiles(files) {
+        let file = files[0];
+        let req = new XMLHttpRequest();
+        let formData = new FormData();
+        formData.append("file", file);
+        req.onreadystatechange = function () {
+
+        }
+        req.onload = function () {
+            if (this.response == 'ok') {
+                ok('Успешно!');
+                $('#AddOperationalSchemeModel').modal('toggle');
+            }
+            else {
+                err(this.response);
+            }
+        }
+        req.open("POST", '/Document/AddOperationalScheme');
+        req.send(formData);
+
+    }
+
+    // *** Открытие модального окна "Создание события" ***
+    function OpenCreateEventModal() {
+        $('#CreateEventModel').modal('toggle');
+    }
+
+    // *** Создание События ***
+    function CreateEvent() {
+        var title = document.getElementById('titleId').value;
+        var startDate = document.getElementById('startDateId').value;
+        var endDate = document.getElementById('endDateId').value;
+        var description = document.getElementById('descriptionId').value;
+        let body = 'title=' + encodeURIComponent(title) + '&startDate=' + startDate + '&endDate=' + encodeURIComponent(endDate) + '&description=' + encodeURIComponent(description);
+        areyousure(body, 'Calendar/AddEventAsync', 'Вы уверены?', '', 'CreateEventModel');
+    }
+
+    // *** Удалить событие ***
+    function DelEvent(id) {
+        areyousure('id=' + encodeURIComponent(id), 'Calendar/DelEventAsync', 'Вы уверены?', 'Вы не сможете отменить это!', 'infoEventModal');
+    }
+
+    // *** Удалить телефонограмму ***
+    function DelPhonegram(id) {
+        areyousure('id=' + encodeURIComponent(id), 'Calendar/DelPhonegramAsync', 'Вы уверены?', 'Вы не сможете отменить это!', 'infoEventModal');
+    }
+
+</script>
+}
+
+<script>
+
+    // *** Получение списка заявок ***
+    function GetApp(day) {
+        let id = day + " " + gMonth + " " + gYear;
+        $('#eventModal').modal('toggle');
+        fetch('/Calendar/GetApp/' + id).then(r => r.json()).then(data => {
+            let html = data;
+            document.getElementById("idModel").innerHTML = html;
+        });
+    }
+
+    // *** Получение информации о событии ***
+    function OpenInfoEventModal(id) {
+        $('#eventModal').modal('toggle');
+        $('#infoEventModal').modal('toggle');
+        fetch('/Calendar/GetFullInfoForEvent/' + id).then(r => r.json()).then(data => {
+            let html = data;
+            document.getElementById("idInfo").innerHTML = html;
+        });
+    }
+
+    // *** Получение информации о телефонограмме ***
+    function OpenPhonegramEventModal(id) {
+        $('#eventModal').modal('toggle');
+        $('#infoEventModal').modal('toggle');
+        fetch('/Calendar/GetFullInfoForPhonegram/' + id).then(r => r.json()).then(data => {
+            let html = data;
+            document.getElementById("idInfo").innerHTML = html;
+        });
+    }
+
+    let year = (new Date()).getFullYear();
+    let month = (new Date()).getMonth() + 1;
+
+    // *** Вычисляет год и месяц ***
+    function GetMonth(m) {
+        if (m == 'back') {
+            month--;
+            if (month == 0) {
+                month = 12;
+                year--;
+            }
+        }
+        if (m == 'next') {
+            month++;
+            if (month == 13) {
+                month = 1;
+                year++;
+            }
+        }
+        GetCalendar(calendar, year, month);
+    }
+
+    // *** Обновление календаря, базы заявок, архива и документов
+    async function UpData() {
+        await GetCalendar(calendar, year, month);
+        $("#id_database").load(location.href + " #id_database");
+        $("#id_archive").load(location.href + " #id_archive");
+        $("#id_docs").load(location.href + " #id_docs");
+        setTimeout(UpData, 5000);
+    }
+
+    UpData();
+
+    //* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - This allows the user to have multiple dropdowns without any conflict */
+    var dropdown = document.getElementsByClassName("dropdown-btn");
+    var i;
+
+    for (i = 0; i < dropdown.length; i++) {
+        dropdown[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var dropdownContent = this.nextElementSibling;
+            if (dropdownContent.style.display === "block") {
+                dropdownContent.style.display = "none";
+            } else {
+                dropdownContent.style.display = "block";
+            }
+        });
+    }
+</script>
+

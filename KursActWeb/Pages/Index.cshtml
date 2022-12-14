@@ -1,0 +1,25 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.IndexModel
+@{
+    ViewData["Title"] = "Главная страница";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Карточки с контрактами -->
+<div class="d-flex flex-wrap">
+    @{
+        foreach (var item in Model.ContractsList)
+        {
+            @await Html.PartialAsync("_ContractCard", item)
+        }
+    }
+</div>
+<!-- Карточки с контрактами -->
+@*@await Html.PartialAsync("_contractsCards", Model)*@
+
+<!-- Всплывающие подсказки -->
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+

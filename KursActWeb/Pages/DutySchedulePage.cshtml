@@ -1,0 +1,438 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.DutySchedulePageModel
+@{ ViewData["Title"] = "График дежурств";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<style>
+    @*div*@
+    .checkdiv {
+        margin-top: -15px;
+        margin-bottom: 10px;
+        background-color: #ffffff;
+        position: relative;
+        border: 1px solid #D4D4D4;
+        border-radius: 5px;
+        box-shadow: 0 0 15px #A9A9A9;
+        padding: 20px 40px;
+    }
+
+    @*CheckBox*@
+    .custom-checkbox {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+    .custom-checkbox + label {
+        display: inline-flex;
+        align-items: center;
+        user-select: none;
+    }
+    .custom-checkbox + label::before {
+        content: '';
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        flex-shrink: 0;
+        flex-grow: 0;
+        border: 1px solid #adb5bd;
+        border-radius: 0.25em;
+        margin-right: 0.5em;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: 50% 50%;
+    }
+    .custom-checkbox:checked + label::before {
+        border-color: #0b76ef;
+        background-color: #0b76ef;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+    }
+    /* стили при наведении курсора на checkbox */
+    .custom-checkbox:not(:disabled):not(:checked) + label:hover::before {
+        border-color: #b3d7ff;
+    }
+    /* стили для активного состояния чекбокса (при нажатии на него) */
+    .custom-checkbox:not(:disabled):active + label::before {
+        background-color: #b3d7ff;
+        border-color: #b3d7ff;
+    }
+    /* стили для чекбокса, находящегося в фокусе */
+    .custom-checkbox:focus + label::before {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    /* стили для чекбокса, находящегося в фокусе и не находящегося в состоянии checked */
+    .custom-checkbox:focus:not(:checked) + label::before {
+        border-color: #80bdff;
+    }
+    /* стили для чекбокса, находящегося в состоянии disabled */
+    .custom-checkbox:disabled + label::before {
+        background-color: #e9ecef;
+    }
+</style>
+
+<script>const arr = []; const sDate_Arr = []</script>
+
+<style>
+    .input-file {
+        background: #fff; /* Цвет фона */
+        padding: 50px; /* Поля вокруг текста */
+        box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */
+        height: 200px;
+        width: 100%;
+        font-size: 100px;
+        color: rgb(0, 174, 255);
+        text-align: center;
+        cursor: pointer;
+    }
+
+        .input-file:hover {
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Параметры тени */
+        }
+
+
+</style>
+
+<div style="width: 100%; ">
+    <div class="d-flex justify-content-between shadow p-3 mb-4 rounded" style="background-color:#cb621d">
+        <h1 style="color:white; margin:0">
+            График дежурств
+        </h1>
+    </div>
+    <div>
+        @Html.Raw(Model.HtmlFile)
+    </div>
+
+    <div id="duty_div">
+        @if (User.IsInRole("administrator") || User.IsInRole("chief_dispatcher"))
+        {
+            <div id="activeArea">
+                <label for="upload">
+                    ЗАГРУЗИТЬ ГРАФИК ДЕЖУРСТВ
+                    <i class="fas fa-file-upload input-file"></i>
+                    <input id="upload" type="file" onchange="handleFiles(this.files)" class="input-file" style="display:none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                </label>
+            </div>
+            <br />
+        }
+
+        <div>
+            <label >
+                СКАЧАТЬ ГРАФИК ДЕЖУРСТВ
+                <a href='/DutySchedule/GetExcelFile'><i class="fa fa-download input-file" style="color: #9aa611"></i></a>
+            </label>
+        </div>
+        @*<table class="zebra-table">
+            <tr>
+                <th>№</th>
+                <th>ИМЯ</th>
+                <th>ДАТА</th>
+                <th>ПОЛЬЗОВАТЕЛЬ</th>
+                <th>ФАЙЛ</th>
+            </tr>
+
+
+        </table>*@
+        @*<input id="exFileId" type="file" onchange="handleFiles(this.files)" class="input-file" style="display:none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+
+        <input id="exFileId" name="ExFile" onchange="handleFiles(this.files)" type="file" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />*@
+
+        <script>
+
+            function handleFiles(files) {
+                let file = files[0];
+                let req = new XMLHttpRequest();
+                let formData = new FormData();
+                formData.append("file", file);
+                req.onreadystatechange = function () {
+                    
+                }
+                req.onload = function () {
+                    if (this.response == 'ok') {
+                        ok('Успешно!');
+                    }
+                    else {
+                        err(this.response);
+                    }
+                }
+                req.open("POST", '/DutySchedule/AddFile');
+                req.send(formData);
+
+            }
+        </script>
+        @*
+        <table class="new-table" id="myTable">
+            <tr>
+                <td align="center" style="background: #FFFFFF" colspan="@Model.DateTimeList.Count()++">
+                    <div id="id_div_month"></div>
+                    <table>
+                        <tr>
+                            <td>
+                                <h3 id="id_month" style="color:#000000; margin:0px 10px 0px 10px;"></h3>
+                            </td>
+                        </tr>
+                    </table>
+                    <script>
+                        var date = new Date();
+                        var month_Arr = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+                        var month_Now = date.getMonth();
+
+                        var date_Next = new Date();
+                        date_Next.setDate(date_Next.getDate() + 7);
+                        if (date_Next.getMonth() == month_Now) {
+                            document.getElementById('id_month').innerHTML = month_Arr[month_Now];
+                        }
+                        else {
+                            document.getElementById('id_month').innerHTML = month_Arr[month_Now] + "/" + month_Arr[date_Next.getMonth()];
+                        }
+                    </script>
+                </td>
+            </tr>
+            <tr class="new-thead row">
+                <td class="col">Диспетчер</td>
+
+                @foreach (var item in Model.DateTimeList)
+                {
+                    <td class="col">
+                        @if (item.Check == false)
+                        {
+                            @(item.StartDate.ToString("g") + "-" + item.EndDate.TimeOfDay.ToString("hh\\:mm"))
+                        }
+                        else
+                        {
+                            @(item.StartDate.Date.ToString("dd\\.MM\\.yyyy") + "-" + item.EndDate.Date.ToString("dd\\.MM\\.yyyy") + " " + item.StartDate.TimeOfDay.ToString("hh\\:mm") + "-" + item.EndDate.TimeOfDay.ToString("hh\\:mm"))
+                        }
+                    </td>
+                }
+            </tr>
+            @foreach (var item in Model.DispatcherList)
+            {
+                <tr id="" class="new-tbody row" style="background-color:white; border-radius: 10px;">
+                    <td class="col" style="height: 100px; border: 1px solid #D4D4D4; vertical-align: central; color: #000000; font-weight: bold;"><center>@item.Name_Dispatcher</center></td>
+                    @for (int i = 0; i < 14; i++)
+                    {
+                        int flag = 0;
+                        for (int j = 0; j < Model.DutyList.Count(); j++)
+                        {
+                            if (Model.DutyList[j].Id_dispatcher == item.Id_Dispatcher && Model.DateTimeList[i].StartDate == Model.DutyList[j].StartDate)
+                            {
+                                flag = 1;
+                                <td id="@("d" + item.Id_Dispatcher + i)" class="col" style="height: 100px; border: 1px solid #D4D4D4; background: @Html.Raw(Model.DutyList[j].Color) " onclick="Duty(@item.Id_Dispatcher, @i)"> <script>id = "d" + @item.Id_Dispatcher + @i; arr.push(id);</script></td>
+                                break;
+                            }
+                        }
+                        if (flag == 0)
+                        {
+                            <td id="@("d" + item.Id_Dispatcher + i)" class="col" style="height: 100px; border: 1px solid #D4D4D4; background: #FFFFFF " onclick="Duty(@item.Id_Dispatcher, @i)"> </td>
+                        }
+                        else
+                        {
+                            flag = 0;
+                        }
+
+
+                    }
+
+                </tr>
+            }
+        </table>*@
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+    function SetFile() {
+        var file = document.getElementById('fileNameId').value;
+        alert(file);
+        if (file == "") {
+            alert('Выберите файл');
+            return;
+        }
+        var request = new XMLHttpRequest();
+        var body = "path=" + encodeURIComponent(file);
+        request.responseType = "blob";
+        request.open("GET", "/GetFile/SetExcel_DutySchedule" + "?" + body);
+        request.onload = function () {
+            alert(this.response);
+
+
+            /*var url = window.URL.createObjectURL(this.response);
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.href = url;
+            a.download = this.response.name || "download-" + $.now()
+            a.click();*/
+        }
+        request.send(body);
+
+
+    }
+
+</script>
+
+
+
+<script type="text/javascript">
+
+    var date = new Date();
+    var flagMonth = 0;
+
+    function GetMonth(week) {
+        if (week == "next" && flagMonth == 0) {
+            date.setDate(date.getDate() + 7);
+            flagMonth = 1;
+        }
+        else {
+            if (week == "back" && flagMonth == 1) {
+                date = new Date();
+                flagMonth = 0;
+            }
+            else {
+                alert("ddfsd");
+                return;
+            }
+        }
+        var month_Arr = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        var month_Now = date.getMonth();
+
+        var date_Next = date;
+        date_Next.setDate(date_Next.getDate() + 7);
+        if (date_Next.getMonth() == month_Now) {
+            document.getElementById('id_month').innerHTML = month_Arr[month_Now];
+        }
+        else {
+            document.getElementById('id_month').innerHTML = month_Arr[month_Now] + "/" + month_Arr[date_Next.getMonth()];
+        }
+    }
+
+    function Print() {
+        var request = new XMLHttpRequest();
+        request.responseType = "blob";
+        request.open("GET", "/Document/CreateDocument");
+        request.onload = function () {
+            //alert(this.response);
+
+
+            var url = window.URL.createObjectURL(this.response);
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.href = url;
+            a.download = this.response.name || "download-" + $.now()
+            a.click();
+        }
+        request.send();
+
+        //fetch('/Doc/GetDoc').then(r => r.json()).then(data => {
+        //    //location.window.open("http://" + data, '_blank');+
+        //    info('Формирование документа, если документ не откроеться, то нажмите на ссылку "Скачать"');
+        //    alert(data);
+        //
+        //
+        //    //window.open(data); //id_downland
+        //    //let html = "";
+        //    //html += "<a href=" + data + " style='margin-left: 20px;' target='_blank'> Скачать </a>"
+        //
+        //    $('#id_downland').html(html);
+        //});
+        //fetch('/Doc/CreateFile').then(r => r.json()).then(data => {
+        //    //location.window.open("http://" + data, '_blank');+
+        //    info('Формирование документа, если документ не откроеться, то нажмите на ссылку "Скачать"');
+        //    alert(data);
+        //    window.open(data); //id_downland
+        //    let html = "";
+        //    html += "<a href=" + data + " style='margin-left: 20px;' target='_blank'> Скачать </a>"
+        //
+        //    $('#id_downland').html(html);
+        //});
+    }
+
+    function CreatePDF() {
+
+    }
+
+    var arrDate = [];
+
+
+    function Duty(id_dispatcher, col) {
+
+        if (document.getElementById("idedit").checked) {
+            id = "d" + id_dispatcher + col;
+            var xhr = new XMLHttpRequest();
+            var body = "id_dispatcher=" + encodeURIComponent(id_dispatcher) + "&col=" + encodeURIComponent(col);
+            if (arr.length === 0) {
+                arr.push(id);
+                //alert(1);
+
+
+                //xhr.open("POST", '/DutySchedule/AddDuty', true);
+                xhr.open("POST", '/DutySchedule/AddDuty', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.send(body);
+
+                document.getElementById(id).style.background = "#00FF00";
+                //xhr.onload = function () {
+                //    let responseObj = xhr.response;
+                //    alert(responseObj.message);
+                //    document.getElementById(id).style.background = responseObj.message;
+                //};
+            }
+            else {
+                for (i = 0; i < arr.length; i++) {
+                    //alert(arr[i] + "===" + id)
+                    if (arr[i] === id) {
+                        document.getElementById(id).style.background = "#FFFFFF";
+                        arr.splice(i);
+                        //alert(2);
+                        xhr.open("POST", '/DutySchedule/DeleteDuty', true);
+                        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                        xhr.send(body);
+                        return;
+                    }
+                }
+                //alert(3);
+                arr.push(id);
+                document.getElementById(id).style.background = "#00FF00";
+                xhr.open("POST", '/DutySchedule/AddDuty', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.send(body);
+                //xhr.onload = function () {
+                //
+                //    let responseObj = xhr.response;
+                //    alert(responseObj.message);
+                //    document.getElementById(id).style.background = responseObj.message;
+                //};
+            }
+            UpData();
+            //duty_div
+            return;
+        }
+    }
+
+    function UpData() {
+        $("#duty_div").load(location.href + " #duty_div");
+        //alert("asd");
+        //setTimeout(UpData, 3000);
+    }
+    //UpData();
+
+</script>
+
+@*
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="idAccepted">Редактировать</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+*@

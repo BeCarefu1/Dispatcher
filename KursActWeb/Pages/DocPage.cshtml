@@ -1,0 +1,135 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.DocPageModel
+@{
+    ViewData["Title"] = "Документы";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="margin-bottom: -35px;">
+    <div class="d-flex justify-content-between shadow p-3 mb-4 rounded" style="background-color:#7DDFC3">
+        <h1 style="color:white; margin:0">
+            Документы
+        </h1>
+    </div>
+    <div id="panelId">
+        @if (User.IsInRole("administrator") || User.IsInRole("dispatcher") || User.IsInRole("chief_dispatcher") || User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+        {
+            <!-- Стиль загрузки файла -->
+            <style>
+                .input-file {
+                    background: #fff; /* Цвет фона */
+                    padding: 50px; /* Поля вокруг текста */
+                    box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */
+                    height: 200px;
+                    width: 100%;
+                    font-size: 100px;
+                    color: #7DDFC3;
+                    text-align: center;
+                    cursor: pointer;
+                }
+
+                    .input-file:hover {
+                        box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Параметры тени */
+                    }
+            </style>
+            <!-- Загрузка файла -->
+            <div id="activeArea">
+                <label for="upload">
+                    ЗАГРУЗИТЬ ФАЙЛ
+                    <i class="fas fa-file-upload input-file"></i>
+                    <input id="upload" type="file" onchange="handleFiles(this.files)" class="input-file" style="display:none" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                </label>
+            </div>
+            <br />
+            <!-- Загрузка файла -->
+            <script>
+                function handleFiles(files) {
+                    let file = files[0];
+                    let req = new XMLHttpRequest();
+                    let formData = new FormData();
+                    formData.append("file", file);
+                    req.onreadystatechange = function () {
+
+                    }
+                    req.onload = function () {
+                        if (this.response == 'ok') {
+                            ok('Файл успешно загружен!');
+                            $("#panelId").load(location.href + " #panelId");
+                        }
+                        else {
+                            err('Ошибка! Не удалось загрузить файл!');
+                        }
+                    }
+                    req.open("POST", '/Document/AddFile');
+                    req.send(formData);
+
+                }
+            </script>
+        }
+        @if (Model.Docs.Count != 0)
+        {
+            <div class="panel">
+            <!-- Таблица с файлами -->
+                <table class="zebra-table" style="border-radius: 5px;">
+                    <tr>
+                        <th>№</th>
+                        <th>Наименование</th>
+                        <th>Дата</th>
+                        <th>Пользователь</th>
+                        @if (User.IsInRole("administrator") || User.IsInRole("dispatcher") || User.IsInRole("chief_dispatcher") || User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+                        {
+                            <th width="5%"></th>
+                        }
+                    </tr>
+                    @foreach (var item in Model.Docs)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td><a href="/Document/GetFile/@item.Id">@item.Name</a></td>
+                            <td>@item.Date</td>
+                            <td>@item.UserName</td>
+                            @if (User.IsInRole("administrator") || User.IsInRole("dispatcher") || User.IsInRole("chief_dispatcher") || User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+                            {
+                                <td><button onclick="Deldoc('@item.Id')"><i class="fa fa-trash"></i></button></td>
+                            }
+                        </tr>
+                    }
+                </table>
+                <script>
+                    function Deldoc(id) {
+                        areyousure('id=' + encodeURIComponent(id), '/Document/DelFile/', 'Вы уверены?', 'Вы не можете изменить это!', '');
+                    }
+                </script>
+            </div>
+        }
+        else
+        {
+            <!-- Таблица с файлами -->
+            <table class="zebra-table" style="border-radius: 5px;">
+                <tr>
+                    <th>№</th>
+                    <th>Наименование</th>
+                    <th>Дата</th>
+                    <th>Пользователь</th>
+                </tr>
+            </table>
+            <div class="d-flex justify-content-center">
+                <i class="far fa-check-circle fa-10x m-4"></i>
+            </div>
+            <div class="d-flex justify-content-center">
+                <h3>Нет документов</h3>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+
+    // *** Обновление панели ***
+    function UpData() {
+        $("#panelId").load(location.href + " #panelId");
+        setTimeout(UpData, 5000);
+    }
+    UpData();
+
+</script>

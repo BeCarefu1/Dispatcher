@@ -1,0 +1,72 @@
+﻿<div class="col-lg-6 d-flex">
+        <div class="panel align-self-stretch">
+            <div class="panel-heading d-flex">
+                <h3 class="panel-title">Объект потребителя</h3>
+                <div class="text-green ml-auto align-self-stretch" id="regPointObjectIndicator">
+                    <span class="align-middle"><i class="fas fa-check-circle"></i> Сохранено</span>
+                </div>
+            </div>
+
+            <div class="panel-content no-gutter-top">
+                <!--<div class="d-flex mb-4">
+                    <a href="javascript:void(0)" onclick="Get_U_Address(this)" class="ml-auto" id="O_Address_Link">Совпадает с юр. адресом</a>
+                </div>-->
+
+                <div class="row no-gutters">
+                    <div class="col-2" class="float-label--label">
+                        <div class="form-group float-label">
+                            <label for="O_Index" class="float-label--label">Индекс</label>
+                            <input type="text" class="form-control" id="O_Index" name="O_Index" value="@Model.Consumer.O_Index" form="consumerForm" onchange="Update_Consumer(this)">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="col-5 pl-2">
+                        <div class="form-group float-label">
+                            <label for="O_Local" class="float-label--label">Населенный пункт</label>
+                            <input type="text" class="form-control" id="O_Local" name="O_Local" value="@Model.Consumer.O_Local" form="consumerForm" onchange="Update_Consumer(this)">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="col-5 pl-2">
+                        <div class="form-group float-label">
+                            <label for="O_Local_Secondary" class="float-label--label">СНТ</label>
+                            <input type="text" class="form-control" id="O_Local_Secondary" name="O_Local_Secondary" value="@Model.Consumer.O_Local_Secondary" form="consumerForm" onchange="Update_Consumer(this)">
+                            <span></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row no-gutters">
+                    <div class="col-4">
+                        <div class="form-group float-label">
+                            <label for="O_Street" class="float-label--label">Улица</label>
+                            <input type="text" class="form-control" id="O_Street" name="O_Street" value="@Model.Consumer.O_Street" form="consumerForm" onchange="Update_Consumer(this)">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="col-4 pl-2">
+                        <div class="form-group float-label">
+                            <label for="O_House" class="float-label--label">Дом</label>
+                            <input type="text" class="form-control" id="O_House" name="O_House" value="@Model.Consumer.O_House" form="consumerForm" onchange="Update_Consumer(this)">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="col-2 pl-2">
+                        <div class="form-group float-label">
+                            <label for="O_Build" class="float-label--label">Корпус</label>
+                            <input type="text" class="form-control" id="O_Build" name="O_Build" value="@Model.Consumer.O_Build" form="consumerForm" onchange="Update_Consumer(this)">
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="col-2 pl-2">
+                        <div class="form-group float-label">
+                            <label for="O_Flat" class="float-label--label">Квартира</label>
+                            <input type="text" class="form-control" id="O_Flat" name="O_Flat" value="@Model.Consumer.O_Flat" form="consumerForm" onchange="Update_Consumer(this)">
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

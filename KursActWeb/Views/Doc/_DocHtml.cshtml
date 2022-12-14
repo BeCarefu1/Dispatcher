@@ -1,0 +1,50 @@
+﻿@model IEnumerable<GIPManager.User>
+
+<style>
+    .div_a4 {
+        width: 210mm;
+        height: 297mm;
+        border: 1px solid;
+    }
+    .table1 {
+        width:90%;
+        margin-left: 15mm;
+        margin-right: 15mm;
+    }
+    .table.table1 td {
+        text-align: left;
+    }
+</style>
+
+<div class="div_a4" style="text-align:center">
+    <h4><b>График дежурств</b></h4>
+    <p>(c @DateTime.Now.ToString("dd/MM/yyyy") по @DateTime.Now.AddDays(7).ToString("dd/MM/yyyy")) </p>
+    <p>
+        <table class="table1">
+            <tr>
+                <th>График составил </th>
+                <th>График утвердил</th>
+            </tr>
+            <tr>
+                <td>Должность:</td>
+                <td>Должность:</td>
+            </tr>
+            <tr>
+                <td>ФИО:</td>
+                <td>ФИО:</td>
+            </tr>
+            <tr>
+                <td>Дата:@DateTime.Now</td>
+                <td>Дата:</td>
+            </tr>
+            <tr>
+                <td>Подпись:</td>
+                <td>Подпись:</td>
+            </tr>
+        </table>
+    </p>
+    <table>
+        
+    </table>
+
+</div>

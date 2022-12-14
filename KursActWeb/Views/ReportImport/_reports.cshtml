@@ -1,0 +1,104 @@
+﻿@if (Model != null)
+{
+    string alertType = "";
+
+
+    @foreach (var item in Model)
+    {
+        if (item.ClosedSMR)
+        {
+            alertType = "alert alert-danger";
+        }
+        else
+        {
+            alertType = "alert alert-secondary";
+        }
+        string type = "";
+        if (item.Type == "ВЛ")
+        {
+            type = "Al";
+        }
+        if (item.Type == "ТП/РП")
+        {
+            type = "SB";
+        }
+        if (item.Type == "УСПД")
+        {
+            type = "USPD";
+        }
+
+        @*<div class='@alertType' role="alert" id="@type@item.Id">
+            <div class="row">
+
+                <div class="col-md-2">
+                    <h6>
+                        <span class="alert-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </span>
+                        Отчет №@item.Id от @item.Date.ToShortDateString()
+                    </h6>
+                </div>
+
+                <div class="col-md-2 ">
+                    <h6>@item.NetRegion @item.Substation</h6>
+                </div>
+
+                <div class="col-md-2 ">
+                    <h6>Установлено: @item.Mounted</h6>
+                </div>
+
+                <div class="col-md-2 ">
+                    <h6>Тип отчета: @item.Type</h6>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-danger" onclick="Remark(@item.Id, '@item.Type')">Замечания</button>
+                    <button class="btn btn-outline-primary" onclick="Remark(@item.Id, '@item.Type')">Комментарии</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-success" onclick="GetReportRegPoints(@item.Id, '@item.Type')">Просмотр</button>
+                </div>
+            </div>
+        </div>*@
+
+        <div class='@alertType' role="alert" id="@type@item.Id">
+            <div class="d-flex">
+                <div class="mt-2">
+                    <h6>
+                        <span class="alert-icon">
+                            <i class="fas fa-file-invoice"></i>
+                        </span>
+                        Отчет №@item.Id от @item.Date.ToShortDateString()
+                    </h6>
+                </div>
+
+                <div class="mt-2 ml-4">
+                    <h6>@item.NetRegion @item.Substation</h6>
+                </div>
+
+                <div class="mt-2 ml-4">
+                    <h6>Установлено: @item.Mounted</h6>
+                </div>
+
+                <div class="mt-2 ml-4">
+                    <h6>Тип отчета: @item.Type</h6>
+                </div>
+                <div class="ml-auto">
+                    <button class="btn btn-outline-danger" onclick="Remark(@item.Id, '@item.Type')">Замечания</button>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary" onclick="Comment(@item.Id, '@item.Type')">Комментарии</button>
+                </div>
+                <div>
+                    <button class="btn btn-outline-success" onclick="GetReportRegPoints(@item.Id, '@item.Type')">Просмотр</button>
+                </div>
+                @if (item.Type == "ВЛ")
+                {
+                <div>
+                    <a href="/GetFile/GetExcel_UspdExport/@item.Id" class="btn btn-outline-success">Excel</a>
+                </div>
+                }
+            </div>
+        </div>
+    }
+}
+

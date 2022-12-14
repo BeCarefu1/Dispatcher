@@ -1,0 +1,11 @@
+﻿@model IEnumerable<GIPManager.WorkerType>
+
+<div style="width:100%">
+    <select id="inputType" class="swal2-input">
+        <option value="0">- Выберите тип рабочего -</option>
+        @foreach (var item in Model)
+        {
+            <option value="@item.Id">@item.Description</option>
+        }
+    </select>
+</div>

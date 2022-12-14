@@ -1,0 +1,303 @@
+﻿@{
+    ViewData["Title"] = "Пользователи";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model ActGIPelectroWeb.Models.RegionAndMaster
+
+<div class="d-flex justify-content-between shadow p-3 mb-4 rounded" style="background-color:#1c2324">
+    <h1 style="color:white; margin:0"><i class="fas fa-users-cog"></i> Пользователи</h1>
+    <button class="btn btn-outline-light" onclick="AddUser()"><i class="fas fa-plus"></i></button>
+</div>
+
+<select class="form-control mb-1 border-dark" id="selectRoles" name="selectRoles"></select>
+<div id="usersTable"></div>
+
+<script>
+    //Выбранная роль из списка
+    var selectedRoleId = null;
+    $(document).ready(function () {
+        UpdateRolesList();
+    });
+    function UpdateRolesList() {
+        fetch('/Users/GetRoles').then(r => r.json()).then(data => {
+            let html = "";
+            for (var key in data) {
+                if (selectedRoleId == null) {
+                    selectedRoleId = key;
+                }
+                html += "<option value=" + key + ">" + data[key] + "</option>"
+            }
+            $('#selectRoles').html(html);
+            $('#selectRoles').val(selectedRoleId);
+            GetUsersTable(selectedRoleId);
+        });
+    }
+    //Событие выбора роли
+    $('#selectRoles').on('change', function () {
+        selectedRoleId = this.value;
+        GetUsersTable(selectedRoleId);
+    });
+
+    //Запрос на получение списка пользователей по Id роли
+    function GetUsersTable(roleId) {
+        fetch('/Users/GetRoleUsersTable/' + roleId).then(r => r.text())
+            .then(data => {
+                $('#usersTable').html(data);
+            });
+    }
+
+    //Запрос на получение списка мастеров
+    function GetMasterList() {
+        fetch('/Users/GetMaster/' + 15).then(r => r.text())
+            .then(data => {
+                $('#masterList').html(data);
+            });
+    }
+
+    //Запрос на получение списка типа рабочего
+    function GetTypeWorker() {
+
+        fetch('/Users/GetTypeWorker/' + selectedRoleId).then(r => r.text())
+            .then(data => {
+                $('#typeList').html(data);
+            });
+    }
+
+    //Запрос на получение списка регионов
+    function GetRegList() {
+        fetch('/Users/GetRegion/' + 15).then(r => r.text())
+            .then(data => {
+                $('#regList').html(data);
+            });
+    }
+
+    //Меню с кнопками для работы с данными пользователя
+    function ShowEditMenu(userId) {
+        fetch('/Users/UserInfo/' + userId).then(response => response.json())
+            .then(data => {
+                Swal.fire({
+                    showConfirmButton: false,
+                    title: data.Name,
+                    html:
+                        '<button id="editMain" class="btn btn-info" style="width:300px; margin: 3px;"><div style="text-align: left; padding-left: 20%"><i class="fas fa-pencil-alt"></i> Имя, Login, Email</div></button>' +
+                        '<button id="editRole" class="btn btn-info" style="width:300px; margin: 3px;"><div style="text-align: left; padding-left: 20%"><i class="fas fa-arrow-right"></i> Переместить в...</div></button>' +
+                        '<button id="editPass" class="btn btn-info" style="width:300px; margin: 3px;"><div style="text-align: left; padding-left: 20%"><i class="fas fa-key"></i> Новый пароль</div></button>' +
+                        '<button id="deleteUser" class="btn btn-danger" style="width:300px; margin: 3px;">Удалить</button>',
+                    onBeforeOpen: () => {
+                        const content = Swal.getContent()
+                        const $ = content.querySelector.bind(content)
+                        const editMain = $('#editMain');
+                        const editRole = $('#editRole');
+                        const editPass = $('#editPass');
+                        const deleteUser = $('#deleteUser');
+                        editMain.addEventListener('click', () => {
+                            EditMain(data); //Диалог: Изменить Имя, Login, Email
+                        });
+                        editRole.addEventListener('click', () => {
+                            UpdateRole(data); //Диалог: Изменить роль
+                        });
+                        editPass.addEventListener('click', () => {
+                            EditPass(data); //Диалог: Установить новый пароль
+                        });
+                        deleteUser.addEventListener('click', () => {
+                            DeleteUser(data); //Диалог: Удалить пользователя
+                        });
+                    }
+                })
+            })
+    }
+    //Диалог изменить Имя, Login, Email
+    function EditMain(userData) {
+        Swal.fire({
+            title: 'Изменить данные',
+            html:
+                '<input id="inputName" class="swal2-input" value="' + userData.Name + '">' +
+                '<input id="inputLogin" class="swal2-input" value="' + userData.Login + '">' +
+                '<input id="inputEmail" class="swal2-input" value="' + userData.Email + '">',
+            focusConfirm: false,
+            showCancelButton: true,
+            cancelButtonText: 'Отмена',
+            confirmButtonText: 'Сохранить',
+            focusCancel: true,
+            preConfirm: () => {
+                return {
+                    Id: userData.Id,
+                    Login: $('#inputLogin').val(),
+                    Name: $('#inputName').val(),
+                    Email: $('#inputEmail').val()
+                }
+            }
+        }).then(userNew => {
+            if (userNew.value) {
+                fetch('/Users/UpdateUserInfo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userNew.value)
+                }).then((response) => {
+                    if (response.ok) {
+                        GetUsersTable(selectedRoleId);
+                        ok('Данные успешно изменены');
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        });
+    }
+    //Установить новый пароль
+    function EditPass(userData) {
+        let uData = { Id: userData.Id, Password: '' };
+        Swal.fire({
+            title: 'Пароль',
+            input: 'password',
+            inputPlaceholder: 'Введите новый пароль',
+            inputAttributes: {
+                autocapitalize: 'off',
+                autocorrect: 'off'
+            }
+        }).then(newPass => {
+            if (newPass.value) {
+                uData.Password = newPass.value;
+                fetch('/Users/NewPass', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(uData)
+                }).then((response) => {
+                    if (response.status === 200) {
+                        ok('Новый пароль записан успешно');
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        });
+    }
+
+
+    //Добавить пользователя
+    function AddUser() {
+        if (selectedRoleId == 15) {
+            GetRegList();
+        }
+        if (selectedRoleId == 17) {
+            GetMasterList();
+            GetTypeWorker();
+        }
+        Swal.fire({
+            title: 'Новый пользователь',
+            html:
+                '<input id="inputName" class="swal2-input" placeholder="ФИО">' +
+                '<input id="inputLogin" class="swal2-input" placeholder="Логин">' +
+                '<input id="inputPass" class="swal2-input" placeholder="Пароль">' +
+                '<input id="inputEmail" class="swal2-input" placeholder="e-mail">' +
+                '<div id="regList"></div>' +
+                '<div id="masterList"></div>' +
+                '<div id="typeList"></div>',
+
+            
+            focusConfirm: false,
+            showCancelButton: true,
+            cancelButtonText: 'Отмена',
+            confirmButtonText: 'Сохранить',
+            focusCancel: true,
+            preConfirm: () => {
+                return {
+                    Id: 0,
+                    Name: $('#inputName').val(),
+                    Login: $('#inputLogin').val(),
+                    Password: $('#inputPass').val(),
+                    Email: $('#inputEmail').val(),
+                    WorkerId: $('#inputMaster').val(),
+                    ID_NetRegion: $('#inputRegion').val(),
+                    WorkerTypeId: $('#inputType').val(),
+                    RoleId: selectedRoleId
+                }
+            }
+        }).then(userNew => {
+            if (userNew.value) {
+                fetch('/Users/AddNewUser', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userNew.value)
+                }).then((response) => {
+                    if (response.status === 200) {
+                        UpdateRolesList();
+                        ok('Пользователь успешно добавлен');
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        });
+    }
+    //Удалить пользователя
+    function DeleteUser(user) {
+        Swal.fire({
+            title: 'Удалить пользователя ' + user.Name + '?',
+            text: "Это необратимое действие! Подумой...",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Да, удалить его!',
+            cancelButtonText: 'Отмена'
+        }).then((result) => {
+            if (result.value) {
+                fetch('/Users/DeleteUser', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user)
+                }).then((response) => {
+                    if (response.status === 200) {
+                        UpdateRolesList();
+                        ok('Пользователь удален');
+                    } else { err('Ошибка сервера ' + response.statusText); }
+                });
+            }
+        })
+    }
+
+    function UpdateRole(user) {
+        Swal.fire({
+            title: 'Установить новую роль для пользователя',
+            input: 'select',
+            inputOptions: fetch('/Users/GetRoles').then(r => r.json()).then(data => data),
+            inputPlaceholder: 'Выберите роль...',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                return new Promise((resolve) => {
+                    if (value === '') {
+                        resolve('Необходимо выбрать роль из списка');
+                    } else {
+                        resolve();
+                        user.RoleId = value;
+                        fetch('/Users/UpdateUserRole', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(user)
+                        }).then((response) => {
+                            if (response.status === 200) {
+                                selectedRoleId = value;
+                                UpdateRolesList();
+                                ok('Новая роль сохранена');
+                            } else { err('Ошибка сервера' + response.statusText); }
+                        });
+                    }
+                })
+            }
+        })
+    }
+
+    function ok(titleText) {
+        return Swal.fire({
+            title: titleText,
+            type: 'success',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    }
+    function err(titleText) {
+        return Swal.fire({
+            title: titleText,
+            type: 'error',
+            showConfirmButton: false,
+            timer: 500
+        });
+    }
+</script>
+

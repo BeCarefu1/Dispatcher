@@ -1,0 +1,138 @@
+﻿@model ActGIPelectroWeb.ViewModels.SwitchListViewModel
+
+<form method="post" action="#" id="printJS-form">
+    <table style='width: 100%; color: #000000;'>
+        <tr>
+            <td align="center" colspan="2">Бланк Переключений @Model.NumbApp ___</td>
+        </tr>
+        <tr>
+            <td style='width: 50%; color: #ffffff;'>
+            </td>
+            <td align='right'>
+                <p>
+                    Начало выполнения переключений
+                    <br />
+                    ___ ч. ___ мин
+                    <br />
+                    Дата «___» _____ @DateTime.Now.Year
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'>
+                <p>
+                    <u>@Model.NetRegion</u> ООО «ГИП -Электро»
+                    <br />
+                    Объект <u>@Model.ObjectName</u>
+                    <br />
+                    Исходная схема ____________________________________________________________
+                    <br /> Задание <u>@Model.Job</u>
+                    <br />
+                    Последовательность производства операций при переключении
+                </p>
+            </td>
+        </tr>
+    </table>
+    <table id="contentTable" class='switch-form-table'>
+        <tr>
+            <th width='5%'>П</th>
+            <th width='5%'>О</th>
+            <th width="100%">Содержание операции</th>
+        </tr>
+        @foreach (var item in Model.Contents)
+        {
+            <tr style="counter-increment: rowNumber;">
+                <td width='5%'></td>
+                <td width='5%'></td>
+                <td width="100%">@item.Content</td>
+            </tr>
+        }
+    </table>
+    <table style='width:100%; color: #000000;'>
+        <tr>
+            <td width='50%'>
+                <p>
+                    Переключение производит:
+                    <br />
+                    ___________________________________________
+                    <br />
+                    (Подпись, Фамилия И.О, Должность)
+                </p>
+            </td>
+            <td align='right'>
+                <p>
+                    Бланк проверил и переключения контролирует:
+                    <br />
+                    ___________________________________________
+
+                    <br />
+                    (Подпись, Фамилия И.О, Должность)
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>
+                    Переключения разрешаю:
+                    <br />
+                    @if (Model.NameDisp != "")
+                    {
+                        <u>@Model.NameDisp @Model.RoleDisp</u>
+                    }
+                    else
+                    {
+                        @Html.Raw("_____________________________________________")
+                    }
+                    <br />
+                    (Подпись, Фамилия И.О, Должность)
+                </p>
+            </td>
+            <td align='right'>
+                <p>
+                    Конец ___ч. ___ мин.
+                    <br />
+                    Дата «___» _____ @DateTime.Now.Year
+                </p>
+            </td>
+        </tr>
+    </table>
+    <style>
+        .switch-form-table {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #808080;
+            counter-reset: rowNumber;
+            margin: auto;
+        }
+
+            .switch-form-table th {
+                border: 1px solid #808080;
+                font-weight: bold;
+                color: #000000;
+                text-align: center;
+            }
+
+            .switch-form-table td {
+                width: 100%;
+                cursor: pointer;
+                text-align: left;
+                color: #000000;
+                border: 1px solid #808080;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .switch-form-table td:last-child {
+                white-space: pre-line;
+            }
+    </style>
+</form>
+
+
+<script>
+        printJS({
+            printable: 'printJS-form',
+            type: 'html'
+        });
+</script>
+               

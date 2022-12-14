@@ -1,0 +1,47 @@
+﻿@model int
+@* Контейнер для таблицы *@
+<div class="panel" id="tableInputConsumerData"></div>
+
+<script>
+    //Загрузим таблицу
+    UpdateTable(@Model);
+
+    function UpdateTable(subId) {
+        fetch('/RegPoint/HTML_ConsumerImportDataTable/' + subId).then(r => r.text()).then(data => { $('#tableInputConsumerData').html(data); });
+    }
+
+    //Получает html разметку заполненной формы для изменения ФИО и Юр.адреса потребителя по RegPointId
+    function GetInputForm(rpId) {
+        return fetch('/RegPoint/ConsumerNameUAddressForm/' + rpId).then(r => r.text()).then(data => data);
+    }
+
+    //Диалог изменить Имя, Login, Email
+    async function EditNameUAddress(rpId) {
+        let htmlForm = await GetInputForm(rpId);
+        Swal.fire({
+            title: 'Отправка данных',
+            html: htmlForm,
+            focusConfirm: false,
+            showCancelButton: true,
+            cancelButtonText: 'Отмена',
+            confirmButtonText: 'Отправить',
+            focusCancel: true,
+            preConfirm: () => {
+                return new FormData(document.forms.consumerForm);
+            }
+        }).then(data => {
+            if (data.value) {
+                fetch('/RegPoint/UpdateConsummerNameUAddress', {
+                    method: 'POST',
+                    //headers: { 'Content-Type': 'application/json' },
+                    body: data.value//JSON.stringify(userNew.value)
+                }).then((response) => {
+                    if (response.status === 200) {
+                        $('#row_' + rpId).hide();
+                        ok('Данные успешно приняты');
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        });
+    }
+</script>

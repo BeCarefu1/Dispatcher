@@ -1,0 +1,11 @@
+﻿@model IEnumerable<GIPManager.NetRegion>
+
+<div style="width:100%">
+    <select id="inputRegion" class="swal2-input">
+        <option value="0">- Выберите регион -</option>
+        @foreach (var item in Model)
+        {
+            <option value="@item.Id">@item.Name</option>
+        }
+    </select>
+</div>

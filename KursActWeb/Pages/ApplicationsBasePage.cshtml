@@ -1,0 +1,747 @@
+﻿@page "{id}"
+@model ActGIPelectroWeb.Pages.ApplicationsBasePageModel
+@using ActGIPelectroWeb.Models
+@{
+    ViewData["Title"] = "База Заявок";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+  
+}
+
+<script>
+
+    var count = "";
+    // Функция обновление таблицы
+    function UpData() {
+        $("#orderdiv").load(location.href + " #orderdiv");
+        setTimeout(UpData, 5000);
+    }
+    UpData();
+
+</script>
+
+
+
+<main class=" main js-main">
+
+
+    <div class="d-flex justify-content-between shadow p-3 mb-4 rounded" style="background-color:#cb621d">
+        <h1 style="color:#f1f5f9; margin:0">
+             База заявок
+        </h1>
+        <div>
+            @if (User.IsInRole("master") || User.IsInRole("dispatcher"))
+            {
+                <button class="btn btn-success" data-toggle="modal" data-target="#CreateModal"><i class="fa fa-plus" aria-hidden="true"></i> Подать заявку</button>
+            }
+        </div>
+    </div>
+    <div style="box-shadow: 10px; border-radius:3px; width:100%; background:#f1f5f9;">
+        <div>
+            <ul class="nav" style="padding-left: 15px; padding-right: 15px; display: inline-block; ">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" style="font-weight:bold; margin: 3px;">ОБОСОБЛЕННЫЕ ПОДРАЗДЕЛЕНИЯ <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        @foreach (var item in Model.NetRegs)
+                        {
+                        <li><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.IdSort&filterOrder=@item.Name">@item.Name</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav" style="padding-left: 15px; padding-right: 15px; display: inline-block;">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" style="font-weight:bold; margin: 3px;">ЗАЯВКА НА <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        @foreach (var item in Model.Dates)
+                        {
+                            <li><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.IdSort&filterOrder=@item.Date">@item.Date</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="orderdiv">
+    @if (Model.OrderList.Count() != 0)
+    {
+        <div class="panel" style="border-radius: 5px; min-height: 70vh;">
+            <table class="zebra-table" style="border-radius: 5px;">
+                <tr>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.IdSort&filterOrder=@Model.CurrentFilter">№ ЗАЯВКИ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.CategorySort&filterOrder=@Model.CurrentFilter">КАТЕГОРИЯ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.NetSort&filterOrder=@Model.CurrentFilter">ОП <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.DateSort&filterOrder=@Model.CurrentFilter">ДАТА <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.ObjectSort&filterOrder=@Model.CurrentFilter">ОБЪЕКТ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.EquipmentSort&filterOrder=@Model.CurrentFilter">ОБОРУДОВАНИЕ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.DescriptionSort&filterOrder=@Model.CurrentFilter">СОДЕРЖАНИЕ РАБОТ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.ReqTimeSort&filterOrder=@Model.CurrentFilter">ПРОСИМОЕ ВРЕМЯ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.MasterSort&filterOrder=@Model.CurrentFilter">ФИО МАСТЕРА <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                    <th><a href="/ApplicationsBasePage/@Model.AppId?sortOrder=@Model.StatusSort&filterOrder=@Model.CurrentFilter">СТАТУС ЗАЯВКИ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                </tr>
+
+                @foreach (var item in Model.OrderList)
+                {
+                    <tr id="@item.Id" data-toggle="modal" data-target="#ShowModal" style="min-height: 40px; background: @item.Color " onclick="GetAppTable('@item.Id'); //ShowModal('@item.Id');">
+                        <td>
+                            @item.NambId
+                            @if (Model.UserId == item.UserId)
+                            {
+                                <br />
+                                <p style="color: #ff0000">Ваша заявка</p>
+                            }
+                        </td>
+                        <td>@item.Category</td>
+                        <td>@item.NetRegion</td>
+                        <td>@item.Date.ToShortDateString()</td>
+                        <td>@item.ObjectName</td>
+                        <td>@item.Equipment</td>
+                        <td>@Html.Raw(item.Description)</td>
+                        <td>@item.RequestedStartTime.ToShortDateString()<br />@(item.RequestedStartTime.ToString("HH:mm") + "-" + item.RequestedEndTime.ToString("HH:mm"))</td>
+                        <td>@item.NameMaster</td>
+                        <td>@item.Status</td>
+                    </tr>
+
+                }
+            </table>
+        </div>
+     }
+     else
+     {
+        <table class="zebra-table">
+            <tr>
+                <th>№ ЗАЯВКИ</th>
+                <th>КАТЕГОРИЯ</th>
+                <th>ОП</th>
+                <th>ДАТА</th>
+                <th>ОБЪЕКТ</th>
+                <th>ОБОРУДОВАНИЕ</th>
+                <th>СОДЕРЖАНИЕ РАБОТ</th>
+                <th>ПРОСИМОЕ ВРЕМЯ</th>
+                <th>СТАТУС ЗАЯВКИ</th>
+            </tr>
+        </table>
+        <div class="d-flex justify-content-center">
+            <i class="far fa-check-circle fa-0x m-4"></i>
+        </div>
+        <div class="d-flex justify-content-center">
+            <h3>Нет заявок</h3>
+        </div>
+     }
+    </div>
+
+</main>
+
+
+
+@if (User.IsInRole("master") || User.IsInRole("dispatcher"))
+{
+@* Создание заявки *@
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width: 50%; margin-left: 25%; margin-right: 25%;">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-plus-square" aria-hidden="true"></i> Создание новой заявки</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="create-table">
+                    <tr>
+                        <th width="9%">№ заявки</th>
+                        <th width="10%">Дата</th>
+                        <th width="22%">ОП</th>
+                        <th width="13%">Категория</th>
+                        <th width="10%">Ремонт</th>
+                        <th width="10%">А/Г</th>
+                        <th width="20%">Состояние заявки</th>
+                    </tr>
+                    <tr>
+                        <td>@*<input id="orderid" type="number" name="cron">*@</td>
+                        <td>@DateTime.Now.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            <select class="custom-select" id="netRegionId" name="mySelect" style="color:#000000;" onchange="Vol()">
+                                @foreach (var item in Model.NetRegionList)
+                                 {
+                                    <option value="@item.Id">@item.Name</option>
+                                 }
+                            </select>
+                        </td>
+                        <td>
+                            <select class="custom-select" id="categoryId" name="mySelect" style="color:#000000;" onchange="Vol(); ChekDate();">
+                                @foreach (var item in Model.CategoryList)
+                                 {
+                                    <option value="@item.Id">@item.Name</option>
+                                 }
+                            </select>
+                        </td>
+                        <td>
+                            <select class="custom-select" id="repairId" name="mySelect" style="color:#000000;" onchange="Vol()">
+                                @foreach (var item in Model.RepairList)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <select class="custom-select" id="agId" name="mySelect" style="color:#000000;" onchange="Vol()">
+                                @foreach (var item in Model.AGList)
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                            <td colspan="7" style="color:#f1f5f9;">space</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Объект</th>
+                        <th colspan="5">Оборудование</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input id="objectId" type="text" list="objectListId" name="cron" style="width:100%; height: 100%;" onchange="Vol()">
+                            <datalist id="objectListId">
+                                @foreach (var item in Model.ObjectList)
+                                {
+                                    <option value="@item.Name"></option>
+                                }
+                                @foreach (var item in Model.SubstationList)
+                                {
+                                    <option value="@item.Name"></option>
+                                }
+                            </datalist>
+                            @*<input id="objectId" type="text" name="cron" style="width:100%; height: 100%;" onchange="Vol()">*@
+
+                        </td>
+                        <td colspan="5">
+                            <input id="equipmentId" list="equipmentListId" type="text" name="cron" style="width:100%; height: 100%;" onchange="Vol()">
+                            <datalist id="equipmentListId">
+                                @foreach (var item in Model.EquipmentList)
+                                {
+                                    <option value="@item.Name"></option>
+                                }
+                                @foreach (var item in Model.SubstationList)
+                                {
+                                    <option value="@item.Name"></option>
+                                }
+                            </datalist>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" style="color: #ffffff;">space</td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">Содержание работ</th>
+                        <th rowspan="2" colspan="2">Просимое время</th>
+                        <td>
+                            <input id="date1" type="date" name="cron" style="width:100%; height: 100%;" onchange="Vol()">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3" colspan="4">
+                            @*<select class="custom-select" id="descriptionExId" style="color:#000000;" onchange="document.getElementById('descriptionId').value += '\n' + document.getElementById('descriptionExId').value;">
+                                <option></option>
+                                @foreach (var item in Model.ExampleDescription)
+                                {
+                                    <option value="@item.Description">@item.Description</option>
+                                }
+                            </select>*@
+                            <textarea name="comment" id="descriptionId" class="form-control" spellcheck="false" onchange="Vol()"></textarea>
+                        </td>
+                        <td><input id="time1" type="time" name="cron" onchange="Vol()"> — <input id="time2" type="time" name="cron" onchange="Vol()"></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Подпись</th>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Рассмотрена</th>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">Меры безопасности</th>
+                        <td colspan="3"></td>
+                        @*<th rowspan="2" colspan="2">Фактическое время</th>
+                        <td style="color: #ffffff">
+                            space
+                        </td>*@
+                    </tr>
+                    <tr>
+                        <td rowspan="2" colspan="4" style="width: 60%;">
+                            @*<select class="custom-select" id="securityExId" style="color:#000000;" onchange="document.getElementById('securityId').value += '\n' + document.getElementById('securityExId').value;">
+                                <option></option>
+                                @foreach (var item in Model.SecurityMeasures)
+                                {
+                                    <option value="@item.Description">@item.Description</option>
+                                }
+                            </select>*@
+                            <textarea name="comment" id="securityId" class="form-control" spellcheck="false" onchange="Vol()"></textarea>
+                        </td>
+                        @*<td style="color: #ffffff">space@*<input id="time3" type="time" name="cron" onchange="Vol()"> — <input id="time4" type="time" name="cron" onchange="Vol()">@</td>*@
+                    
+                        <th colspan="2">Открыта</th>
+                        <td style="color: #ffffff">space@*<input id="time5" type="time" name="cron" onchange="Vol()">*@</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Закрыта</th>
+                        <td style="color: #ffffff">space@*<input id="time6" type="time" name="cron" onchange="Vol()">*@</td>
+                    </tr>
+                    @*<tr>
+                        <td colspan="2" style='color: #ffffff'>space</td>
+                        <td style='color: #ffffff'>space</td>
+                    </tr>*@
+                    <tr>
+                        <th colspan="7">Примечания</th>
+                    </tr>
+                    <tr>
+                        <td colspan="7"><textarea name="comment" id="noteId" class="form-control" spellcheck="false" onchange="Vol()"></textarea></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="CreateOrder()"><i class="fa fa-plus" aria-hidden="true"></i> Создать заявку</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+@*Бланк Переключений*@
+<div class="modal fade" id="CreateSwitchFormModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div id="switchFormId" class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@*Просмотр заявки*@
+<div class="modal fade modal-scroll-non" id="ShowAppModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width: 50%; margin-left: 25%; margin-right: 25%;">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div id="bodyApp" class="modal-content" style="min-height: 50vh;">
+            @*<div class="tabs">
+                <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
+                <label for="tab-btn-1">ЗАЯВКА</label>
+                <input type="radio" name="tab-btn" id="tab-btn-2" value="" onclick="OpenCreateSwitchFormModal(idApp)">
+                <label for="tab-btn-2">БП</label>
+                <input type="radio" name="tab-btn" id="tab-btn-3" value="">
+                <label for="tab-btn-3"><i class="fa fa-plus-circle"></i></label>
+                <div >
+
+                </div>
+            </div>*@
+        </div>
+    </div>
+</div>
+
+@*Редактирование данных*@
+<div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width: 50%; margin-left: 25%; margin-right: 25%;">
+    <div class="modal-dialog modal-dialog-centered modal-cr">
+        <div class="modal-content" id="editApp">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Редактирование заявки</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class='modal-footer'>
+                <button class='btn btn-success' onclick='SaveEditApp()'><i class='fa fa-file-o' aria-hidden='true'></i> Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    var netRegionId = '';
+    var categoryId = '';
+    var repairId = '';
+    var agId = '';
+    var stateId = '';
+    var objectId = '';
+    var equipmentId = '';
+    var date1;
+    var time1;
+    var time2;
+    var date2 = new Date();
+    var time3 = new Date();
+    var time4 = new Date();
+    var security = '';
+    var time5 = '';
+    var time6 = '';
+    var note = '';
+    var description = '';
+    let StartReqTime = new Date();
+    let EndReqTime = new Date();
+    let StartActualTime = new Date();
+    let EndActualTime = new Date();
+
+    function Vol() {
+        netRegionId = document.getElementById('netRegionId').value;
+        categoryId = document.getElementById('categoryId').value;
+        repairId = document.getElementById('repairId').value;
+        agId = document.getElementById('agId').value;
+        //stateId = document.getElementById('stateId').value;
+        objectId = document.getElementById('objectId').value;
+        equipmentId = document.getElementById('equipmentId').value;
+        description = document.getElementById('descriptionId').value;
+        //Просимое дата и время
+        date1 = document.getElementById('date1').value;
+        time1 = document.getElementById('time1').value;
+        time2 = document.getElementById('time2').value;
+        //Фактическое время
+        //date2 = document.getElementById('date2').value;
+        //time3 = document.getElementById('time3').value;
+        //time4 = document.getElementById('time4').value;
+        security = document.getElementById('securityId').value;
+        //time5 = document.getElementById('time5').value;
+        //time6 = document.getElementById('time6').value;
+        note = document.getElementById('noteId').value;
+    }
+
+    // Функция добавление дней 
+    Date.prototype.addDays = function (days) {
+        var date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+    }
+
+    // Функция ограничевающие просимое время
+    function ChekDate() {
+        document.getElementById('date1').value = '';
+        var today;
+        if (document.getElementById('categoryId').value != 4) {
+            today = new Date();
+        }
+        else {
+            today = new Date().addDays(3);
+        }
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0 so need to add 1 to make it 1!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("date1").setAttribute("min", today);
+
+    }
+
+    ChekDate();
+
+    // Функция взятия сегоднешнего дня формат yyyy-mm-dd
+    function GetToday() {
+        var t = new Date();
+        var dd = t.getDate();
+        var mm = t.getMonth() + 1; //January is 0 so need to add 1 to make it 1!
+        var yyyy = t.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+        t = yyyy + '-' + mm + '-' + dd;
+        return t;
+    }
+
+    function GetPlusThreeDay() {
+        var t = new Date().addDays(3);
+        var dd = t.getDate();
+        var mm = t.getMonth() + 1; //January is 0 so need to add 1 to make it 1!
+        var yyyy = t.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+        t = yyyy + '-' + mm + '-' + dd;
+        return t;
+    }
+
+    // Создание заявки
+    function CreateOrder() {
+        if (description == '') { alert('Отсутствует содержание работ!'); return; }
+        if (security == '') { alert('Отсутствует меры безопасности!'); return; }
+        if (date1 == '') { alert('Отсутствует просимое время!'); return; }
+        if (date1 < GetToday()) { alert('Просимое время не может быть в прошлом!'); return; }
+        //if (date1 < GetPlusThreeDay() && categoryId != 3) { alert('Просимое время подается за три дня'); return; }
+        if (time1 == '') { alert('Отсутствует просимое время!'); return; }
+        if (time2 == '') { alert('Отсутствует просимое время!'); return; }
+        //if (date2 == '') { alert('Отсутствует фактическое время!'); return; }
+        //if (date2 < GetToday()) { alert('Фактическое время не может быть в прошлом!'); return; }
+        //if (time3 == '') { alert('Отсутствует фактическое время!'); return; }
+        //if (time4 == '') { alert('Отсутствует фактическое время!'); return; }
+        //if (time5 == '') { alert('Отсутствует фактическое время!') }
+        //if (time6 == '') { alert('Отсутствует фактическое время!') }
+        //var request = new XMLHttpRequest();
+        var body = "Id_AG=" + encodeURIComponent(agId) + "&Id_NetRegion=" + encodeURIComponent(netRegionId) + "&Id_Category=" + encodeURIComponent(categoryId);
+        body += "&Id_Repair=" + encodeURIComponent(repairId) + "&Object=" + encodeURIComponent(objectId);
+        body += "&Equipment=" + encodeURIComponent(equipmentId) + "&Description=" + encodeURIComponent(description);// + "&StartReqTime=" + encodeURIComponent(date1);
+        body += "&StartReqDate=" + encodeURIComponent(date1) + "&StartReqTime=" + encodeURIComponent(time1) + "&EndReqTime=" + encodeURIComponent(time2);
+        body += "&Notes=" + encodeURIComponent(note) + "&Security=" + encodeURIComponent(security);
+        //request.responseType = "json";
+        //request.open("GET", "/Application/CreateApplication" + "?" + body);
+        //request.onload = function () {
+        //    ok(this.response);
+        //}
+        //request.send(body);
+        areyousure(body, '/Application/CreateApplication', 'Создать заявку?', '', 'CreateModal');
+        //$('#CreateModal').modal('toggle');
+    }
+
+    // Отказ
+    function RefuseApp(id) {
+        //var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        areyousure(body, '/Application/RefuseApp', 'Вы уверены?', 'Вы не сможете отменить это!', 'ShowAppModal');
+        //$('#ShowAppModal').modal('toggle');
+        //request.responseType = "json";
+        //request.open("GET", "/Application/RefuseApp" + "?" + body);
+        //request.onload = function () {
+        //    $('#ShowAppModal').modal('toggle');
+        //    if (this.response == 'ok') { ok("Заявка отклонена!"); }
+        //    //else { err("Опс, произошла ошибка!"); }
+        //}
+        //request.send(body);
+    }
+
+    // Подписать
+    function SubscribeApp(id) {
+        //var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        areyousure(body, '/Application/SubscribeApp', 'Вы уверены?', '', 'ShowAppModal');
+        //$('#ShowAppModal').modal('toggle');
+        //request.responseType = "json";
+        //request.open("GET", "/Application/SubscribeApp" + "?" + body);
+        //request.onload = function () {
+        //    $('#ShowAppModal').modal('toggle');
+        //    ok(this.response);
+        //    //if (this.response == 'ok') { ok("Заявка подписана!"); }
+        //    //else { err("Опс, произошла ошибка!"); }
+        //}
+        //request.send(body);
+    }
+
+    // Правка модал
+    function EditInfo(id, el, text) {
+        $('#EditModal').modal('toggle');
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id) + "&elId=" + encodeURIComponent(el) + "&text=" + encodeURIComponent(text);
+        request.responseType = "json";
+        request.open("GET", "/Application/ShowEditModal" + "?" + body);
+        request.onload = function () {
+            document.getElementById('editApp').innerHTML = this.response;
+        }
+        request.send(body);
+    }
+
+    function ApplyEditApp(id, elId, col) {
+        if (col == 1) {
+
+            var request = new XMLHttpRequest();
+            var body = "id=" + encodeURIComponent(id) + "&elId=" + encodeURIComponent(elId) + "&element=" + encodeURIComponent(document.getElementById('editId').value);
+            request.responseType = "json";
+            request.open("GET", "/Application/SaveApplication" + "?" + body);
+            request.onload = function () {
+                document.getElementById('t' + elId).innerHTML = this.response;
+            }
+            request.send(body);
+        }
+        if (col == 2) {
+            var request = new XMLHttpRequest();
+            var body = "id=" + encodeURIComponent(id) + "&elId=" + encodeURIComponent(elId) + "&element=" + encodeURIComponent(document.getElementById('editId').value) + "&element2=" + encodeURIComponent(document.getElementById('editId2').value);;
+            request.responseType = "json";
+            request.open("GET", "/Application/SaveApplicationTwo" + "?" + body);
+            request.onload = function () {
+                document.getElementById('t' + elId).innerHTML = this.response;
+            }
+            request.send(body);
+        }
+        $('#EditModal').modal('toggle');
+    }
+
+    // Удалить
+    function DeleteApp(id) {
+
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        areyousure(body, '/Application/DeleteApplication', 'Вы уверены?', 'Вы не сможете отменить это!', 'ShowAppModal');
+        $('#ShowAppModal').modal('toggle');
+        request.responseType = "json";
+        request.open("GET", "/Application/DeleteApplication" + "?" + body);
+        request.onload = function () {
+            ok(this.response);
+        }
+        request.send(body);
+    }
+
+    // Открыть просмотр заявки
+    function ShowModal(id) {
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id) + "&page=" + encodeURIComponent('b');
+        request.responseType = "json";
+        request.open("GET", "/Application/ShowAppModal" + "?" + body);
+        request.onload = function () {
+            document.getElementById('bodyApp').innerHTML = this.response;
+        }
+        request.send(body);
+        $('#ShowAppModal').modal('toggle');
+    }
+
+    // Начало работ
+    function StartApp(id) {
+
+        //var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        areyousure(body, '/Application/StartApplication', 'Вы уверены?', 'Вы не сможете отменить это!', 'ShowAppModal');
+        //$('#ShowAppModal').modal('toggle');
+        //request.responseType = "json";
+        //request.open("GET", "/Application/StartApplication" + "?" + body);
+        //request.onload = function () {
+        //    ok(this.response);
+        //}
+        //request.send(body);
+    }
+
+    // Завершение работы
+    function FinishApp(id) {
+
+        //var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        areyousure(body, '/Application/FinishApplication', 'Вы уверены?', 'Вы не сможете отменить это!', 'ShowAppModal');
+        //$('#ShowAppModal').modal('toggle');
+        //request.responseType = "json";
+        //request.open("GET", "/Application/FinishApplication" + "?" + body);
+        //request.onload = function () {
+        //    ok(this.response);
+        //}
+        //request.send(body);
+    }
+
+    // Отмена заявки
+    function CancelApp(id) {
+
+        //var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        areyousure(body, '/Application/CancelhApplication', 'Вы уверены?', 'Вы не сможете отменить это!', 'ShowAppModal');
+        //$('#ShowAppModal').modal('toggle');
+        //request.responseType = "json";
+        //request.open("GET", "/Application/CancelhApplication" + "?" + body);
+        //request.onload = function () {
+        //    ok(this.response);
+        //}
+        //request.send(body);
+    }
+
+
+
+</script>
+
+<script>
+
+    function AlertApp(id) {
+        document.getElementById(id).style.backgroundColor = '#FFFACD';
+        document.getElementById(id).style.border = '3px solid #808080';
+    }
+
+    AlertApp('@Model.AppId');
+    //count = 0;
+    //
+    //intervalId = setInterval(function () {
+    //    count++;
+    //    if (count == 3) {
+    //        clearInterval(intervalId);
+    //    }
+    //    AlertApp('@Model.AppId');
+    //}, 3500);
+
+</script>
+
+<script>
+    //function OpenCreateSwitchFormModal(id) {
+    //    //$('#CreateSwitchFormModal').modal('toggle');
+    //    var request = new XMLHttpRequest();
+    //    var body = "id=" + encodeURIComponent(id);
+    //    request.responseType = "json";
+    //    request.open("GET", "/Application/OpenSwitchFormModal" + "?" + body);
+    //    request.onload = function () {
+    //        document.getElementById('bodyApp').innerHTML = this.response;
+    //    }
+    //    request.send(body);
+    //}
+
+    function OpenCreateSwitchFormModal(id) {
+        fetch('/Application/GetSwitchTable/' + id).then(r => r.text())
+            .then(data => {
+                //document.getElementById('bodyApp')
+                $('#bodyApp').html(data);
+            });
+    }
+
+    let idApp;
+
+    //Показать информацию о заявке
+    function GetAppTable(id) {
+        idApp = id;
+        $('#ShowAppModal').modal('toggle');
+        fetch('/Application/GetAppTable/' + id).then(r => r.text())
+            .then(data => {
+                //document.getElementById('bodyApp')
+                $('#bodyApp').html(data);
+            });
+    }
+</script>
+
+
+<style>
+
+    .panel {
+        display: block;
+    }
+   
+    
+    td {             
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: --webkit-box;
+        -webkit-line-clamp: 3;
+    }
+
+  
+    @@media screen and (max-width: 940px) {
+        #orderdiv tr td, #orderdiv th {
+            display:block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: --webkit-box;
+            -webkit-line-clamp: 3;
+        }
+
+        #orderdiv th {
+            display:none;
+        }
+
+        #orderdiv tr td:first-child{
+            background: #64748b;
+        }
+    }
+
+</style>

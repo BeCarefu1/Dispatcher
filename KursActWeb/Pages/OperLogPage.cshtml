@@ -1,0 +1,308 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.OperLogPageModel
+@using ActGIPelectroWeb.Models
+@{ ViewData["Title"] = "Оперативный журнал";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<div style="width: 100%;  margin-bottom: -55px">
+
+    <div class="d-flex justify-content-between shadow p-3 mb-4 rounded" style="background-color:#66B5F8">
+        <h1 style="color:white; margin:0">
+            Оперативный журнал
+        </h1>
+        @if (User.IsInRole("dispatcher"))
+        {
+            <button class="btn btn-success" onclick="$('#EventModal').modal('toggle');"><i class="fa fa-plus"></i> Добавить запись</button>
+        }
+    </div>
+    <div id="operlog">
+        <div style="border: 1px solid #808080; border-radius: 3px;">
+            <form asp-page="/OperLogPage?sortOrder=@Model.NameSort&pageIndex=@Model.Operations.PageIndex" method="get">
+                <input type="search" name="SearchString" class="form-control" style="width: 87%; border:none; display: inline-block;" placeholder="Поиск" required="" value="@Model.CurrentFilter">
+                <div style="border-left: 1px #808080; display: inline-block;">
+                    <button class="btn btn-link" type="submit"><i class="fa fa-search"></i></button> | <a href="/OperLogPage?sortOrder=@Model.NameSort&pageIndex=@Model.Operations.PageIndex" class="btn">Сбросить</a>
+                </div>
+            </form>
+        </div>
+        @if (Model.Operations.Count() != 0)
+        {
+            var prevDisabled = !Model.Operations.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.Operations.HasNextPage ? "disabled" : "";
+            <div class="panel">
+                <form method="post" action="#" id="printJS-form">
+                    <table class="zebra-table-print">
+                        <tr>
+                            <th width="5%">№</th>
+                            <th width="12%"><a href="/OperLogPage?sortOrder=@Model.NameSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ОТДАЧИ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                            <th width="10%">Диспетчер</th>
+                            <th>Содержание сообщений в течении смены, подписи о сдаче и приемку смены</th>
+                            <th width="12%"><a href="/OperLogPage?sortOrder=@Model.DateSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ПРИМЕНЕНИЯ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                            <th width="20%">Визы, замечания</th>
+                        </tr>
+                        @foreach (var item in Model.Operations)
+                        {
+                            <tr onclick="$('#AnswerModal').modal('toggle'); idList = '@item.Id'; document.getElementById('answerId').value = '@item.Remarks'.replace(/<br>/gi, '\n');">
+                                <td>@item.Id</td>
+                                <td>@item.RecoilTime</td>
+                                <td>@item.Name</td>
+                                <td>@Html.Raw(item.Description)</td>
+                                <td>
+                                    @if (item.TineOfApplication.ToShortDateString() != "01.01.0001")
+                                    {
+                                        @item.TineOfApplication
+                                    }
+                                </td>
+                                <td>
+                                @if (item.TineOfApplication.ToShortDateString() != "01.01.0001") 
+                                { 
+                                    <p><u>@item.VisaUserName</u> — @item.Remarks</p>
+                                }
+                                </td>
+
+
+                          </tr>
+                        }
+                    </table>
+                    <style>
+                        .zebra-table-print {
+                            border: 1px solid #eee;
+                            border-radius: 15px;
+                            table-layout: fixed;
+                            width: 100%;
+                            margin-bottom: 20px;
+                        }
+
+                            .zebra-table-print tr {
+                                cursor: pointer;
+                            }
+
+
+
+                            .zebra-table-print th {
+                                font-weight: bold;
+                                padding: 5px;
+                                background: #000000;
+                                color: #ffffff;
+                                border: 1px solid #3d3d3d;
+                                text-align: center;
+                                text-transform: uppercase;
+                            }
+
+                                .zebra-table-print th a {
+                                    color: #ffffff;
+                                }
+
+                                    .zebra-table-print th a:hover {
+                                        color: #ff6a00;
+                                    }
+
+                            .zebra-table-print td {
+                                font-weight: bold;
+                                padding: 5px 10px;
+                                border: 1px solid #eee;
+                                text-align: center;
+                                color: #000000;
+                                cursor: pointer;
+                            }
+
+
+                            .zebra-table-print tbody tr:nth-child(odd) {
+                                background: #fff;
+                            }
+
+                            .zebra-table-print tbody tr:nth-child(even) {
+                                background: #F7F7F7;
+                            }
+
+                            .zebra-table-print tbody tr:hover {
+                                box-shadow: inset 0 0 0 2px #808080;
+                                background-color: #d9fffa;
+                                color: #ff6a00;
+                            }
+                        </style>
+                </form>
+
+
+                <div class="btn"><p>СТРАНИЦА: @Model.PageNumb ИЗ @Model.PageCount</p></div><br />
+                <a href="/OperLogPage?sortOrder=@Model.CurrentSort&pageIndex=@(Model.Operations.PageIndex - 1)&currentFilter=@Model.CurrentFilter" class="btn @prevDisabled">
+                    Предыдущий
+                </a>
+                <a href="/OperLogPage?sortOrder=@Model.CurrentSort&pageIndex=@(Model.Operations.PageIndex + 1)&currentFilter=@Model.CurrentFilter" class="btn @nextDisabled">
+                    Следующий
+                </a>
+                <button class="btn" onclick="PrintFunction()"><i class="fa fa-print"></i> Печать</button>
+            </div>
+        }
+        else
+        {
+            <div class="panel">
+                <table id="operlog" class="zebra-table">
+                    <tr>
+                        <th width="5%">№</th>
+                        <th width="12%"><a href="/OperLogPage?sortOrder=@Model.NameSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ОТДАЧИ</a></th>
+                        <th width="10%">Диспетчер</th>
+                        <th>Содержание сообщений в течении смены, подписи о сдаче и приемку смены</th>
+                        <th width="12%"><a href="/OperLogPage?sortOrder=@Model.DateSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ПРИМЕНЕНИЯ</a></th>
+                        <th width="20%">Визы, замечания</th>
+                    </tr>
+                </table>
+            </div>
+            <div class="d-flex justify-content-center">
+                <i class="far fa-check-circle fa-10x m-4"></i>
+            </div>
+            <div class="d-flex justify-content-center">
+                <h3>Нет записей</h3>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+@if (User.IsInRole("administrator") || User.IsInRole("chief_dispatcher") || User.IsInRole("сhiefEngineer") || User.IsInRole("bossPTO"))
+{
+    <div class="modal fade" id="AnswerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div id="switchFormId" class="modal-content">
+                <div class='modal-header'>
+                    <h4 class='modal-title'><i class='fa fa-edit' aria-hidden='true'></i> Добавление комментария</h4>
+                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                </div>
+                <div id="switchTableId" class='modal-body'>
+                    <textarea name="comment" id="answerId" class="form-control" placeholder="Комментарий ..." onkeypress="if (event.keyCode == 13 && event.shiftKey) { SendRemarks() }"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" onclick="SendRemarks()"><i class="fa fa-plus"></i> Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("dispatcher") || User.IsInRole("administrator"))
+{
+    <div class="modal fade" id="EventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div id="switchFormId" class="modal-content">
+                <div class='modal-header'>
+                    <h4 class='modal-title'><i class='fa fa-edit' aria-hidden='true'></i> Добавление записи</h4>
+                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                </div>
+                <div id="switchTableId" class='modal-body'>
+                    <textarea name="comment" id="eventId" class="form-control" placeholder="Запись ..." onkeypress="if (event.keyCode == 13 && event.shiftKey) { SendEvent() }"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" onclick="SendEvent()"><i class="fa fa-plus"></i> Отправить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+
+    var idList;
+
+    function DelEvent(id) {
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        request.responseType = "json";
+        request.open("GET", "/Operational/DelEvent" + "?" + body);
+        request.onload = function () {
+            if (this.response == 1) {
+                UpData();
+            }
+            else {
+                err("Error");
+            }
+        }
+        request.send(body);
+    }
+
+    function SendRemarks() {
+        var request = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(idList) + "&comment=" + encodeURIComponent(document.getElementById('answerId').value);
+        request.responseType = "json";
+        request.open("GET", "/Operational/AddVisa" + "?" + body);
+        request.onload = function () {
+            if (this.response == "ok") {
+                $('#AnswerModal').modal('toggle');
+                UpData();
+            }
+            else {
+                err("Error");
+            }
+        }
+        request.send(body);
+
+    }
+
+    function SendEvent() {
+        var request = new XMLHttpRequest();
+        var body = "comment=" + encodeURIComponent(document.getElementById('eventId').value);
+        request.responseType = "json";
+        request.open("GET", "/Operational/AddComment" + "?" + body);
+        request.onload = function () {
+            if (this.response == 1) {
+                $('#EventModal').modal('toggle');
+                UpData();
+            }
+            else {
+                err("Запись добавлена");
+            }
+        }
+        request.send(body);
+    }
+
+    // *** Печать ***
+    function PrintFunction() {
+
+        printJS({
+            printable: 'printJS-form',
+            type: 'html'
+        });
+    }
+
+    // *** Обновление таблицы ***
+    function UpData() {
+        $("#operlog").load(location.href + " #operlog");
+        setTimeout(UpData, 3000);
+    }
+    UpData();
+
+</script>
+
+
+<style>
+    .panel{
+        display:block;
+    }
+
+    td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: --webkit-box;
+        -webkit-line-clamp: 3;
+    }
+
+
+    @@media screen and (max-width: 940px) {
+        #operlog tr td, #operlog th {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: --webkit-box;
+            -webkit-line-clamp: 3;
+        }
+
+        #operlog th {
+            display: none;
+        }
+
+        #operlog tr td:first-child {
+            background: #64748b;
+        }
+    }
+
+</style>

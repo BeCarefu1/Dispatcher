@@ -1,0 +1,119 @@
+﻿@model IEnumerable<ActGIPelectroWeb.ViewModels.SubstationRowViewModel>
+
+@if (Model.Any())
+{
+    <div class="panel">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Название</th>
+                    <th>Флаги</th>
+                    <th>Точек учёта</th>
+                    <th>Статус</th>
+                    <th>Изменения</th>
+                    <th>Модем</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <th class="pl-4">
+                                <a href="/SubstationPage/@item.Id">
+                                    <div class="zoom">
+                                        @item.Name
+                                        @if ((User.IsInRole("administrator") || User.IsInRole("consumerDataProvider")) && item.CountForImportConsumer > 0)
+                                        {
+                                            <span class="badge badge-pill badge-primary">@item.CountForImportConsumer</span>
+                                        }
+                                    </div>
+                                </a>
+                            </th>
+                           
+                            <td class="pl-1 ml-1">
+                                @{
+                                    if (item.IsInstallationDone)
+                                    {
+                                        <span class="badge badge-pill badge-success ml-1" title="СМР выполнен">
+                                            <i class="fas fa-tools"></i>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-light ml-1" title="СМР НЕ выполнен">
+                                            <i class="fas fa-tools text-light"></i>
+                                        </span>
+                                    }
+
+
+                                    if (item.IsPropSchemeDone)
+                                    {
+                                        <span class="badge badge-pill badge-success ml-1" title="Поопорная схема готова">
+                                            <i class="fas fa-pencil-ruler"></i>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-light ml-1" title="Поопорная схема НЕ готова">
+                                            <i class="fas fa-pencil-ruler text-light"></i>
+                                        </span>
+                                    }
+
+                                    if (item.IsBalanceDone)
+                                    {
+                                        <span class="badge badge-pill badge-success ml-1" title="Баланс сведен">
+                                            <i class="fas fa-balance-scale"></i>
+                                        </span>
+                                    }
+
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-light ml-1" title="Баланс НЕ сведен">
+                                            <i class="fas fa-balance-scale text-light"></i>
+                                        </span>
+                                    }
+
+
+                                    if (item.IsKS2Done)
+                                    {
+                                        <span class="badge badge-pill badge-success ml-1" title="КС-2 сделана">
+                                            <i class="fas fa-file-alt"></i>
+                                        </span>
+                                    }
+
+                                    else
+                                    {
+                                        <span class="badge badge-pill badge-light ml-1" title="КС-2 НЕ сделана">
+                                            <i class="fas fa-file-alt text-light"></i>
+                                        </span>
+                                    }
+                                }
+
+
+                            </td>
+                            
+                            <td>@item.CountRegPoints @if(@item.CountUSPD > 0) { <text> + @item.CountUSPD УСПД</text> }</td>
+                            <td>@item.StateName</td>
+                            <td><a href="/SubstationActions/@item.Id" target="_blank">@item.LastChanges.ToString("dd MMM yyyy HH:mm")</a></td>
+                            <td>@item.PhoneNumber</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+}
+else
+{
+    <div class="row justify-content-center d-flex mb-5">
+        <i class="fa fa-times EmptyIcon"></i>
+    </div>
+    <div class="row justify-content-center d-flex EmptyIcon--text">
+        <h2>Отсутствуют подстанции</h2>
+    </div>
+    <div class="row justify-content-center d-flex EmptyIcon--text">
+        <h3>Добавьте их с помощью кнопки <i class="fa fa-plus EmptyIcon--button"></i> на панели</h3>
+    </div>
+}

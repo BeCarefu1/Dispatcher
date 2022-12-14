@@ -1,0 +1,100 @@
+﻿<div class="col-lg-9 d-flex">
+    <div class="panel align-self-stretch">
+        <div class="panel-heading d-flex">
+            <h3 class="panel-title">Прибор учёта</h3>
+            <div class="spinner-border spinner-border-sm ml-auto text-orange align-self-center panel-spinner" role="status">
+                <span class="sr-only">Сохранение...</span>
+            </div>
+        </div>
+        <div class="panel-content no-gutter-top p-4">
+            <div class="row">
+                <div class="col-md-6 pl-1">
+                    <div class="form-group float-label">
+                        <div class="row no-gutters">
+                            <div class="col-md-9 float-label">
+                                <label for="InstallPlaceTypeId" class="float-label--label">Место установки</label>
+                                @Html.DropDownList("InstallPlaceTypeId", ViewBag.InstallPlaceTypesList as SelectList, new { @class = "form-control", @form = "installActForm", onchange = "Update_InstallAct()" })
+                                <span></span>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="InstallPlaceNumber" name="InstallPlaceNumber" value="@Model.InstallAct.InstallPlaceNumber" form="installActForm" onchange="Update_InstallAct(this)" />
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-toggle pt-2 pb-3 d-flex float-label " data-toggle="buttons">
+                        <label class="btn btn-outline-secondary btn-rounded w-100 active" id="IsOutFlowProxyFalse" onclick="SetIsOutFlow();Update_InstallAct(this, true);">
+                            <input type="radio" name="IsOutFlowProxyFalse" autocomplete="off"> приём
+                        </label>
+                        <label for="IsCommRegProxyTrue" class="float-label--group-label">Переток</label>
+                        <label class="btn btn-outline-secondary btn-rounded w-100" id="IsOutFlowProxyTrue" onclick="SetIsOutFlow(true);Update_InstallAct(this, true);">
+                            <input type="radio" name="IsOutFlowProxyTrue" autocomplete="off"> отдача
+                        </label>
+                    </div>
+
+                    <div class="row no-gutters">
+                        <div class="col">
+                            <div class="form-group float-label">
+                                <label for="Tsum" class="float-label--label">Т<sub>сум</sub></label>
+                                <input type="text" class="form-control" id="Tsum" name="Tsum" value="@Model.InstallAct.Tsum" form="installActForm" onchange="Update_InstallAct(this)">
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="col ml-2 mr-2">
+                            <div class="form-group float-label">
+                                <label for="T1" class="float-label--label">T<sub>1</sub></label>
+                                <input type="text" class="form-control" id="T1" name="T1" value="@Model.InstallAct.T1" form="installActForm" onchange="Update_InstallAct(this)">
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group float-label">
+                                <label for="T2" class="float-label--label">T<sub>2</sub></label>
+                                <input type="text" class="form-control" id="T2" name="T2" value="@Model.InstallAct.T2" form="installActForm" onchange="Update_InstallAct(this)">
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 ">
+                    <div class="row">
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group float-label">
+                                <label for="Seal_RegDevice" class="float-label--label">№ пл. счетчика</label>
+                                <input type="text" class="form-control" id="Seal_RegDevice" name="Seal_RegDevice" value="@Model.InstallAct.Seal_RegDevice" form="installActForm" onchange="Update_InstallAct(this)">
+                                <span></span>
+                            </div>
+                            <div class="form-group float-label">
+                                <label for="Seal_KDE" class="float-label--label">№ пл. КДЕ</label>
+                                <input type="text" class="form-control" id="Seal_KDE" name="Seal_KDE" value="@Model.InstallAct.Seal_KDE" form="installActForm" onchange="Update_InstallAct(this)">
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group float-label">
+                                <label for="Seal_AV1" class="float-label--label">№ пл. АВ1</label>
+                                <input type="text" class="form-control" id="Seal_AV1" name="Seal_AV1" value="@Model.InstallAct.Seal_AV1" form="installActForm" onchange="Update_InstallAct(this)">
+                                <span></span>
+                            </div>
+                            <div class="form-group float-label">
+                                <label for="Seal_AV2" class="float-label--label">№ пл. АВ2</label>
+                                <input type="text" class="form-control" id="Seal_AV2" name="Seal_AV2" value="@Model.InstallAct.Seal_AV2" form="installActForm" onchange="Update_InstallAct(this)">
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 pr-1">
+                            <div class="form-group float-label">
+                                <label for="Seal_KI" class="float-label--label">№ пл. клем. крышки</label>
+                                <input type="text" class="form-control" id="Seal_KI" name="Seal_KI" value="@Model.InstallAct.Seal_KI" form="installActForm" onchange="Update_InstallAct(this)">
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

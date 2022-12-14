@@ -1,0 +1,86 @@
+﻿<div class="col-lg-6 d-flex">
+    <div class="panel align-self-stretch">
+        <div class="panel-heading d-flex">
+            <h3 class="panel-title">Потребитель</h3>
+            <div class="ml-auto">
+                <span class="text-green" id="SendToBasheskIndicator"><i class="far fa-check-circle"></i> Запрос отправлен</span>
+                <a href="javascript:void(0)" title="Запросить данные потребителя в ЭСКБ" onclick="SendToBashEskConfirmation()" class="panel-title-link align-self-stretch d-inline-block" id="BtnSendToBashesk">Запросить данные</a>
+            </div>
+        </div>
+
+        <div class="panel-content no-gutter-top">
+            <div class="row no-gutters">
+                <div class="col-9 pr-2">
+                    <div class="form-group float-label">
+                        <label for="Name" class="float-label--label">ФИО</label>
+                        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Consumer.Name" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="form-group float-label">
+                        <label for="ContractNumber" class="float-label--label">Номер договора</label>
+                        <input type="text" class="form-control" id="ContractNumber" name="ContractNumber" value="@Model.Consumer.ContractNumber" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row no-gutters">
+                <div class="col-2">
+                    <div class="form-group float-label">
+                        <label for="U_Index" class="float-label--label">Индекс</label>
+                        <input type="text" class="form-control" id="U_Index" name="U_Index" value="@Model.Consumer.U_Index" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+                </div>
+                <div class="col-5 pl-2">
+                    <div class="form-group float-label">
+                        <label for="U_Local" class="float-label--label">Населенный пункт</label>
+                        <input type="text" class="form-control" id="U_Local" name="U_Local" value="@Model.Consumer.U_Local" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+                </div>
+                <div class="col-5 pl-2">
+                    <div class="form-group float-label">
+                        <label for="U_Local_Secondary" class="float-label--label">СНТ</label>
+                        <input type="text" class="form-control" id="U_Local_Secondary" name="U_Local_Secondary" value="@Model.Consumer.U_Local_Secondary" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row no-gutters">
+                <div class="col-4">
+                    <div class="form-group float-label">
+                        <label for="U_Street" class="float-label--label">Улица</label>
+                        <input type="text" class="form-control" id="U_Street" name="U_Street" value="@Model.Consumer.U_Street" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+                </div>
+                <div class="col-4 pl-2">
+                    <div class="form-group float-label">
+                        <label for="U_House" class="float-label--label">Дом</label>
+                        <input type="text" class="form-control" id="U_House" name="U_House" value="@Model.Consumer.U_House" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+                </div>
+                <div class="col-2 pl-2">
+                    <div class="form-group float-label">
+                        <label for="U_Build" class="float-label--label">Корпус</label>
+                        <input type="text" class="form-control" id="U_Build" name="U_Build" value="@Model.Consumer.U_Build" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+                </div>
+                <div class="col-2 pl-2">
+                    <div class="form-group float-label">
+                        <label for="U_Flat" class="float-label--label">Квартира</label>
+                        <input type="text" class="form-control" id="U_Flat" name="U_Flat" value="@Model.Consumer.U_Flat" form="consumerForm" onchange="Update_Consumer(this)">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,219 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.LettersModel
+@{
+    ViewData["Title"] = "Реестры писем";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel p-3" id="reestrsList">
+</div>
+
+
+<script>
+    var currentDate = '_';
+    UpdateLetterReestrsList();
+    //Запрос таблицы точек учета с письмами и подстановка ее в контейнер
+    function UpdateLetterReestrsList() {
+        fetch('/Letter/HTML_LetterReestrsList').then((r) => r.text())
+            .then((html) => {
+                $('#reestrsList').html(html);
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+    }
+    function LoadLettersTable(inviteDate) {
+        $('#'+currentDate).html('');
+        currentDate = inviteDate;
+        fetch('/Letter/HTML_LettersTable?inviteDate=' + inviteDate).then((r) => r.text())
+            .then((html) => {
+                $('#'+inviteDate).html(html);
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+    }
+    //Очистить показания в актах
+    function ClearEnergyFromActs(date) {
+        Swal.fire({
+            title: 'Очистить все показания на' + date + '?',
+            text: "Это необратимое действие!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Да, удалить показания!',
+            cancelButtonText: 'Отмена'
+        }).then((result) => {
+            if (result.value) {
+                fetch('/RegPoint/ClearEnergyData', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: "inviteDate=" + encodeURIComponent(date)
+                }).then((response) => {
+                    if (response.ok) {
+                        LoadLettersTable(date);
+                        //UpdateLetterReestrsList();
+                        ok('Показания удалены');
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        })
+    }
+
+    //Изменить Track номер
+    async function UpdateTrackNumber(letterId, currentTrackNum) {
+        const { value: trackNum } = await Swal.fire({
+            title: 'Введите Track номер',
+            input: 'text',
+            inputValue: currentTrackNum,
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Нужно ввести номер!'
+                }
+            }
+        })
+        if (trackNum) {
+            //Запрос
+            fetch('/Letter/UpdateTrackNumber', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: "id=" + encodeURIComponent(letterId) + "&newTrackNumber=" + encodeURIComponent(trackNum)
+            }).then((response) => {
+                if (response.ok) {
+                    ok('Track номер изменен');
+                    $('#trackNum_' + letterId).html(trackNum);
+                } else { err('Ошибка сервера' + response.statusText); }
+            });
+        }
+    }
+
+    //Удалить письмо
+    function DeleteLetter(letterId, letterName) {
+        Swal.fire({
+            title: 'Удалить письмо №' + letterName + '?',
+            text: "Это необратимое действие!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Да, удалить его!',
+            cancelButtonText: 'Отмена'
+        }).then((result) => {
+            if (result.value) {
+                fetch('/Letter/Delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: "letterId=" + encodeURIComponent(letterId)
+                }).then((response) => {
+                    if (response.ok) {
+                        UpdateLetterReestrsList();
+                        ok('Письмо удалено');
+                    } else { err('Ошибка сервера' + response.statusText); }
+                });
+            }
+        })
+    }
+    //Нажатие на иконку Распечатано
+    function Switch_LetterPrinted(letterId) {
+        SwithRequest('LetterPrinted', letterId, 'Письмо распечатано', 'green');
+    }
+
+    //Переключить цвет Серый/Зеленый
+    function switchColor(icon, colorNameIfTrue) {
+        if (GetFlagStatus(icon)) {
+            //Выключаем
+            icon.css('color', 'gray');
+        } else {
+            //Включаем
+            icon.css('color', colorNameIfTrue);
+        }
+    }
+    //Получить текущий статус флага (от цвета иконки)
+    function GetFlagStatus(icon) {
+        return !(icon.css('color').localeCompare('rgb(128, 128, 128)') === 0);
+    }
+    //Запрос на сервер для изменения флага
+    function SwithRequest(flagName, letterId, alertFlagName, colorName) {
+        let icon = $('#' + flagName + '_' + letterId);
+        //Статус флага
+        let newStatus = !GetFlagStatus(icon);
+        //Запрос
+        fetch('/Letter/Update_' + flagName, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: "id=" + encodeURIComponent(letterId) + "&newstatus=" + encodeURIComponent(newStatus)
+        }).then((response) => {
+            if (response.ok) {
+                ok('Флаг "' + alertFlagName + '" изменен');
+                switchColor(icon, colorName);
+            } else { err('Ошибка сервера' + response.statusText); }
+        });
+    }
+</script>
+
+<script>
+    function ok(text) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        Toast.fire({
+            type: 'success',
+            title: text
+        })
+    }
+    function err(text) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        Toast.fire({
+            type: 'error',
+            title: text
+        })
+    }
+</script>
+
+<script>
+    //Всплывающие подсказки
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+
+<script>
+    // File download helper
+    function DownloadFile(caller, downloadUrl, fileName) {
+        $.ajax(
+            {
+                url: downloadUrl,
+                method: 'GET',
+                xhrFields:
+                {
+                    responseType: 'blob'
+                },
+                beforeSend: function() {
+                    $(caller).prop('disabled', true);
+                    $(caller).find('.spinner-border').removeClass('d-none');
+                    $(caller).find('i').addClass('d-none');
+                },
+                success:
+                    function(data) {
+                        var a = document.createElement('a');
+                        var url = window.URL.createObjectURL(data);
+                        a.href = url;
+                        a.download = fileName + '.xlsx';
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        $(caller).prop('disabled', false);
+                        $(caller).find('.spinner-border').addClass('d-none');
+                        $(caller).find('i').removeClass('d-none');
+                    }
+            }
+        );
+    }
+</script>

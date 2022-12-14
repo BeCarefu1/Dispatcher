@@ -1,0 +1,85 @@
+﻿@model ActGIPelectroWeb.Models.LoginModel
+
+<!DOCTYPE html>
+<html dir="ltr" lang="ru" class="no-outlines">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- ==== Title ==== -->
+    <title>Вход в учётную запись - Гип-электро Акт</title>
+
+    <!-- ==== Favicon ==== -->
+    <link rel="icon" type="image/png" href="/images/fav128.ico" sizes="128x128">
+    <link rel="icon" type="image/png" href="/images/fav64.ico" sizes="64x64">
+    <link rel="icon" type="image/png" href="/images/fav32.ico" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/fav16.ico" sizes="16x16">
+
+    <!-- ==== Google Font ==== -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700%7CMontserrat:400,500">
+
+    <!-- ==== Stylesheets ==== -->
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/main.min.css">
+    <link rel="stylesheet" href="/lib/fontawesome/css/fontawesome.min.css" />
+</head>
+<body>
+    <div class="wrapper">
+        <div class="m-account-w">
+            <div class="m-account">
+                <div class="row no-gutters">
+                    <div class="col-md-12 align-self-center">
+                        <div class="m-account--form-w" style="background-color: #ffffff; box-shadow: 0 0 15px #A9A9A9; ">
+                            <div class="m-account--form">
+                                <div class="logo">
+                                    <img src="/images/logo-kurs-dispatcher1.png" alt="Гип-электро Акт">
+                                </div>
+                                <form class="form-signin" action="/Account/Login" asp-antiforgery="true" method="post">
+                                 
+                                    @if (ViewData["Error"] != null)
+                                    {
+                                        <div class="alert alert-danger" role="alert">@ViewData["Error"]</div>
+                                    }
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend" style="background-color: #cb621d; color: #f1f5f9;">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <input type="text" id="inputLogin" name="Login" class="form-control"
+                                            placeholder="Введите ваш Логин" required=""
+                                                   autofocus="" label="Ваш email">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend" style="background-color: #cb621d; color: #f1f5f9;">
+                                                <i class="fas fa-key"></i>
+                                            </div>
+                                            <input type="password" id="inputPassword" name="Password" class="form-control" placeholder="Введите ваш Пароль" required="">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mt-5">
+                                        <a href="#" class="btn-link" hidden>Забыли пароль?</a>
+                                        <button type="submit" class="btn btn-rounded btn-warning btn-lg" style="background-color: #cb621d; color: #f1f5f9;">Вход в систему</button>
+                                    </div>
+
+                                    <div class="m-account--footer">
+                                        <p>&copy; @DateTime.Now.Year - Отдел разработки ООО "Курс"</p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>

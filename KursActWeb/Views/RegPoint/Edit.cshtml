@@ -1,0 +1,117 @@
+﻿@model GIPManager.RegPoint
+@{
+    ViewData["Title"] = "Редактирование точки учёта";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="/js/EditRegPoint.min.js" type="text/javascript"></script>
+
+<!-- Верхняя панель + хлебные крошки -->
+<div class="panel pageAction--panel d-flex align-content-start flex-wrap mb-3">
+    <h4><a href="/ContractPage/@Model.Substation.NetRegion.Contract.Id">@Model.Substation.NetRegion.Contract.Name</a></h4>
+    <i class="fas fa-angle-right panelAction--divider"></i>
+    <h4><a href="/RegionPage/@Model.Substation.NetRegion.Id">@Model.Substation.NetRegion.Name</a></h4>
+    <i class="fas fa-angle-right panelAction--divider"></i>
+    <h4><a href="/SubstationPage/@Model.Substation.Id">@Model.Substation.Name</a></h4>
+    <i class="fas fa-angle-right panelAction--divider"></i>
+    <h4 class="active">ТУ @Model.Device.SerialNumber (ред.)</h4>
+    <div class="ml-auto d-flex align-items-stretch">
+        <a href="javascript:void(0)" class="btn btn-lg btn-rounded btn-outline-warning btn-pageAction mr-2 @if(ViewBag.IsDataConfirmed) {<text>d-none</text>}" title="Подтвердить правильность данных" data-toggle="tooltip" data-placement="bottom" onclick="AddDataConfirmationFlag(this)" id="DataConfirmationFlagButton">
+            <i class="fas fa-check-double mt-2"></i>
+        </a>
+        <a href="/GetFile/GetExcel_Act/@Model.InstallAct.RegPointId" class="btn btn-lg btn-rounded btn-outline-warning btn-pageAction mr-2" title="Скачать акт допуска" data-toggle="tooltip" data-placement="bottom">
+            <i class="fas fa-file-alt mt-2"></i>
+        </a>
+        <a href="/RegPointActions/@Model.InstallAct.RegPointId" class="btn btn-lg btn-rounded btn-outline-warning btn-pageAction mr-2" title="Просмотр истории изменений" data-toggle="tooltip" data-placement="bottom">
+            <i class="fas fa-history mt-2"></i>
+        </a>
+        @if ( /*User.IsInRole("operator") ||*/ User.IsInRole("administrator"))
+        {
+        <a href="javascript:void(0)" onclick="Delete(@Model.InstallAct.RegPointId)" class="btn btn-lg btn-rounded btn-outline-warning btn-pageAction" title="Удалить точку учёта" data-toggle="tooltip" data-placement="bottom">
+            <i class="fas fa-trash-alt mt-2"></i>
+        </a>
+        }
+    </div>
+</div>
+
+@if (User.IsInRole("operator") || User.IsInRole("administrator"))
+{
+<!-- Индикатор проверки данных оператором -->
+<div class="@if (!ViewBag.IsDataConfirmed) {<text>d-none</text>}" id="DataConfirmationFlagSetAlert">
+    <div class="alert alert-success d-flex align-items-center"> 
+        <i class="fas fa-check-double mr-3"></i>
+        <strong class="ml-1 mr-1">Корректность</strong>  данных <strong class="ml-1 mr-1">подтверждена</strong> оператором
+        <button class="ml-auto btn btn-link btn-rounded dismiss-check mt-0 mb-0" onclick="RemoveDataConfirmationFlag()">
+            <span>Снять подтверждение</span>
+        </button>
+    </div>
+</div>
+
+<!-- Скрытые элементы форм -->
+    @await Html.PartialAsync("~/Views/RegPoint/Shared/_FormBasePartial.cshtml", Model)
+
+<div class="row gutter-20">
+    <!-- Панель информации -->
+    @await Html.PartialAsync("~/Views/RegPoint/Shared/_InstallActInfoPartial.cshtml", Model)
+
+    <!-- Панель "Прибор учёта" -->
+    @await Html.PartialAsync("~/Views/RegPoint/Shared/_RegDevicePanelPartial.cshtml", Model)
+
+    <!-- Панель "Точка учёта" -->
+    @await Html.PartialAsync("~/Views/RegPoint/Shared/_RegPointPanelPartial.cshtml", Model)
+
+    <!-- Панель "Трансформаторы тока" -->
+    @await Html.PartialAsync("~/Views/RegPoint/Shared/_TTPanelPartial.cshtml", Model)
+
+    <!-- Панель "Снятый прибор учёта" -->
+    @await Html.PartialAsync("~/Views/RegPoint/Shared/_RegDeviceUnmounterPanelPartial.cshtml", Model)
+
+    <!-- Панель "Объект потребителя" -->
+    @await Html.PartialAsync("~/Views/RegPoint/Shared/_OAddressPanelPartial.cshtml", Model)
+
+    <!-- Панель "Потребитель" -->
+    @await Html.PartialAsync("~/Views/RegPoint/Shared/_UAddressPanelPartial.cshtml", Model)
+</div>
+
+<!-- Подверрждение достоверности введенных данных -->
+<script>
+    // Ставим флаг о проверке данных
+    function AddDataConfirmationFlag(caller) {
+        $.ajax({
+          url: '/RegPoint/SetDataConfirmationFlag?id=@Model.Id&value=true',
+          success: function(data) {
+            $(caller).addClass('d-none');
+            $('#DataConfirmationFlagSetAlert').removeClass('d-none');
+          }
+        });
+    }
+
+    // Снимаем флаг о проверке данных
+    function RemoveDataConfirmationFlag() {
+        $.ajax({
+          url: '/RegPoint/SetDataConfirmationFlag?id=@Model.Id&value=false',
+          success: function(data) {
+            $('#DataConfirmationFlagSetAlert').addClass('d-none');
+            $('#DataConfirmationFlagButton').removeClass('d-none');
+          }
+        });
+    }
+
+</script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+}
+else
+{
+<div class="row justify-content-center d-flex mb-5 mt-3">
+    <i class="fa fa-ban EmptyIcon"></i>
+</div>
+<div class="row justify-content-center d-flex EmptyIcon--text">
+    <h2>Недостаточно прав</h2>
+</div>
+<div class="row justify-content-center d-flex EmptyIcon--text">
+    <h3>У Вашей учетной записи недостаточно прав для просмотра данной страницы</h3>
+</div>
+}

@@ -1,0 +1,34 @@
+﻿[
+  {
+    "outputFileName": "wwwroot/css/main.min.css",
+    "inputFiles": [
+      "Assets/style.css"
+    ]
+  },
+
+  {
+    "outputFileName": "wwwroot/js/EditRegPoint.min.js",
+    "inputFiles": [
+      "Assets/EditRegPoint.js"
+    ],
+
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+
+  {
+    "outputFileName": "wwwroot/js/main.min.js",
+    "inputFiles": [
+      "Assets/main.js"
+    ],
+
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

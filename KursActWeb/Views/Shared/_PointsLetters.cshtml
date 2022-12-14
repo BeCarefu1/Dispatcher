@@ -1,0 +1,63 @@
+﻿@using ActGIPelectroWeb.ViewModels;
+@model IEnumerable<PointaLettersRowViewModel>
+
+@if (Model.Any())
+{
+    <div class="btn-group" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" style="border-radius: 5px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Вид таблицы
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <a class="dropdown-item" style="cursor:pointer;" onclick="UpdateTableRegPoints()"><i class="fas fa-clipboard-list"></i> Стандартный</a>
+            <a class="dropdown-item" style="cursor:pointer;" onclick="UpdateTableRegPointsLetters()"><i class="far fa-envelope"></i> Письма приглашения</a>
+        </div>
+    </div>
+    <div class="panel">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">№</th>
+                    <th><input type="checkbox" /></th>
+                    <th scope="col">ФИО</th>
+                    <th scope="col">Адрес объекта</th>
+                    <th scope="col">Юр. Адрес</th>
+                    <th scope="col">Письма</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int n = 0;
+                    foreach (var item in Model)
+                    {
+                        n++;
+                        <tr>
+                            <th scope="row"><a href="/RegPoint/Edit?id=@item.Id">@n </a>@Html.Raw(item.PhoneICO) @Html.Raw(item.LinkIsOkICO)</th>
+                            <td><input type="checkbox" /></td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.Address_O</td>
+                            <td>@item.Address_U</td>
+                            <td>
+                                @foreach (var l in item.Letters)
+                                {
+                                    var prIcoColor = (l.Printed) ? "green" : "gray";
+                                    <div>
+                                        <i class="far fa-envelope" onclick="LetterInfo(@l.Id, '@l.InviteDate.ToShortDateString()')" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Письмо №@l.OutNumber. Подробнее..."> </i>
+                                        <i class="fas fa-print" onclick="Switch_LetterPrinted(@l.Id)" id="LetterPrinted_@l.Id" style="cursor:pointer; color: @Html.Raw(prIcoColor);" data-toggle="tooltip" data-placement="top" title="Флаг 'Письмо распечатано'"></i> @l.InviteDate.ToShortDateString()
+                                    </div>
+                                }
+                                <a style="cursor:pointer;" onclick="CreateLetter(@item.Id)" data-toggle="tooltip" data-placement="top" title="Создать письмо"><i class="far fa-calendar-plus"></i></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        //Всплывающие подсказки
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+}

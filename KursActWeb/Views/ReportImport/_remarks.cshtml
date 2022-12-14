@@ -1,0 +1,22 @@
+﻿
+    <div id="remarksAccordion">
+        @{
+            int count = 1;
+            foreach (GIPManager.ReportRemark remark in Model)
+            {
+                <h3>Замечание №@count от @remark.User.Name</h3>
+                <div>
+                    @remark.Text
+                </div>
+                count++;
+            }
+        }
+    </div>
+
+<script>
+     $("#remarksAccordion").accordion({
+            collapsible: true,
+            heightStyle: "content",
+            active: false
+        });
+</script>

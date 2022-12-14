@@ -1,0 +1,15 @@
+﻿<form id="installActForm" hidden>
+    <input type="text" id="Id" name="Id" value="@Model.InstallAct.Id">
+    <input type="text" id="RegPointId" name="RegPointId" value="@Model.InstallAct.RegPointId">
+    <input type="text" id="IsCommReg" name="IsCommReg" value="@Model.InstallAct.IsCommReg"/>
+    <input type="text" id="IsOutFlow" name="IsOutFlow" value="@Model.InstallAct.IsOutFlow"/>
+</form>
+<form id="consumerForm" hidden>
+    <input type="text" Id="Id" name="Id" value="@Model.Consumer.Id"/>
+    <input type="text" Id="RegPointId" name="RegPointId" value="@Model.Consumer.RegPointId"/>
+</form>
+<form id="regPointFlagsForm" hidden>
+    <input type="text" Id="Id" name="Id" value="@Model.RegPointFlags.Id" />
+    <input type="text" Id="ImportConsummerData" name="ImportConsummerData" value="@Model.RegPointFlags.ImportConsummerData" />
+    <input type="text" Id="RegPointId" name="RegPointId" value="@Model.Id" />
+</form>

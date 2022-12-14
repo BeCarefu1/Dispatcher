@@ -1,0 +1,124 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.UnreadCommentsModel
+@{
+    ViewData["Title"] = "Непрочитанные комментарии";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel pageAction--panel d-flex align-content-start flex-wrap">
+    <h4 class="active mt-1">Непрочитанные комментарии</h4>
+    @if (Model.Comments.Any())
+    {
+        <a href="javascript:void(0)" onclick="MarkAsReadAll()" class="btn btn-outline-warning btn-rounded mt-0 ml-auto" id="btn_mark_read">
+            Отметить все как прочитанное
+        </a>
+    }
+</div>
+
+<div class="comment">
+    <div class="comment--items">
+        @if (Model.Comments.Any())
+        {
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="comment--item comment--left" id="comment-@comment.Id">
+                    <div class="comment--avatar avatar-circle">
+                        <img src="http://aiiscue.kursufa.ru/account/GetAvatar?hash=@comment.UserName.GetHashCode()&size=80&key=2ec8466f0e50235fbb97306dbec850302dfaa6ae" alt="" class="rounded-circle border border-danger">
+                    </div>
+                    <a href="/SubstationPage/@comment.SubstationId">
+                        <div class="comment--content shadow-sm">
+                            <div class="comment--info">
+                                <div class="d-flex flex-row">
+                                    <h6 class="comment--user h6 text-black-50">
+                                        <span class="text-red">@comment.SubstationName / @comment.UserName</span>
+                                    </h6>
+                                    <h6 class="ml-auto d-inline-block text-black-50">@comment.TimeStamp</h6>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <div class="comment--text text-black-50">
+                                    <p>@comment.Comment</p>
+                                </div>
+                                <div class="ml-auto d-inline-block align-self-center ml-1 read-comment--button zoom-new">
+                                    <i class="fas fa-eye fa-2x" data-toggle="tooltip" data-placement="bottom" title="Отметить как прочитанное" onclick="MarkAsRead(@comment.Id, '#comment-@comment.Id'); return false;"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                    </a>
+                </div>
+            }
+
+        }
+        else
+        {
+            <div class="d-flex justify-content-center">
+                <i class="far fa-check-circle fa-10x m-4"></i>
+            </div>
+            <div class="d-flex justify-content-center">
+                <h3>Нет комментариев</h3>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    // Mark-as-read individual comment
+
+    function MarkAsRead(id, caller) {
+
+        var xhr = new XMLHttpRequest();
+        var body = "id=" + encodeURIComponent(id);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                $(caller).remove();
+            }
+        }
+        xhr.open("POST", '/Comments/MarkCommentAsRead', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send(body);
+    }
+
+    // Mark-as-read all comments
+
+    function MarkAsReadAll() {
+        Swal.fire({
+            title: 'Вы все прочитали?',
+            text: "Отметить все комментарии как прочитанные!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Да, прочитал!',
+            cancelButtonText: 'Нет'
+        }).then((result) => {
+            if (result.value) {
+                var jqxhr = $.get("/Comments/MarkAllCommentsAsRead/", function () {
+                    ok("Все комментарии отмечены как прочитанные");
+                    $('.comment--items').empty();
+                    $('.comment--items').html("<div class='d-flex justify-content-center'><i class='far fa-check-circle fa-10x m-4'></i></div><div class='d-flex justify-content-center'><h3>Нет комментариев</h3></div>")
+                    $('#btn_mark_read').fadeOut();
+                })
+                    .fail(function () {
+                        alert("Что-то пошло не так. Попробуйте еще раз");
+                    })
+            }
+        })
+
+    }
+
+    function ok(text) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        Toast.fire({
+            type: 'success',
+            title: text
+        })
+    }
+
+</script>

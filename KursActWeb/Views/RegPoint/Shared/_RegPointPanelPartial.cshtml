@@ -1,0 +1,45 @@
+﻿<div class="col-lg-3 d-flex ">
+    <div class="panel align-self-stretch">
+        <div class="panel-heading d-flex">
+            <h3 class="panel-title">Точка учёта</h3>
+            <span class="badge badge-primary badge-pill p-1 pl-2 pr-2 ml-auto" id="badgeIsCommRegTrue">ком. учёт</span>
+            <span class="badge badge-success badge-pill p-1 pl-2 pr-2 ml-auto" id="badgeIsCommRegFalse">тех. учёт</span>
+        </div>
+
+        <div class="panel-content no-gutter-top p-4">
+            <div class="row no-gutters">
+                <div class="col">
+                    <div class="form-group float-label mr-1">
+                        <label for="Feeder" class="float-label--label">Фидер</label>
+                        <input type="text" class="form-control" id="Feeder" value="@Model.InstallAct.Feeder" form="installActForm" name="Feeder" onchange="Update_InstallAct(this)">
+                        <span title="Изменения сохранены"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group float-label ml-1">
+                        <label for="Section" class="float-label--label">Секция</label>
+                        <input type="text" class="form-control" id="Section" value="@Model.InstallAct.Section" name="Section" form="installActForm" onchange="Update_InstallAct(this)">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group btn-group-toggle pt-2 pb-3 d-flex float-label " data-toggle="buttons">
+                <label class="btn btn-outline-secondary btn-rounded w-100 active" id="IsCommRegProxyTrue" onclick="SetIsComReg(true);Update_InstallAct(this, true);">
+                    <input type="radio" name="IsCommRegProxyTrue" autocomplete="off"> Ком
+                </label>
+                <label for="IsCommRegProxyTrue" class="float-label--group-label">Тип учёта</label>
+                <label class="btn btn-outline-secondary btn-rounded w-100" id="IsCommRegProxyFalse" onclick="SetIsComReg();Update_InstallAct(this, true);">
+                    <input type="radio" name="IsCommRegProxyFalse" autocomplete="off"> Тех
+                </label>
+            </div>
+
+            <div class="form-group float-label">
+                <label for="Line" class="float-label--label">Линия (ВЛ)</label>
+                <input type="text" class="form-control" id="Line" value="@Model.InstallAct.Line" name="Line" form="installActForm" onchange="Update_InstallAct(this)">
+                <span></span>
+            </div>
+
+        </div>
+    </div>
+</div>

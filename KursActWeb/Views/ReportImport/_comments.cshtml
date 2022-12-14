@@ -1,0 +1,18 @@
+﻿@model IEnumerable<GIPManager.ReportComment>
+
+@foreach (GIPManager.ReportComment item in Model.Reverse())
+{
+    <blockquote class="blockquote">
+        <div class="d-flex">
+            <div class="mr-4">
+                <span class="comment-icon">
+                    <i class="fas fa-quote-right"></i>
+                </span>
+            </div>
+            <div class="mt-2">
+                <p class="mb-0">@item.Text</p>
+                <footer class="blockquote-footer">@item.User.Name <cite title="Source Title">@item.Date.ToShortDateString()</cite></footer>
+            </div>
+        </div>
+    </blockquote>
+}

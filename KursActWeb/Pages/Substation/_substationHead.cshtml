@@ -1,0 +1,251 @@
+﻿@model ActGIPelectroWeb.Pages.SubstationModel
+@{
+    var i = 0;
+}
+<form id="toggleFlagsForm" hidden>
+    <input type="text" id="IsInstallationDone" value="@Model.IsInstallationDone" />
+    <input type="text" id="IsPropSchemeDone" value="@Model.IsPropSchemeDone" />
+    <input type="text" id="IsBalanceDone" value="@Model.IsBalanceDone" />
+    <input type="text" id="IsKS2Done" value="@Model.IsKS2Done" />
+</form>
+
+<div class="card-body bg-light shadow rounded mb-3 p-2 pl-3 pr-3">
+    <!-- Navigate -->
+    <div class="d-flex">
+        <div class="d-flex flex-row align-items-center">
+            <a href="/ContractPage/@Model.ContractId" class="btn text-dark d-none d-lg-block" data-toggle="tooltip" data-placement="top" title="Контракт">
+                <i class="fas fa-globe-europe text-muted"></i> @Model.ContractName
+            </a>
+            <i class="fas fa-angle-right p-1 d-none d-lg-block"></i>
+            <a href="/RegionPage/@Model.RegionId" class="btn text-dark d-none d-md-block" data-toggle="tooltip" data-placement="top" title="Район">
+                <i class="fas fa-map-marked-alt text-muted"></i> @Model.RegionName
+            </a>
+            <i class="fas fa-angle-right p-1 d-none d-md-block"></i>
+            <a href="#" class="btn text-muted d-none d-sm-block" data-toggle="tooltip" data-placement="top" title="Выбранный объект">
+                <i class="fas fa-sitemap"></i> <span id="sbName1">@Model.Name</span>
+            </a>
+        </div>
+        <div class="d-flex flex-row ml-auto" id="toggleFlags">
+
+            @if (User.IsInRole("administrator") || User.IsInRole("engineer") || User.IsInRole("pnr") || User.IsInRole("curator"))
+            {
+                <button type="button" id="BtnIsInstallationDone" class="btn btn-light btn-toggle tooltip-here @if (Model.IsInstallationDone) { <text>active</text> }" data-toggle="button" aria-pressed="@Model.IsInstallationDone" autocomplete="off" data-placement="top" title="СМР закончены" onclick="UpdateInputIsInstallationDone()">
+                    <i class="fas fa-tools"></i>
+                </button>
+                <button type="button" id="BtnIsKS2Done" class="btn btn-light btn-toggle ml-2 tooltip-here @if (Model.IsKS2Done){ <text>active</text> }" data-toggle="button" aria-pressed="@Model.IsKS2Done" autocomplete="off" data-placement="top" title="КС-2 сделана" onclick="UpdateInputIsKS2Done()">
+                    <i class="fas fa-file-alt"></i>
+                </button>
+            }
+            @if (User.IsInRole("administrator") || User.IsInRole("pnr"))
+            {
+                <button type="button" id="BtnIsPropSchemeDone" class="btn btn-light btn-toggle ml-2 tooltip-here @if (Model.IsPropSchemeDone) { <text>active</text> }" data-toggle="button" aria-pressed="@Model.IsPropSchemeDone" autocomplete="off" data-placement="top" title="Поопор. схема готова" onclick="UpdateInputIsPropSchemeDone()">
+                    <i class="fas fa-pencil-ruler"></i>
+                </button>
+                <button type="button" id="BtnIsBalanceDone" class="btn btn-light btn-toggle ml-2 tooltip-here @if (Model.IsBalanceDone){ <text>active</text> }" data-toggle="button" aria-pressed="@Model.IsBalanceDone" autocomplete="off" data-placement="top" title="Баланс сведен" onclick="UpdateInputIsBalanceDone()">
+                    <i class="fas fa-balance-scale"></i>
+                </button>
+            }
+            <button type="button" class="btn btn-light ml-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-h"></i>
+            </button>
+            <div class="dropdown-menu shadow-lg">
+                <a href="/SubstationActions/@Model.Id" class="dropdown-item"><i class="fas fa-history"></i> История изменений</a>
+
+                @if (User.IsInRole("administrator") || User.IsInRole("operator") || User.IsInRole("engineer") || User.IsInRole("curator")) //13.07.2020 Гуля
+                {
+                    <a href="/SubstationMaterials/@Model.Id" class="dropdown-item"><i class="fas fa-stream"></i> Материалы</a>
+                }
+                @if (User.IsInRole("administrator") || User.IsInRole("pnr") || User.IsInRole("operator"))
+                {
+
+                    <a href="#" class="dropdown-item" onclick="RenemaeSubstation()"><i class="fas fa-edit"></i> Переименовать</a>
+                    <a href="#" class="dropdown-item" onclick="AddPhoneNumber()">Добавить номер сим</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" style="color: slategray; cursor:pointer;" onclick="Delete()"><i class="fas fa-trash-alt"></i> Удалить</a>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Title -->
+    <div class="d-flex flex-row p-2 pl-4 pr-4 align-items-center">
+        <h4 class="card-title display-4 text-dark substation-header"><i class="fas fa-sitemap d-none d-lg-inline-block"></i> <span id="sbName2">@Model.Name</span></h4>
+        <div class="d-flex flex-column ml-5 pl-2">
+            @if (!string.IsNullOrWhiteSpace(Model.PhoneNumber)){<div class="card-text">Модем: @Model.PhoneNumber</div>}
+            <div class="card-text">Точек всего: @Model.Count</div>
+            <div class="card-text pb-2">Статус: @Model.State</div>
+        </div>
+    </div>    
+    <!-- Progress -->
+    <div class="progress md-progress ml-3 mr-3 mb-2" style="height: 20px;" id="progr">
+        <div class="progress-bar bg-success 6" role="progressbar" style="width: @Model.PercentAscueOk%;" data-toggle="tooltip" data-placement="top" title="Принято в ПО АСКУЭ: @Model.CountAscueOk">@Model.CountAscueOk</div>
+        <div class="progress-bar bg-primary" role="progressbar" style="width: @Model.PercentAscueChecked%;" data-toggle="tooltip" data-placement="top" title="Проверено для ПО АСКУЭ: @Model.CountAscueChecked">@Model.CountAscueChecked</div>
+        <div class="progress-bar bg-warning" role="progressbar" style="width: @Model.PercentLinkOk%;" data-toggle="tooltip" data-placement="top" title="Связь проверена: @Model.CountLinkOk">@Model.CountLinkOk</div>
+        <div class="progress-bar bg-secondary" role="progressbar" style="width: @Model.PercentOther%;" data-toggle="tooltip" data-placement="top" title="Остальные: @Model.CountOther">@Model.CountOther</div>
+    </div>
+    <div class="collapse-content">
+        <hr class="m-1">
+        <a class="btn" data-toggle="collapse" href="#collapseStats" aria-expanded="false" aria-controls="collapseStats">Сводная статистика</a>
+        <div class="collapse" id="collapseStats">
+            <div class="row pb-2 pt-2 align-content-center">
+                @foreach (var stat in Model.Statistics)
+                {
+                    i++;
+                    <div class="col">
+                        <div id="@("substationDonutChart" + i)" class="chart--container d-flex flex-column">
+                            <span class="align-self-center stat--card-header pb-3">@stat.Name</span>
+                            <div class="chart--wrapper" data-toggle="tooltip" data-placement="top" title="Работает в АИСКУЭ, в %">
+                                <span class="label">
+                                    <span class="num">0</span><span class="sm">%</span>
+                                </span>
+                                <div class="chart">
+                                    <div class="left-side half-circle"></div>
+                                    <div class="right-side half-circle"></div>
+                                </div>
+                                <div class="shadow"></div>
+                            </div>
+                            <script>
+                                $(document).ready(function() {
+                                    RedrawChart('@("#substationDonutChart" + i)', @stat.Percentage, true);
+                                });
+                            </script>
+                            <div class="d-flex flex-row pl-3 pt-4" style="width: 100%;">
+                                <div class="col-3 border-right">
+                                    <div class="mb-1 stat--count-header">Связь<br /> в АСКУЭ</div>
+                                    <p class="stat--count align-self-center">@stat.CountIsLinkOk</p>
+                                </div>
+                                <div class="col-3 border-right">
+                                    <div class="mb-1 stat--count-header">Добавл.<br /> в АСКУЭ</div>
+                                    <p class="stat--count">@stat.CountIsAscueChecked</p>
+                                </div>
+                                <div class="col-3 border-right">
+                                    <div class="mb-1 stat--count-header">Работает<br /> в АСКУЭ</div>
+                                    <p class="stat--count">@stat.CountIsAscueOk</p>
+                                </div>
+                                <div class="col-3">
+                                    <div class="mb-1 stat--count-header">Всего<br />точек</div>
+                                    <p class="stat--count">@stat.CountRegPoints</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="collapse-content">
+        <hr class="m-1">
+        <a class="btn " data-toggle="collapse" href="#collapseComments" aria-expanded="false" aria-controls="collapseComments">Комментарии</a>
+        <div class="collapse" id="collapseComments">
+            <div class="form-row mb-3 pl-3 pr-3">
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm" id="commentText" required="">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-sm btn-rounded btn-warning px-4" onclick="AddComment()">
+                            <i class="fa fa-paper-plane" title="Отправить"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="comments">
+                <!-- Тут список коментариев-->
+                @await Html.PartialAsync("/Views/Shared/_Comments.cshtml", Model.Comments)
+            </div>
+            <hr class="m-1">
+        </div>
+    </div>
+</div>
+
+
+@if(User.IsInRole("administrator") || User.IsInRole("engineer") || User.IsInRole("curator") || User.IsInRole("pnr"))
+{
+    <script>
+    $(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        //Tooltips for substation status indicators
+        $('.tooltip-here').tooltip();
+    });
+
+    function UpdateInputIsInstallationDone() {
+        /*if (!$('#IsInstallationDone').val()) {
+            Swal.fire({
+                title: 'СМР закончен??',
+                text: "Вы подтсверждаете, что все работы по СМР на подстанции закончены!?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Да, СМР закончен!',
+                cancelButtonText: 'Нет'
+            }).then((result) => {
+                if (result.value) {
+                    ToggleValue($('#IsInstallationDone'));
+                    UpdateFlagState();
+                }
+            })
+        }
+        else {*/
+            ToggleValue($('#IsInstallationDone'));
+            UpdateFlagState();
+        /*}*/
+    }
+
+    function UpdateInputIsPropSchemeDone() {
+        ToggleValue($('#IsPropSchemeDone'));
+        UpdateFlagState();
+    }
+
+    function UpdateInputIsBalanceDone() {
+        ToggleValue($('#IsBalanceDone'));
+        UpdateFlagState();
+    }
+
+    function UpdateInputIsKS2Done() {
+        ToggleValue($('#IsKS2Done'));
+        UpdateFlagState();
+    }
+
+    function ToggleValue(object) {
+        if ($(object).val() != '') {
+            $(object).val('');
+        } else {
+            $(object).val('true');
+        }
+    }
+
+    function UpdateFlagState() {
+        var data = {
+            'id': '@Model.Id',
+            'isInstallationDone': ConvertValue($('#IsInstallationDone').val()),
+            'isPropSchemeDone': ConvertValue($('#IsPropSchemeDone').val()),
+            'isBalanceDone': ConvertValue($('#IsBalanceDone').val()),
+            'isKS2Done': ConvertValue($('#IsKS2Done').val())
+        };
+
+        jQuery.post('/Substation/SetFlag', data, ok("Изменения сохранены"), 'text');
+    }
+
+    function ConvertValue(caller) {
+        if (caller != '') {
+            return 'true';
+        }
+        else { return ''; }
+    }
+
+    function ok(text) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        Toast.fire({
+            type: 'success',
+            title: text
+        })
+    }
+
+    </script>
+}

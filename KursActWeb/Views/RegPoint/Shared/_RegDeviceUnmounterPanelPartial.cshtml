@@ -1,0 +1,28 @@
+﻿<div class="col-lg-3 d-flex">
+    <div class="panel align-self-stretch">
+        <div class="panel-heading d-flex">
+            <h3 class="panel-title">Снятый прибор учёта</h3>
+            <div class="spinner-border spinner-border-sm ml-auto text-orange align-self-center panel-spinner" role="status">
+                <span class="sr-only">Сохранение...</span>
+            </div>
+        </div>
+
+        <div class="panel-content no-gutter-top p-4">
+            <div class="form-group float-label">
+                <label for="Uninstalled_Serial" class="float-label--label">Серийный номер</label>
+                <input type="text" class="form-control" id="Uninstalled_Serial" name="Uninstalled_Serial" value="@Model.InstallAct.Uninstalled_Serial" form="installActForm" onchange="Update_InstallAct(this)">
+                <span></span>
+            </div>
+            <div class="form-group float-label">
+                <label for="Uninstalled_TSum" class="float-label--label">Т<sub>сум</sub></label>
+                <input type="text" class="form-control" id="Uninstalled_TSum" name="Uninstalled_TSum" value="@Model.InstallAct.Uninstalled_TSum" form="installActForm" onchange="Update_InstallAct(this)">
+                <span></span>
+            </div>
+            <div class="form-group float-label">
+                <label for="Uninstalled_Ktt" class="float-label--label">КТТ</label>
+                <input type="text" class="form-control" id="Uninstalled_Ktt" name="Uninstalled_Ktt" value="@Model.InstallAct.Uninstalled_Ktt" form="installActForm" onchange="Update_InstallAct(this)">
+                <span></span>
+            </div>
+        </div>
+    </div>
+</div>

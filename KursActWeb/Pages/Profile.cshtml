@@ -1,0 +1,238 @@
+﻿@page
+@model ActGIPelectroWeb.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Личный кабинет";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .input-file {
+        background: #fff; /* Цвет фона */
+        /*padding: 50px;  Поля вокруг текста */
+        box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */
+        width: 10vh;
+        height: 5vh;
+        font-size: 100px;
+        color: rgb(0, 174, 255);
+        text-align: center;
+        cursor: pointer;
+    }
+
+        .input-file:hover {
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Параметры тени */
+        }
+</style>
+
+<div class="shadow p-3 mb-1 rounded" style="background-color:#1c2324"><h1 style="color:white; margin:0"><i class="fas fa-user"></i> Личный кабинет</h1></div>
+<div class="shadow-sm p-3 bg-white rounded">
+    <table>
+        <tr>
+            <td rowspan="4">
+            @if (Model.PathImage != null)
+            {
+                <img id="profilImageId" src="@Model.PathImage" alt="eroor" style="width: 120px; height: 120px;" />
+            }
+            else
+            {
+                <img src="/images/avatar.jpg" alt="eroor" style="width: 120px; height: 120px;" />
+            }
+            </td>
+            <td>ФИО: @Model.Name</td>
+        </tr>
+        <tr>
+            <td>Login: @Model.Login</td>
+        </tr>
+        <tr>
+            <td>Email: @Model.Email</td>
+        </tr>
+        <tr>
+            <td>Должность: @Model.Role</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                @*<form>
+                    <input type="file" id="fileLoader" name="Image" accept="image/png, image/gif, image/jpeg" title="Загрузить файл" onchange="Vol()" />
+                </form>*@
+                <div id="activeArea">
+                    
+                    @*<input id="upload" type="file" onchange="handleFiles(this.files)" class="form-control" style="" accept="image/png, image/gif, image/jpeg" />*@
+
+                    @using (Html.BeginForm("AddImage", "Users", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <input name="Image" type="file" class="form-control" title="Загрузить" accept="image/png, image/gif, image/jpeg" />
+                        <input type="submit" class="form-control" value="Отправить"/>
+                    }
+
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+<div class="d-flex flex-wrap pt-3">
+    @* Для админов *@
+    @if (User.IsInRole("administrator"))
+    {
+        <!-- Пользователи -->
+        <div id="usersCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/Users/UsersList">
+                <div class="p-5 text-center shadow zoom" style="background-color: #288dd4; border-radius: 7px;">
+                    <i class="fas fa-users-cog fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+
+            <div class="card-body">
+                <h5 class="card-title text-center">Пользователи</h5>
+                <p class="card-text">Добавление, редактирование и удаление пользователей</p>
+            </div>
+        </div>
+        <!-- Управление рассылками -->
+        <div id="emailCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/EmailPage">
+                <div class="p-5 text-center shadow zoom" style="background-color: #e4a600; border-radius: 7px;">
+                    <i class="fas fa-mail-bulk fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+
+            <div class="card-body">
+                <h5 class="card-title text-center">Email рассылки</h5>
+                <p class="card-text">Управление автоматическими рассылками</p>
+            </div>
+        </div>
+    }
+    @* Для бухгалтерии *@
+    @if (User.IsInRole("engineer") || User.IsInRole("curator") || User.IsInRole("administrator"))
+    {
+        <!-- Отчетность -->
+        <div id="emailCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/PaymentReports">
+                <div class="p-5 text-center shadow zoom" style="background-color: #28a745; border-radius: 7px;">
+                    <i class="fas fa-file-contract fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+
+            <div class="card-body">
+                <h5 class="card-title text-center">Отчетность</h5>
+                <p class="card-text">Управление отчетностью, документы на закрытие и т.д.</p>
+            </div>
+        </div>
+    }
+
+    @* Для операторов *@
+    @if (User.IsInRole("operator") || User.IsInRole("administrator"))
+    {
+        <!-- Реестры писем -->
+        <div id="emailCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/Letters">
+                <div class="p-5 text-center shadow zoom" style="background-color: #e16123; border-radius: 7px;">
+                    <i class="far fa-envelope fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+
+            <div class="card-body">
+                <h5 class="card-title text-center">Реестры писем</h5>
+                <p class="card-text">Список реестров писем, просмотр, печать, взаимодействие с Почтой России</p>
+            </div>
+        </div>
+
+        <!-- Импорт показаний -->
+        <div id="energyDataImportCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/EnergyDataImport">
+                <div class="p-5 text-center shadow zoom" style="background-color: #393939; border-radius: 7px;">
+                    <i class="fas fa-cloud-upload-alt fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+
+            <div class="card-body">
+                <h5 class="card-title text-center">Импорт показаний</h5>
+                <p class="card-text">Загрузка Excel файлов для импорта показаний в Акты допуска</p>
+            </div>
+        </div>
+
+        <!-- Импорт потребителей -->
+        <div id="consumerDataImportCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/ConsumerDataImport">
+                <div class="p-5 text-center shadow zoom" style="background-color: #17a2b8; border-radius: 7px;">
+                    <i class="fas fa-cloud-upload-alt fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+            <div class="card-body">
+                <h5 class="card-title text-center">Импорт потребителей</h5>
+                <p class="card-text">Загрузка Excel файлов для импорта потребителей</p>
+            </div>
+        </div>
+
+        <!-- Импорт данных по замене ПУ -->
+        <div id="replaceDataImportCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/ReplaceDataImport">
+                <div class="p-5 text-center shadow zoom" style="background-color: #288dd4; border-radius: 7px;">
+                    <i class="fas fa-cloud-upload-alt fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+            <div class="card-body">
+                <h5 class="card-title text-center">Импорт данных по замене ПУ</h5>
+                <p class="card-text">Загрузка Excel файлов для импорта данных по замене ПУ</p>
+            </div>
+        </div>
+
+        <!-- Экспорт данных по допуску ТУ -->
+        /*<div id="admissionDataExportCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/AdmissionDataExport">
+                <div class="p-5 text-center shadow zoom" style="background-color: #ff5b5b; border-radius: 7px;">
+                    <i class="fas fa-cloud-upload-alt fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+            <div class="card-body">
+                <h5 class="card-title text-center">Экспорт данных по допуску ТУ</h5>
+                <p class="card-text">Выгрузка Excel файла для экспорта данных по допуску ТУ</p>
+            </div>
+        </div>*/
+
+    }
+    @* Для админа *@
+    @if (User.IsInRole("administrator"))
+    {
+        <!-- Импорт показаний -->
+        <div id="energyDataImportCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+            <a class="" href="~/ImportAscueSerials">
+                <div class="p-5 text-center shadow zoom" style="background-color: #17a2b8; border-radius: 7px; transform: rotate(180deg);">
+                    <i class="fas fa-cloud-upload-alt fa-5x" style="color:whitesmoke"></i>
+                </div>
+            </a>
+
+            <div class="card-body">
+                <h5 class="card-title text-center">Импорт из ПО АИИС КУЭ</h5>
+                <p class="card-text">Загрузка txt файлов для импорта флагов "Работает в АСКУЭ"</p>
+            </div>
+        </div>
+    }
+
+</div>
+
+<!-- Загрузка файла -->
+<script>
+    function handleFiles(files) {
+        let file = files[0];
+        let req = new XMLHttpRequest();
+        let formData = new FormData();
+        formData.append("file", file);
+        req.onreadystatechange = function () {
+
+        }
+        req.onload = function () {
+            if (this.response == 'ok') {
+                ok('Файл успешно загружен!');
+                $("#profilImageId").load(location.href + " #profilImageId");
+            }
+            else {
+                err('Ошибка! Не удалось загрузить файл!');
+            }
+        }
+        req.open("POST", '/Users/AddImage');
+        req.send(formData);
+
+    }
+
+</script>

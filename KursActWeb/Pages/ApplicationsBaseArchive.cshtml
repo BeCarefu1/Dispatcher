@@ -1,0 +1,254 @@
+﻿@page "{id}"
+@model ActGIPelectroWeb.Pages.ApplicationsBaseArchiveModel
+@using ActGIPelectroWeb.Models
+
+@{ ViewData["Title"] = "Архив Заявок";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+
+
+
+    <main class="main js-main">
+
+    <div class="d-flex justify-content-between shadow p-3 mb-4 rounded" style="background-color:#9aa611">
+        <h1 style="color:white; margin:0">
+            Архив заявок
+        </h1>
+              
+    </div>
+
+
+    @* //// Поиск ////  
+        
+    <div id="orderdiv">
+        <div style="border: 1px solid #808080; border-radius: 3px;">
+            <form asp-page="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.NameSort&pageIndex=@Model.OrderList.PageIndex" method="get">
+                <input type="search" name="SearchString" class="form-control" style="width: 87%; border:none; display: inline-block;" placeholder="Поиск" required="" value="@Model.CurrentFilter">
+                <div style="border-left: 1px #808080; display: inline-block;">
+                    <button class="btn btn-link" type="submit"><i class="fa fa-search"></i></button> | <a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.NameSort&pageIndex=@Model.OrderList.PageIndex" class="btn">Сбросить</a>
+                </div>
+            </form>
+        </div>*@
+
+    @*  //// Расширенный поиск //// 
+        
+    <div style="box-shadow: 10px; border-radius:3px; width:100%; background:#ffffff;">
+            <ul class="nav" style="padding-left: 15px; padding-right: 15px; display: inline-block; ">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" style="font-weight:bold; margin: 3px;">ОБОСОБЛЕННЫЕ ПОДРАЗДЕЛЕНИЯ <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        @foreach (var item in Model.NetRegs)
+                        {
+                            <li><a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.NameSort&currentFilter=@item.Name">@item.Name</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav" style="padding-left: 15px; padding-right: 15px; display: inline-block;">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" style="font-weight:bold; margin: 3px;">ЗАЯВКА НА <i class="fa fa-caret-down"></i></a>
+                    <ul class="dropdown-menu">
+                        @foreach (var item in Model.Dates)
+                        {
+                            <li><a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.NameSort&currentFilter=@item.Date">@item.Date</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        *@
+    <div id="orderdiv">
+        @if (Model.OrderList.Count() != 0)
+        {
+            var prevDisabled = !Model.OrderList.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.OrderList.HasNextPage ? "disabled" : "";
+            <div class="panel">
+
+                <table class="zebra-table">
+                    <tr>
+                        <th>№ ЗАЯВКИ</th>
+                        <th>КАТЕГОРИЯ</th>
+                        <th>ОП</th>
+                        <th><a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.NameSort&pageIndex=@Model.OrderList.PageIndex">ДАТА <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                        <th>ОБЪЕКТ</th>
+                        <th>ОБОРУДОВАНИЕ</th>
+                        <th>СОДЕРЖАНИЕ РАБОТ</th>
+                        <th><a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.DateSort&pageIndex=@Model.OrderList.PageIndex">ПРОСИМОЕ ВРЕМЯ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                        <th>Инициатор заявки</th>
+                        <th>СТАТУС ЗАЯВКИ</th>
+                    </tr>
+
+                    @foreach (var item in Model.OrderList)
+                    {
+                        <tr id="@item.Id" data-toggle="modal" data-target="#ShowModal" onclick="GetAppTable('@item.Id');">
+                            <td>
+                                @item.NambId
+                                @if (Model.UserId == item.UserId)
+                                {
+                                    <p style="color: #ff0000">Ваша Заявка</p>
+                                }
+                            </td>
+                            <td>@item.Category</td>
+                            <td>@item.NetRegion</td>
+                            <td>@item.Date.ToShortDateString()</td>
+                            <td>@item.ObjectName</td>
+                            <td>@item.Equipment</td>
+                            <td>@Html.Raw(item.Description)</td>
+                            <td>@item.RequestedStartTime.ToShortDateString()<br />@(item.RequestedStartTime.ToShortTimeString() + "-" + item.RequestedEndTime.ToShortTimeString())</td>
+                            <td>@item.NameMaster</td>
+                            <td>@item.Status</td>
+                        </tr>
+
+                    }
+                </table>
+                <div class="btn"><p>СТРАНИЦА: @Model.PageNumb ИЗ @Model.PageCount</p></div>
+                <br />
+                <a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.CurrentSort&pageIndex=@(Model.OrderList.PageIndex - 1)&currentFilter=@Model.CurrentFilter" class="btn @prevDisabled">Предыдущий</a>
+                <a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.CurrentSort&pageIndex=@(Model.OrderList.PageIndex + 1)&currentFilter=@Model.CurrentFilter" class="btn @nextDisabled">Следующий</a>
+            </div>
+        }
+        else
+        {
+            <table class="zebra-table">
+                <tr>
+                    <th>№ ЗАЯВКИ</th>
+                    <th>КАТЕГОРИЯ</th>
+                    <th>ОП</th>
+                    <th><a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.NameSort&pageIndex=@Model.OrderList.PageIndex"><i class="fa fa-sort" aria-hidden="true"></i> ДАТА</a></th>
+                    <th>ОБЪЕКТ</th>
+                    <th>ОБОРУДОВАНИЕ</th>
+                    <th>СОДЕРЖАНИЕ РАБОТ</th>
+                    <th><a href="/ApplicationsBaseArchive/@Model.AppId?sortOrder=@Model.DateSort&pageIndex=@Model.OrderList.PageIndex"><i class="fa fa-sort" aria-hidden="true"></i> ПРОСИМОЕ ВРЕМЯ</a></th>
+                    <th>МАСТЕР</th>
+                    <th>СТАТУС ЗАЯВКИ</th>
+                </tr>
+            </table>
+            <div class="d-flex justify-content-center">
+                <i class="far fa-check-circle fa-10x m-4"></i>
+            </div>
+            <div class="d-flex justify-content-center">
+                <h3>Нет заявок</h3>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Просмотр заявки -->
+<div class="modal fade" id="ShowAppModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="width: 50%; margin-left: 25%; margin-right: 25%;">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div id="bodyApp" class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-file-o" aria-hidden="true"></i> Просмотр заявки</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class='modal-footer'>
+                <button class='btn btn-primary' onclick='EditApp()'>Редактировать</button>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</main>
+<script>
+    // *** Открыть просмотр заявки***
+    //function ShowModal(id) {
+    //    var request = new XMLHttpRequest();
+    //    var body = "id=" + encodeURIComponent(id) + "&page=" + encodeURIComponent("a");
+    //    request.responseType = "json";
+    //    request.open("GET", "/Application/ShowAppModal" + "?" + body);
+    //    request.onload = function () {
+    //        document.getElementById('bodyApp').innerHTML = this.response;
+    //    }
+    //    request.send(body);
+    //    $('#ShowAppModal').modal('toggle');
+    //}
+
+    // *** Показать информацию о БП ***
+    function OpenCreateSwitchFormModal(id) {
+        fetch('/Application/GetSwitchTable/' + id).then(r => r.text())
+            .then(data => {
+                //document.getElementById('bodyApp')
+                $('#bodyApp').html(data);
+            });
+    }
+
+    // *** Показать информацию о заявке ***
+    function GetAppTable(id) {
+        $('#ShowAppModal').modal('toggle');
+        fetch('/Application/GetAppTable/' + id).then(r => r.text())
+            .then(data => {
+                //document.getElementById('bodyApp')
+                $('#bodyApp').html(data);
+            });
+    }
+
+    // *** Выделяет заявку ***
+    function AlertApp(id) {
+        document.getElementById(id).style.backgroundColor = '#FFFACD';
+    }
+
+    AlertApp('@Model.AppId');
+    count = 0;
+
+    intervalId = setInterval(function () {
+        count++;
+        if (count == 3) {
+            clearInterval(intervalId);
+        }
+        AlertApp('@Model.AppId');
+    }, 3500);
+
+
+    // *** Проверка обновления в БД ***
+    async function CheckUpDate() {
+        var request = new XMLHttpRequest();
+        var body = 'count=' + encodeURIComponent('@Model.Count');
+        request.responseType = "json";
+        request.open("GET", "/Application/CheckUpDateApp" + "?" + body);
+        request.onload = function () {
+            if (this.response == true) {
+                $("#orderdiv").load(location.href + " #orderdiv");
+            }
+        }
+        request.send(body);
+        setTimeout(CheckUpDate, 5000);
+    }
+
+    CheckUpDate();;
+
+</script>
+
+
+<style>
+    td {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: --webkit-box;
+        -webkit-line-clamp: 3;
+    }
+
+
+    @@media screen and (max-width: 940px) {
+        #orderdiv tr td, #orderdiv th {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: --webkit-box;
+            -webkit-line-clamp: 3;
+        }
+
+        #orderdiv th {
+            display: none;
+        }
+
+        #orderdiv tr td:first-child {
+            background: #64748b;
+        }
+    }
+
+</style>
