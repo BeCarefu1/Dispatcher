@@ -16,14 +16,14 @@
         }
     </div>
     <div id="operlog">
-        <div style="border: 1px solid #808080; border-radius: 3px;">
+        @* <div style="border: 1px solid #808080; border-radius: 3px;">
             <form asp-page="/OperLogPage?sortOrder=@Model.NameSort&pageIndex=@Model.Operations.PageIndex" method="get">
                 <input type="search" name="SearchString" class="form-control" style="width: 87%; border:none; display: inline-block;" placeholder="Поиск" required="" value="@Model.CurrentFilter">
                 <div style="border-left: 1px #808080; display: inline-block;">
                     <button class="btn btn-link" type="submit"><i class="fa fa-search"></i></button> | <a href="/OperLogPage?sortOrder=@Model.NameSort&pageIndex=@Model.Operations.PageIndex" class="btn">Сбросить</a>
                 </div>
             </form>
-        </div>
+    </div> *@
         @if (Model.Operations.Count() != 0)
         {
             var prevDisabled = !Model.Operations.HasPreviousPage ? "disabled" : "";
@@ -34,9 +34,9 @@
                         <tr>
                             <th width="5%">№</th>
                             <th width="12%"><a href="/OperLogPage?sortOrder=@Model.NameSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ОТДАЧИ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
-                            <th width="10%">Диспетчер</th>
+                            <th width="12%">Диспетчер</th>
                             <th>Содержание сообщений в течении смены, подписи о сдаче и приемку смены</th>
-                            <th width="12%"><a href="/OperLogPage?sortOrder=@Model.DateSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ПРИМЕНЕНИЯ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
+                            <th width="10%"><a href="/OperLogPage?sortOrder=@Model.DateSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ПРИМЕНЕНИЯ <i class="fa fa-sort" aria-hidden="true"></i></a></th>
                             <th width="20%">Визы, замечания</th>
                         </tr>
                         @foreach (var item in Model.Operations)
@@ -125,10 +125,10 @@
 
                 <div class="btn"><p>СТРАНИЦА: @Model.PageNumb ИЗ @Model.PageCount</p></div><br />
                 <a href="/OperLogPage?sortOrder=@Model.CurrentSort&pageIndex=@(Model.Operations.PageIndex - 1)&currentFilter=@Model.CurrentFilter" class="btn @prevDisabled">
-                    Предыдущий
+                    Предыдущая
                 </a>
                 <a href="/OperLogPage?sortOrder=@Model.CurrentSort&pageIndex=@(Model.Operations.PageIndex + 1)&currentFilter=@Model.CurrentFilter" class="btn @nextDisabled">
-                    Следующий
+                    Следующая
                 </a>
                 <button class="btn" onclick="PrintFunction()"><i class="fa fa-print"></i> Печать</button>
             </div>
@@ -140,10 +140,10 @@
                     <tr>
                         <th width="5%">№</th>
                         <th width="12%"><a href="/OperLogPage?sortOrder=@Model.NameSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ОТДАЧИ</a></th>
-                        <th width="10%">Диспетчер</th>
+                        <th width="15%">Диспетчер</th>
                         <th>Содержание сообщений в течении смены, подписи о сдаче и приемку смены</th>
                         <th width="12%"><a href="/OperLogPage?sortOrder=@Model.DateSort&pageIndex=@Model.Operations.PageIndex">ВРЕМЯ ПРИМЕНЕНИЯ</a></th>
-                        <th width="20%">Визы, замечания</th>
+                        <th width="15%">Визы, замечания</th>
                     </tr>
                 </table>
             </div>
@@ -248,7 +248,7 @@
                 UpData();
             }
             else {
-                err("Запись добавлена");
+                ok("Запись добавлена");
             }
         }
         request.send(body);
@@ -279,7 +279,6 @@
     }
 
     td {
-        white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
         display: --webkit-box;

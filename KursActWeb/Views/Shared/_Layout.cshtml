@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=1200">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>@ViewBag.Title</title>
 
@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="~/css/font-awesome.css" />
     <link rel="stylesheet" href="~/css/font-awesome.min.css" />
     <link rel="stylesheet" href="~/css/HomePageStyle.css" />
+    <link rel="stylesheet" href="~/css/Bell.css" />
     <link rel="stylesheet" href="/css/print.min.css" />
     <link rel="stylesheet" href="~/css/PulseAnimation.css" />
     <link rel="stylesheet" href="~/css/loader.css" />
@@ -37,201 +38,198 @@
 </head>
 <body>
     <!-- SideBar -->
- 
+
     <nav id="menuVertical">
         <ul style="text-align: justify; white-space: nowrap;">
-            <li><a href="/ApplicationsBasePage/0"><div class="img_n"><img src="/images/icons/1.png"></div><span>База заявок</span></a>
-              </li>
+            <li>
+                <a href="/ApplicationsBasePage/0"><div class="img_n"><img src="/images/icons/1.png"></div><span>База заявок</span></a>
+            </li>
 
             <li>
                 <a href="/ApplicationsBaseArchive/0"><div class="img_n"><img src="/images/icons/2.png"></div><span>Архив заявок</span></a>
-              
+
             </li>
 
             <li>
                 <a href="/OperLogPage"><div class="img_n"><img src="/images/icons/3.png"></div><span>Оперативный журнал</span></a>
-                            </li>
+            </li>
 
             <li><a href="/DocPage"><div class="img_n"><img src="/images/icons/5.png"></div><span>Документы</span></a></li>
-         
+
             <li><a href="/DutySchedulePage"><div class="img_n"><img src="/images/icons/4.png"></div><span>График дежурств</span></a></li>
 
-            <li><a href="/ContractPage/1"><div class="img_n"><img src="/images/icons/6.png"></div><span>Учет энергоресурсов</span></a></li>
+            <li><a href=""><div class="img_n"><img src=""></div><s>Рапорт</s></a></li>
+            
         </ul>
-
-
     </nav>
-    
-        
-    
+
+
+
 
     <style>
-        
-        .div-table{
-            padding-left: 55px;
 
+        .div-table {
+            padding-left: 55px;
         }
-        body{
+
+        body {
             background: #f1f5f9;
             font-family: "Roboto", sans-serif, Helvetica, Arial;
-	margin: 0;
-            
+            margin: 0;
         }
 
-.ico img{
-	height: 66px;
-	margin-top: 7px;
-	padding: 0 0 3 16px;
-}
+        .ico img {
+            height: 66px;
+            margin-top: 7px;
+            padding: 0 0 3 16px;
+        }
 
-#menuVertical{
-	width: 71px;
-	height: auto;
-	position: fixed;
-	z-index: 5;
-	top: 100px;
-	transition: .3s;
-}
+        #menuVertical {
+            width: 71px;
+            height: auto;
+            position: fixed;
+            z-index: 5;
+            top: 100px;
+            transition: .3s;
+        }
 
-#menuVertical ul{
-	display: block;
-	width: 54px;
-	height: auto;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	position: relative;
-}
+            #menuVertical ul {
+                display: block;
+                width: 54px;
+                height: auto;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                position: relative;
+            }
 
-#menuVertical ul li{
-	display: block;
-	width: 200px;
-	position: relative;
-}
+                #menuVertical ul li {
+                    display: block;
+                    width: 200px;
+                    position: relative;
+                }
 
-#menuVertical ul li a{
-	position: relative;
-	display: block;
+                    #menuVertical ul li a {
+                        position: relative;
+                        display: block;
                         width: 200px;
                         height: auto;
-	box-sizing: border-box;
-	font-size: 16px;
-	
-	font-weight: bold;
+                        box-sizing: border-box;
+                        font-size: 16px;
+                        font-weight: bold;
                         color: #334155;
                         line-height: 2em;
-	padding: 15px 15px;
+                        padding: 15px 15px;
                         background: #f1f5f9;
-                       
-	
-}
+                    }
 
 
 
-#menuVertical ul li a:hover,
-#menuVertical ul li:hover a{
+                        #menuVertical ul li a:hover,
+                        #menuVertical ul li:hover a {
                             background: #334155;
                             color: #fff;
-}
+                        }
 
-#menuVertical ul li ul{
-	position: absolute;
-	top: 0px;
-	left: 198px;
-	display: none;
-	width: auto;
-}
+                    #menuVertical ul li ul {
+                        position: absolute;
+                        top: 0px;
+                        left: 198px;
+                        display: none;
+                        width: auto;
+                    }
 
-#menuVertical ul li:hover ul{
-	display: block;
-}
+                    #menuVertical ul li:hover ul {
+                        display: block;
+                    }
 
-#menuVertical ul li ul li a{
-	white-space: nowrap;
-	text-transform: none;
-	padding: 10px 20px;
-	width: 153px;
-}
+                    #menuVertical ul li ul li a {
+                        white-space: nowrap;
+                        text-transform: none;
+                        padding: 10px 20px;
+                        width: 153px;
+                    }
 
-#menuVertical ul li ul li a:hover{
+                        #menuVertical ul li ul li a:hover {
                             background: #334155;
                             color: #fff;
-}
+                        }
 
-.menu{
-	position: relative;
-	width: 178px;
-	height: 100%;
+        .menu {
+            position: relative;
+            width: 178px;
+            height: 100%;
             background: #334155;
             box-shadow: 1px 2px 3px #888;
-	position: fixed;
-	top: 79px;
-	z-index: 3;
-}
+            position: fixed;
+            top: 79px;
+            z-index: 3;
+        }
 
-.footer{
-	position: absolute;
-	width: 178px;
-	height: 288px;
-	bottom: -25px;
+        .footer {
+            position: absolute;
+            width: 178px;
+            height: 288px;
+            bottom: -25px;
             background: #334155;
             margin-bottom: 78px;
-	z-index: 13;
+            z-index: 13;
             border-top: 1px solid #334155;
             color: #334155;
             text-align: center;
-	padding-top: 22px;
-}
+            padding-top: 22px;
+        }
 
-.img_n{
-	transition: .3s;
-}
+        .img_n {
+            transition: .3s;
+        }
 
-.img_n:hover{
-	margin-left: 5px;
-	transition: .3s;
-}
+            .img_n:hover {
+                margin-left: 5px;
+                transition: .3s;
+            }
 
-/*MEDIA*/
+        /*MEDIA*/
 
-@@media screen and (max-width: 1600px){
-	.menu{
+        @@media screen and (max-width: 1600px) {
+            .menu {
                 width: 70px;
                 transition: .3s;
-	}
+            }
 
-	#menuVertical ul li a{
+            #menuVertical ul li a {
                 width: 70px;
                 transition: .3s;
-	}
+            }
 
-	#menuVertical ul li{
+            #menuVertical ul li {
                 width: 70px;
             }
 
-	#menuVertical ul li ul li a{
-		left: -141px;
-	}
+                #menuVertical ul li ul li a {
+                    left: -141px;
+                }
 
-	span{
-		display: none;
-	}
+            span {
+                display: none;
+            }
 
 
-	.img_n img{
-		height: 35px;
+            .img_n img {
+                height: 35px;
                 width: 60px;
                 margin-left: -7px;
-		margin-top: 0;
-	}
-}
+                margin-top: 0;
+            }
+        }
 
-@@media screen and (min-width: 1600px){
-	.img_n img{
-		display: none;
-        	}
-}
+        @@media screen and (min-width: 1600px) {
+            .img_n img {
+                display: none;
+            }
+        }
     </style>
+
 
     <!-- Анимация загрузки -->
     <div class="preloader">
@@ -246,14 +244,14 @@
             <div class="d-none d-sm-block">
                 <div class="navbar--header">
                     <a href="/" class="logo zoom ">
-                        <img src="/images/logo-kurs-dispatcher1.png" alt="КУРС-Диспетчер">
+                        <img src="/images/logo-kurs-dispatcher1.png" alt="ГИП-электро АКТ">
                     </a>
                 </div>
             </div>
             <div class="d-block d-sm-none">
                 <div class="navbar--header">
                     <a href="/" class="logo logo-sm zoom ">
-                        <img src="/images/logo-kurs-dispatcher1.png" alt="КУРС-Диспетчер">
+                        <img src="/images/signinLogoXS.png" alt="ГИП-электро АКТ">
                     </a>
                 </div>
             </div>
@@ -270,7 +268,7 @@
                         <i class="fa fa-file-import navbar--icon"></i>
                         <div class="badge-sidebar--container">
                             <span class="badge badge-pill badge-navbar text-white bg-orange" id="reportForImportCount"></span>
-                        
+                        </div>
                     </a>
                 </li>
             </ul>
@@ -280,7 +278,7 @@
             <div class="clockpage navbar ml-auto" style="box-shadow: none; color: #080808">
                 <div align="center" style="width: 100%; height: 100%; overflow: hidden">
                     <div style="white-space: nowrap">
-                        <div style="display: inline-block" align="center"> @DateTime.Now.ToString("dd/MM/yyyy") </div>
+                        <div style="display: inline-block" align="center">ДАТА: @DateTime.Now.ToString("dd/MM/yyyy") ВРЕМЯ:      </div>
                         <div style="display: inline-block">   </div>
                         <div style="display: inline-block" align="center"> <span id="clock"></span></div>
                     </div>
@@ -305,17 +303,15 @@
             </div>
 
             <!-- Поиск -->
-            <div class="navbar--search ml-auto mr-5"
-                 style="width: 150px; height: 100%; overflow: hidden">
+            <div class="navbar--search ml-auto mr-5">
                 <form action="/Search">
                     <input type="search" id="search" name="query" class="form-control" placeholder="Поиск" required="">
                     <button class="btn btn-link"><i class="fa fa-search"></i></button>
                 </form>
             </div>
 
-            
 
-            <!-- Выпадающее меню -->
+            <!-- Выподающий меню -->
             <div class="navbar--nav">
                 <ul class="nav">
                     @if (User.Identity.IsAuthenticated)
@@ -323,7 +319,8 @@
         <li class="nav-item dropdown nav--user">
             <a href="#" class="nav-link" data-toggle="dropdown">
                 <img id="imageUser" src="/images/avatarilon.jpg" class="rounded-circle border border-warning" style="width: 50px; height: 50px;">
-                                <span>@User.Identity.Name</span>
+                <span id="notifCountId" class="badge badge-pill badge-navbar text-white bg-red pulse" style="top: 40px !important; left: 50px !important;" ata-toggle="tooltip" data-placement="bottom" title="Кол-во непрочитанных уведомлений"></span>
+                <span>@User.Identity.Name</span>
                 <i class="fa fa-angle-down"></i>
             </a>
             <ul class="dropdown-menu">
@@ -354,13 +351,7 @@
             </div>
 
         </header>
-            
-        <style>
-            .navbar--header {
-                max-width: 1300px;
-               margin: auto;
-            }
-        </style>
+
 
         <script src="~/js/Calendar.js"></script>
         <script src="~/js/Notification.js"></script>
@@ -375,7 +366,10 @@
         <main class="main-table">
             <div class="div-table">
                 @RenderBody()
-               </div>
+                <footer class="main--footer">
+                    <p>&copy; @DateTime.Now.Year - Отдел разработки ООО "КУРС"</p>
+                </footer>
+            </div>
         </main>
         <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
@@ -425,7 +419,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
 
@@ -537,10 +530,12 @@
         request.onload = function () {
             if (this.response != 0) {
                 document.getElementById('notifId').innerHTML = '<i class="bell fa fa-bell align-self-center"></i> Уведомление <span id="notifTwoId" class="badge badge-secondary ml-2 align-self-center" ></span>';
+                document.getElementById('notifCountId').innerHTML = this.response;
                 document.getElementById('notifTwoId').innerHTML = this.response;
-                           }
+                document.getElementById('bellNotifId').innerHTML = '<a href="/AlertPage"><i class="bell fa fa-bell align-self-center"></i></a>';
+            }
             else {
-                
+                document.getElementById('notifCountId').className = "unread-indicator";
                 document.getElementById('notifId').innerHTML = ' <i class="fa fa-bell align-self-center" aria-hidden="true"></i> Уведомление';
             }
         }
@@ -796,17 +791,13 @@
 
 
 <style>
-     #marqueeId {
-            width:400px;
-        }
-
     .clockpage {
         margin: auto;
         @*color: #000000;*@
         background: white;
         text-align: center;
-        font-size: 18px;
-        padding: 0px;
+        font-size: 22px;
+        padding: 10px;
         display: inline-block;
         color: inherit;
         font-weight: inherit;
@@ -818,7 +809,7 @@
         color: #000000;
         display: block;
         font-weight: normal;
-        font-size: 18px;
+        font-size: 22px;
     }
 
     .del-marque {
@@ -832,25 +823,7 @@
     }
 
         .del-marque:hover {
-            color: #cb621d;
+            color: #ff6a00;
         }
 
-    
-
-    @@media screen and (max-width: 800px) {
-        .clockpage {
-            display: none;
-            
-        }
-    }
-
-     @@media screen and (max-width: 1100px) {
-        #marqueeId {
-            display: none;
-            
-        }
-
-       
-
-     }
 </style>

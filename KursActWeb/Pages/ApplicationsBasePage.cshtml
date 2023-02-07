@@ -238,8 +238,10 @@
                         <th colspan="4">Содержание работ</th>
                         <th rowspan="2" colspan="2">Просимое время</th>
                         <td>
-                            <input id="date1" type="date" name="cron" style="width:100%; height: 100%;" onchange="Vol()">
-                        </td>
+                            <input id="date1" type="date" name="cron" style="width:45%; height: 100%;" onchange="Vol()"> -
+                                                 
+                                <input id="date2" type="date" name="cron" style="width:45%; height: 100%;" onchange="Vol()">
+                            </td>
                     </tr>
                     <tr>
                         <td rowspan="3" colspan="4">
@@ -252,7 +254,7 @@
                             </select>*@
                             <textarea name="comment" id="descriptionId" class="form-control" spellcheck="false" onchange="Vol()"></textarea>
                         </td>
-                        <td><input id="time1" type="time" name="cron" onchange="Vol()"> — <input id="time2" type="time" name="cron" onchange="Vol()"></td>
+                            <td><input id="time1" type="time" name="cron" style="width:45%; height: 70%;" onchange="Vol()"> - <input id="time2" type="time" name="cron" style="width:45%; height: 70%;" onchange="Vol()"></td>
                     </tr>
                     <tr>
                         <th colspan="2">Подпись</th>
@@ -398,6 +400,7 @@
         description = document.getElementById('descriptionId').value;
         //Просимое дата и время
         date1 = document.getElementById('date1').value;
+        date2 = document.getElementById('date2').value;
         time1 = document.getElementById('time1').value;
         time2 = document.getElementById('time2').value;
         //Фактическое время
@@ -420,6 +423,7 @@
     // Функция ограничевающие просимое время
     function ChekDate() {
         document.getElementById('date1').value = '';
+        document.getElementById('date2').value = '';
         var today;
         if (document.getElementById('categoryId').value != 4) {
             today = new Date();
@@ -439,7 +443,7 @@
 
         today = yyyy + '-' + mm + '-' + dd;
         document.getElementById("date1").setAttribute("min", today);
-
+        document.getElementById("date2").setAttribute("min", today);
     }
 
     ChekDate();
@@ -481,11 +485,11 @@
         if (security == '') { alert('Отсутствует меры безопасности!'); return; }
         if (date1 == '') { alert('Отсутствует просимое время!'); return; }
         if (date1 < GetToday()) { alert('Просимое время не может быть в прошлом!'); return; }
-        //if (date1 < GetPlusThreeDay() && categoryId != 3) { alert('Просимое время подается за три дня'); return; }
+              //if (date1 < GetPlusThreeDay() && categoryId != 3) { alert('Просимое время подается за три дня'); return; }
         if (time1 == '') { alert('Отсутствует просимое время!'); return; }
         if (time2 == '') { alert('Отсутствует просимое время!'); return; }
-        //if (date2 == '') { alert('Отсутствует фактическое время!'); return; }
-        //if (date2 < GetToday()) { alert('Фактическое время не может быть в прошлом!'); return; }
+        if (date2 == '') { alert('Отсутствует фактическое время!'); return; }
+        if (date2 < GetToday()) { alert('Фактическое время не может быть в прошлом!'); return; }
         //if (time3 == '') { alert('Отсутствует фактическое время!'); return; }
         //if (time4 == '') { alert('Отсутствует фактическое время!'); return; }
         //if (time5 == '') { alert('Отсутствует фактическое время!') }
@@ -494,7 +498,7 @@
         var body = "Id_AG=" + encodeURIComponent(agId) + "&Id_NetRegion=" + encodeURIComponent(netRegionId) + "&Id_Category=" + encodeURIComponent(categoryId);
         body += "&Id_Repair=" + encodeURIComponent(repairId) + "&Object=" + encodeURIComponent(objectId);
         body += "&Equipment=" + encodeURIComponent(equipmentId) + "&Description=" + encodeURIComponent(description);// + "&StartReqTime=" + encodeURIComponent(date1);
-        body += "&StartReqDate=" + encodeURIComponent(date1) + "&StartReqTime=" + encodeURIComponent(time1) + "&EndReqTime=" + encodeURIComponent(time2);
+        body += "&StartReqDate=" + encodeURIComponent(date1) + "&EndReqDate=" + encodeURIComponent(date2) + "&EndReqTime=" + encodeURIComponent(time1) + "&EndReqTime=" + encodeURIComponent(time2);
         body += "&Notes=" + encodeURIComponent(note) + "&Security=" + encodeURIComponent(security);
         //request.responseType = "json";
         //request.open("GET", "/Application/CreateApplication" + "?" + body);

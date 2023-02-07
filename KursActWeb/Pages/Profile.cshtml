@@ -89,7 +89,7 @@
             </div>
         </div>
         <!-- Управление рассылками -->
-        <div id="emailCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+      @*  <div id="emailCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
             <a class="" href="~/EmailPage">
                 <div class="p-5 text-center shadow zoom" style="background-color: #e4a600; border-radius: 7px;">
                     <i class="fas fa-mail-bulk fa-5x" style="color:whitesmoke"></i>
@@ -100,12 +100,12 @@
                 <h5 class="card-title text-center">Email рассылки</h5>
                 <p class="card-text">Управление автоматическими рассылками</p>
             </div>
-        </div>
+    </div>*@
     }
     @* Для бухгалтерии *@
-    @if (User.IsInRole("engineer") || User.IsInRole("curator") || User.IsInRole("administrator"))
+  @*  @if (User.IsInRole("engineer") || User.IsInRole("curator") || User.IsInRole("administrator"))
     {
-        <!-- Отчетность -->
+      <!-- Отчетность -->
         <div id="emailCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
             <a class="" href="~/PaymentReports">
                 <div class="p-5 text-center shadow zoom" style="background-color: #28a745; border-radius: 7px;">
@@ -119,12 +119,13 @@
             </div>
         </div>
     }
-
+    *@
     @* Для операторов *@
-    @if (User.IsInRole("operator") || User.IsInRole("administrator"))
+  @*  @if (User.IsInRole("operator") || User.IsInRole("administrator"))
     {
-        <!-- Реестры писем -->
-        <div id="emailCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+    *@
+    <!-- Реестры писем -->
+    @*    <div id="emailCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
             <a class="" href="~/Letters">
                 <div class="p-5 text-center shadow zoom" style="background-color: #e16123; border-radius: 7px;">
                     <i class="far fa-envelope fa-5x" style="color:whitesmoke"></i>
@@ -191,11 +192,13 @@
         </div>*/
 
     }
+    *@
     @* Для админа *@
-    @if (User.IsInRole("administrator"))
+   @* @if (User.IsInRole("administrator"))
     {
+    *@ 
         <!-- Импорт показаний -->
-        <div id="energyDataImportCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
+   @*     <div id="energyDataImportCard" class="card shadow m-4" style="width: 18rem; border-radius: 7px;">
             <a class="" href="~/ImportAscueSerials">
                 <div class="p-5 text-center shadow zoom" style="background-color: #17a2b8; border-radius: 7px; transform: rotate(180deg);">
                     <i class="fas fa-cloud-upload-alt fa-5x" style="color:whitesmoke"></i>
@@ -208,7 +211,7 @@
             </div>
         </div>
     }
-
+    *@
 </div>
 
 <!-- Загрузка файла -->

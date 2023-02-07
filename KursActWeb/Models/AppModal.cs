@@ -37,7 +37,7 @@ namespace ActGIPelectroWeb.Models
                     return "мастер";
                     break;
                 case 18:
-                    return "главный диспетчер";
+                    return "старший диспетчер";
                     break;
                 case 19:
                     return "главный инженер";
@@ -74,6 +74,7 @@ namespace ActGIPelectroWeb.Models
                              Equipment = a.Equipment,
                              Description = a.Description,
                              RequestedDate = a.StartReqTime,
+                             RequestedEndDate = a.EndReqTime,
                              RequestedStartTime = a.StartReqTime,
                              RequestedEndTime = a.EndReqTime,
                              ActualDate = a.StartActualTime,

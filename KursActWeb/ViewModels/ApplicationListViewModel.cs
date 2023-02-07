@@ -34,9 +34,11 @@ namespace ActGIPelectroWeb.ViewModels
         public string Equipment { get; set; }
         public string Description { get; set; }
         public DateTime RequestedDate { get; set; }
+        public DateTime RequestedEndDate { get; set; }
         public DateTime RequestedStartTime { get; set; }
         public DateTime RequestedEndTime { get; set; }
         public DateTime ActualDate { get; set; }
+        public DateTime ActualEndDate { get; set; }
         public DateTime ActualStartTime { get; set; }
         public DateTime ActualEndTime { get; set; }
         public DateTime OpenTime { get; set; }
@@ -56,6 +58,7 @@ namespace ActGIPelectroWeb.ViewModels
         public int NambId { get; set; }
         public string NameMaster { get; set; }
         public string NamePodpisant { get; set; }
+        public string NameDispatcher { get; set; }
         public string RolePodpisant { get; set; }
 
         public List<SwitchListViewModel> Switches { get; set; }
