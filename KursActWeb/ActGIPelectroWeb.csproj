@@ -47,6 +47,7 @@
 
   <ItemGroup>
     <Folder Include="Pages\Shared\" />
+    <Folder Include="Pages\Substation\" />
     <Folder Include="Sheduler\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\Files\Temp\" />

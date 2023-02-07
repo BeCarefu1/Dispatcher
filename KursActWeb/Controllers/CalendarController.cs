@@ -204,9 +204,9 @@ namespace ActGIPelectroWeb.Controllers
             {
                 PhonegramTable phonegram = db.PhonegramTable.Find(id);
                 string html = "<table class='app-table' style='max-width:100%; word-break: break-all; hyphens: auto;'><tr><th colspan='2'>" + phonegram.Theme + "</th></tr>";
-                html += "<tr><th style='width: 50px;'>ОРГАНИЗАТОР:</th><td style='width:50%;'>" + Models.ShortNameModel.ShortName(db.Users.Find(phonegram.FromUserId).Name) + "</td></tr>";
-                html += "<tr><th style='width: 50px;'>ОРГАНИЗАТОР:</th><td style='width:50%;'>" + Models.ShortNameModel.ShortName(db.Users.Find(phonegram.ToUserId).Name) + "</td></tr>";
-                html += "<tr><th style='width: 50px;'>ОРГАНИЗАТОР:</th><td style='width:50%;'>" + phonegram.Description + "</td></tr>";
+                html += "<tr><th style='width: 50px;'>От:</th><td style='width:50%;'>" + Models.ShortNameModel.ShortName(db.Users.Find(phonegram.FromUserId).Name) + "</td></tr>";
+                html += "<tr><th style='width: 50px;'>Кому:</th><td style='width:50%;'>" + Models.ShortNameModel.ShortName(db.Users.Find(phonegram.ToUserId).Name) + "</td></tr>";
+                html += "<tr><th style='width: 50px;'>Сообщение:</th><td style='width:50%;'>" + phonegram.Description + "</td></tr>";
                 if (User.IsInRole("administrator") || db.Users.FirstOrDefault(s => s.Login == User.Identity.Name).Id == phonegram.FromUserId)
                 {
                     html += "<tr><th colspan='2'><button class='btn btn-primary' style='margin: 2px;' onclick='DelPhonegram(" + phonegram.Id + ")'><i class='fa fa-trash'></i> Удалить телефонограмму</button></th></tr>";
