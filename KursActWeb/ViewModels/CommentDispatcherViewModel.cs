@@ -19,7 +19,7 @@ namespace ActGIPelectroWeb.ViewModels
         ////ShiftSchedule
         //public DateTime StartDate { get; set; }
         //public DateTime EndDate { get; set; }
-        //public int Id_Dispatcher { get; set; }
+        public int Id_Dispatcher { get; set; }
 
 
     }

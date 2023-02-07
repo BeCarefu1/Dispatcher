@@ -298,8 +298,8 @@
             </script>
 
             <!-- Диспетчер на смене -->
-            <div id="id_disp" class="clockpage">
-
+            <div id="id_Dispatcher" class="clockpage">
+              
             </div>
 
             <!-- Поиск -->
@@ -726,11 +726,11 @@
 
     function GetDisp() {
         fetch('/Users/GetDisp').then(r => r.json()).then(data => {
-            //alert("ok");
-            //let html = "";
-            //html += "<h3 style='margin-left: 20px;'>" + data + "</h3>"
-            //document.getElementById("id_notif").value =
-            //notification(data);
+            alert("ok");
+            let html = "";
+            html += "<h3 style='margin-left: 20px;'>" + data + "</h3>"
+            document.getElementById("id_notif").value =
+            notification(data);
             $('#id_disp').html(data);
         });
     }
